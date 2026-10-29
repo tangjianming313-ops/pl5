@@ -1,0 +1,32 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/pool/pool",
+    "pages/history/history"
+  ],
+  "window": {
+    "navigationBarTitleText": "斌斌数据研究院",
+    "navigationBarBackgroundColor": "#0e2034",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#081421"
+  },
+  "tabBar": {
+    "color": "#9db4ce",
+    "selectedColor": "#168ed8",
+    "backgroundColor": "#10233a",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "开奖总览"
+      },
+      {
+        "pagePath": "pages/pool/pool",
+        "text": "智能排码"
+      },
+      {
+        "pagePath": "pages/history/history",
+        "text": "历史数据"
+      }
+    ]
+  }
+}
