@@ -1,0 +1,13 @@
+{
+  "appid": "touristappid",
+  "projectname": "binbin-p5-mini",
+  "compileType": "miniprogram",
+  "miniprogramRoot": "./",
+  "setting": {
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "minified": true,
+    "urlCheck": true
+  }
+}
