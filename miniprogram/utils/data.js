@@ -1,0 +1,7 @@
+const baseline=require('../data/history.json').front4;
+const URL='https://tangjianming313-ops.github.io/pl5/draws-auto.json';
+function valid(s){return typeof s==='string'&&/^\d{4}$/.test(s)}
+function getHistory(){const a=wx.getStorageSync('manualDraws')||[];const auto=getApp().globalData.draws||[];let overlap=0;for(let n=Math.min(auto.length,a.length);n>0;n--){if(auto.slice(-n).map(x=>x.front4).join('|')===a.slice(0,n).join('|')){overlap=n;break}}return baseline.concat(auto.map(x=>x.front4),a.slice(overlap))}
+function sync(){return new Promise((resolve,reject)=>{wx.request({url:URL+'?t='+Date.now(),timeout:15000,success:({statusCode,data})=>{try{if(statusCode!==200||!data||data.anchor!=='4157'||!Array.isArray(data.draws))throw Error('数据源不可用');let last=0;for(const x of data.draws){if(!valid(x.front4)||!/^\d{7}$/.test(x.issue)||Number(x.issue)<=last)throw Error('开奖数据校验失败');last=Number(x.issue)}const app=getApp();app.globalData.draws=data.draws;app.globalData.updatedAt=data.updatedAt;app.globalData.source=data.source||'公开开奖镜像';resolve(data)}catch(e){reject(e)}},fail:reject})})}
+function appendManual(code){if(!valid(code))throw Error('请输入4位数字');const h=getHistory();if(h[h.length-1]===code)throw Error('与上一期相同，请核实期号');const a=wx.getStorageSync('manualDraws')||[];a.push(code);wx.setStorageSync('manualDraws',a)}
+module.exports={baseline,getHistory,sync,appendManual};
