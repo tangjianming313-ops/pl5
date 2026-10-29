@@ -1,0 +1,1 @@
+App({globalData:{history:[],draws:[],updatedAt:null,source:''}})
