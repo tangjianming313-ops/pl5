@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Fetch verified consecutive P5 draws; fail closed if the stored history cannot be joined."""
-import json, re, urllib.request, pathlib, datetime, sys
+import json, re, urllib.request, urllib.error, pathlib, datetime, sys, time
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 OUT=ROOT/"draws-auto.json"
 BASE_LAST="4157"
@@ -17,8 +17,21 @@ def fetch(page):
     from urllib.parse import urlencode
     params={"gameNo":"37","provinceId":"0","pageSize":"100","isVerify":"1","pageNo":str(page)}
     req=urllib.request.Request(URL+"?"+urlencode(params),headers=HEADERS)
-    with urllib.request.urlopen(req,timeout=25) as response:
-        obj=json.loads(response.read().decode("utf-8"))
+    obj=None
+    for attempt in range(1,4):
+        try:
+            with urllib.request.urlopen(req,timeout=25) as response:
+                obj=json.loads(response.read().decode("utf-8"))
+            break
+        except urllib.error.HTTPError as exc:
+            print(f"Official API HTTP {exc.code}, attempt {attempt}/3",file=sys.stderr,flush=True)
+            if attempt==3:
+                raise RuntimeError(f"Official API unavailable (HTTP {exc.code}); existing history preserved") from exc
+        except (urllib.error.URLError,TimeoutError) as exc:
+            print(f"Official API network error, attempt {attempt}/3: {exc}",file=sys.stderr,flush=True)
+            if attempt==3:
+                raise RuntimeError("Official API unreachable; existing history preserved") from exc
+        time.sleep(attempt*3)
     out=[]
     for item in rows(obj):
         issue=str(item["lotteryDrawNum"])
