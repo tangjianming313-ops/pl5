@@ -1,0 +1,12 @@
+{
+  "enabled": false,
+  "id": "initial",
+  "title": "平台公告",
+  "message": "",
+  "imageUrl": "",
+  "linkUrl": "",
+  "buttonText": "查看详情",
+  "frequency": "session",
+  "startAt": "",
+  "endAt": ""
+}
