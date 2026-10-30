@@ -108,8 +108,98 @@ main>.premium-hero .premium-caption{font-size:10px!important}
 #overview>.premium-shortcuts button{padding:12px 8px!important}
 #overview .premium-balls span{width:37px;height:37px;font-size:20px}
 }
-</style></head><body><header><div class="wrap"><div><div class="logo">◈ 广东来总Ai排码</div><div class="sub">P5 DATA RESEARCH · 前四位专业分析平台</div></div><span class="tag">● 数据同步状态请以开奖页为准</span></div></header><main class="wrap"><div class="app-intro premium-hero"><div class="premium-copy"><div class="eyebrow">排列5 · 前四位</div><div class="headline">广东来总<br><em>Ai排码</em></div><div class="subtitle">专业数据 · 理性分析 · 长期研究</div><button type="button" data-go="filters" class="premium-cta">立即排码 ›</button><div class="premium-caption">专业数据　理性分析<br>独立研究 · 仅供参考</div></div></div><nav><button class="active" data-tab="overview">数据总览</button><button data-tab="filters">大模型算法排码</button><button data-tab="backtest">历史回测</button><button data-tab="draw">开奖动态</button></nav>
-<section id="overview"><div class="panel premium-overview"><div class="premium-heading"><span class="premium-icon">▥</span><div><h2>排列5前四位 · 数据概览</h2><p class="muted small">基于完整历史数据的专业分析</p></div><span class="premium-heading-badge">◆ 独立研究工具</span></div><div class="metrics premium-metrics"><div class="metric"><span class="premium-stat-icon blue">▥</span><div class="muted small">历史期数</div><div class="val" id="total">—</div></div><div class="metric"><span class="premium-stat-icon red">▤</span><div class="muted small">最近一期</div><div class="val cyan" id="latest">—</div></div><div class="metric"><span class="premium-stat-icon indigo">▦</span><div class="muted small">原码池</div><div class="val" id="mainCount">—</div></div><div class="metric"><span class="premium-stat-icon green">◎</span><div class="muted small">无对子池</div><div class="val green" id="uniqueCount">—</div></div></div><div class="premium-footnote">◷ 数据来源：现有历史开奖记录　｜　自动同步状态以开奖页为准</div></div><button type="button" class="premium-action" data-go="filters"><span class="premium-action-icon">◎</span><span><strong>大模型算法排码</strong><small>前四位号码筛选 · 复制结果</small></span><b>立即排码 ›</b></button><div class="premium-shortcuts"><button data-go="backtest"><span>▥</span><strong>号码回测</strong><small>历史验证结果</small></button><button data-go="filters"><span>◫</span><strong>数据分析</strong><small>号码筛选统计</small></button><button data-go="draw"><span>◉</span><strong>开奖动态</strong><small>查看更新状态</small></button></div><div class="panel premium-recent"><div class="premium-recent-head"><h2>🏆 近期开奖号码</h2><span>● 历史记录</span></div><div class="premium-recent-body"><div><div class="muted small">最新历史记录 · 前四位</div><strong id="homeLatestLabel">数据加载中</strong></div><div class="premium-balls" id="homeLatestBalls"></div><button data-go="draw">查看详情 ›</button></div><p class="muted small">历史序号不是官方期号，数据未更新时不代表当日开奖结果。</p></div><div class="layout internal-rules"><div class="panel"><h2>动态三位置排码</h2><div id="positions"></div></div><div class="panel"><h2>模型说明与万百差</h2><div id="tInfo"></div><p class="note">Q 为历史样本的平滑转移估计，不是真实开奖概率。历史覆盖率不能保证未来结果。</p></div></div><div class="panel internal-rules"><h2>顺序拦截统计</h2><div class="scroll"><table><thead><tr><th>规则</th><th class="num">新增排除</th><th class="num">累计排除</th></tr></thead><tbody id="overviewRules"></tbody></table></div><p id="balance" class="note"></p></div></section>
+
+/* Screenshot-accurate visual layout, adapted to user portrait and actual data */
+body{font-family:system-ui,-apple-system,"PingFang SC","Microsoft Yahei",sans-serif!important;background:#f2f8fc!important}
+header{box-shadow:0 2px 9px #d8e7f26b!important}
+header>.wrap{display:flex!important;align-items:center!important;gap:10px!important;min-height:80px!important;padding:10px 20px!important}
+header>.wrap>div:first-child{flex:1;min-width:0;padding-left:64px;position:relative}
+header .logo{font-size:23px!important;font-weight:900!important;color:#092b54!important;letter-spacing:-.7px!important}
+header .logo:before{content:"◇";display:grid;place-items:center;position:absolute;left:0;top:0;width:55px;height:55px;border-radius:13px;background:linear-gradient(130deg,#0868f1,#24b1f5);color:white;font-size:29px;box-shadow:0 3px 9px #1e81db29}
+header .logo:after{display:none!important}
+header .sub{font-size:12px!important;color:#2f5375!important;white-space:nowrap}
+.ref-status{background:#f1f9fb;border:1px solid #e8f0f4;border-radius:28px;display:flex;gap:8px;align-items:flex-start;padding:9px 15px;flex-shrink:0;color:#159a6e}
+.ref-status strong,.ref-status small{display:block;line-height:1.3}.ref-status strong{font-size:12px}.ref-status small{font-size:10px;color:#68869c;margin-top:3px}.ref-dot{width:10px;height:10px;border-radius:50%;background:#0dbd7b;margin-top:4px}
+.ref-refresh{border:0;border-radius:50%;background:#edf6ff;color:#0866d4;font-size:30px;width:43px;height:43px;line-height:1;display:grid;place-items:center}
+main>.premium-hero{height:385px!important;min-height:385px!important;margin:0 -16px 0!important;border-radius:0!important;border:0!important;padding:32px 35px!important;background:linear-gradient(90deg,#edf8ff 0%,#edf8ffec 37%,#edf8ff66 65%,#edf8ff12 100%),url("./file_000000005a3c8211aa3a53b0d5a0d865.png") 74% 30%/cover no-repeat!important}
+main>.premium-hero .premium-copy{max-width:70%!important}
+main>.premium-hero .eyebrow{font-size:19px!important;color:#0a66b2!important;letter-spacing:1px!important}
+main>.premium-hero .headline{font-size:54px!important;color:#06366e!important;line-height:1.14!important;margin:12px 0 18px!important}
+main>.premium-hero .headline em{font-size:1.24em!important;color:#c8912d!important}
+main>.premium-hero .subtitle{font-size:17px!important;letter-spacing:2px!important;color:#214c76!important}
+main>.premium-hero .premium-cta{font-size:15px!important;background:linear-gradient(100deg,#198af2,#0457df)!important;border-radius:24px!important;padding:10px 23px!important}
+main>.premium-hero .premium-caption{font-size:12px!important}
+.ref-hero-slogan{position:absolute;left:105%;top:59%;white-space:nowrap;transform:rotate(-9deg);font-family:serif;font-style:italic;font-size:19px;font-weight:800;line-height:1.5;color:#0b3764;text-shadow:0 1px #fff}
+#overview{padding-top:16px!important}
+#overview>.premium-overview{padding:21px!important;border-radius:18px!important}
+#overview .premium-heading{gap:14px!important;margin-bottom:19px!important}
+#overview .premium-heading h2{font-size:22px!important;letter-spacing:-.4px!important}
+#overview .premium-heading-badge{font-size:12px!important;line-height:1.3!important}
+#overview .premium-heading-badge small{font-weight:400;color:#8498a9}
+#overview .premium-metrics{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:12px!important}
+#overview .premium-metrics .metric{min-height:137px!important;background:linear-gradient(140deg,#fff,#eff8ff)!important;padding:14px!important}
+#overview .premium-metrics .val{font-size:27px!important}
+#overview .premium-footnote{display:flex;justify-content:space-between;gap:10px;font-size:11px!important;margin-top:13px!important}
+#overview>.premium-action{min-height:104px!important;margin:18px 0!important;border-radius:15px!important;padding:19px!important}
+#overview .premium-action-icon{font-size:28px!important;width:63px!important;height:63px!important;background:#ffffff35!important}
+#overview .premium-action strong{font-size:23px!important}
+#overview .premium-action small{font-size:13px!important}
+#overview .premium-action b{font-size:14px!important;padding:13px 17px!important}
+#overview>.premium-shortcuts{gap:12px!important;margin-bottom:17px!important}
+#overview>.premium-shortcuts button{min-height:120px!important;display:grid;grid-template-columns:55px 1fr;grid-template-rows:auto auto;align-content:center;column-gap:10px;padding:13px!important}
+#overview>.premium-shortcuts button span{grid-row:span 2;width:49px;height:49px;margin:0;font-size:25px}
+#overview>.premium-shortcuts button strong{font-size:17px!important}
+#overview>.premium-shortcuts button small{font-size:11px!important;line-height:1.6!important}
+#overview>.premium-recent{padding:19px!important}
+#overview .premium-recent-head h2{font-size:20px!important}
+#overview .premium-recent-head span{font-size:12px!important}
+.ref-table-head{display:grid;grid-template-columns:29% 1fr;padding:10px 13px;margin-top:16px;border-radius:9px;background:#f1f8fe;color:#708ba3;font-size:12px}
+#overview .premium-recent-body{padding:16px 10px!important;border-bottom:0!important}
+#overview .premium-balls span{width:48px!important;height:48px!important;font-size:25px!important}
+@media(max-width:750px){
+header>.wrap{min-height:68px!important;padding:9px 11px!important;gap:6px!important}
+header>.wrap>div:first-child{padding-left:47px!important}
+header .logo{font-size:clamp(13px,4vw,19px)!important;white-space:nowrap!important}
+header .logo:before{width:41px;height:41px;border-radius:10px;font-size:24px}
+header .sub{font-size:clamp(7px,2.2vw,10px)!important;letter-spacing:-.2px}
+.ref-status{padding:6px 7px!important;gap:4px!important}.ref-status strong{font-size:10px!important}.ref-status small{font-size:8px!important}.ref-dot{width:7px;height:7px}
+.ref-refresh{width:31px;height:31px;font-size:23px;flex-shrink:0}
+main>.premium-hero{height:310px!important;min-height:310px!important;margin:0 -16px 0!important;padding:20px 22px!important;background-position:center,70% 28%!important}
+main>.premium-hero .premium-copy{max-width:68%!important}
+main>.premium-hero .eyebrow{font-size:13px!important}
+main>.premium-hero .headline{font-size:clamp(29px,8vw,42px)!important;margin:10px 0 13px!important}
+main>.premium-hero .subtitle{font-size:11px!important;letter-spacing:1px!important}
+main>.premium-hero .premium-cta{font-size:12px!important;padding:10px 16px!important}
+main>.premium-hero .premium-caption{font-size:10px!important}
+.ref-hero-slogan{font-size:13px!important;left:96%!important;top:65%!important}
+#overview{padding-top:12px!important}
+#overview>.premium-overview{padding:12px!important}
+#overview .premium-heading{gap:8px!important;margin-bottom:13px!important}
+#overview .premium-heading h2{font-size:clamp(13px,3.9vw,17px)!important}
+#overview .premium-heading p{font-size:9px!important}
+#overview .premium-heading-badge{font-size:9px!important}
+#overview .premium-metrics{gap:5px!important}
+#overview .premium-metrics .metric{min-height:115px!important;padding:9px 5px!important}
+#overview .premium-metrics .val{font-size:clamp(14px,4vw,20px)!important}
+#overview .premium-footnote{font-size:9px!important;flex-wrap:wrap}
+#overview>.premium-action{min-height:82px!important;padding:11px!important;gap:8px!important}
+#overview .premium-action-icon{width:46px!important;height:46px!important;font-size:22px!important}
+#overview .premium-action strong{font-size:clamp(13px,4vw,18px)!important}
+#overview .premium-action small{font-size:10px!important}
+#overview .premium-action b{font-size:11px!important;padding:10px!important}
+#overview>.premium-shortcuts{gap:6px!important}
+#overview>.premium-shortcuts button{display:block!important;min-height:112px!important;padding:10px 7px!important}
+#overview>.premium-shortcuts button span{width:34px!important;height:34px!important;font-size:18px!important;margin-bottom:8px!important}
+#overview>.premium-shortcuts button strong{font-size:12px!important}
+#overview>.premium-shortcuts button small{font-size:9px!important}
+#overview .premium-recent-head h2{font-size:16px!important}
+#overview .premium-recent-body{gap:6px!important;padding:12px 0!important}
+#overview .premium-balls{gap:4px!important}
+#overview .premium-balls span{width:clamp(30px,9vw,39px)!important;height:clamp(30px,9vw,39px)!important;font-size:20px!important}
+#overview .premium-recent-body button{font-size:10px!important;padding:8px!important}
+}
+</style></head><body><header><div class="wrap"><div><div class="logo">◈ 广东来总Ai排码</div><div class="sub">P5 DATA RESEARCH · 前四位专业分析平台</div></div><div class="ref-status"><span class="ref-dot"></span><div><strong>数据状态</strong><small>请查看开奖页</small></div></div><button class="ref-refresh" type="button" aria-label="刷新开奖数据" onclick="loadAutomaticDraws()">⟳</button></div></header><main class="wrap"><div class="app-intro premium-hero"><div class="premium-copy"><div class="eyebrow">排列5 · 前四位</div><div class="headline">广东来总<br><em>Ai排码</em></div><div class="subtitle">专业数据 · 理性分析 · 长期研究</div><button type="button" data-go="filters" class="premium-cta">立即排码 ›</button><div class="premium-caption">理性参考 · 仅供娱乐</div><div class="ref-hero-slogan">专业数据<br>理性分析<br>长期研究</div></div></div><nav><button class="active" data-tab="overview">数据总览</button><button data-tab="filters">大模型算法排码</button><button data-tab="backtest">历史回测</button><button data-tab="draw">开奖动态</button></nav>
+<section id="overview"><div class="panel premium-overview"><div class="premium-heading"><span class="premium-icon">▥</span><div><h2>排列5前四位 · 数据概览</h2><p class="muted small">基于完整历史数据的专业分析</p></div><span class="premium-heading-badge">🛡 独立研究工具<br><small>数据公开透明</small></span></div><div class="metrics premium-metrics"><div class="metric"><span class="premium-stat-icon blue">▥</span><div class="muted small">历史期数</div><div class="val" id="total">—</div></div><div class="metric"><span class="premium-stat-icon red">▤</span><div class="muted small">最近一期</div><div class="val cyan" id="latest">—</div></div><div class="metric"><span class="premium-stat-icon indigo">▦</span><div class="muted small">原码池</div><div class="val" id="mainCount">—</div></div><div class="metric"><span class="premium-stat-icon green">◎</span><div class="muted small">无对子池</div><div class="val green" id="uniqueCount">—</div></div></div><div class="premium-footnote"><span>◷ 数据来源：现有历史开奖数据｜自动同步更新</span><span>更新状态：见开奖页</span></div></div><button type="button" class="premium-action" data-go="filters"><span class="premium-action-icon">🎯</span><span><strong>大模型算法排码</strong><small>基于多维数据分析 · 智能筛选前四位号码</small></span><b>立即排码 ›</b></button><div class="premium-shortcuts"><button data-go="backtest"><span>📈</span><strong>号码回测</strong><small>多周期历史分析<br>验证策略效果</small></button><button data-go="filters"><span>◕</span><strong>数据分析</strong><small>号码分布 · 走势<br>多维度统计</small></button><button data-go="draw"><span>🏆</span><strong>开奖动态</strong><small>最新开奖号码<br>同步更新状态</small></button></div><div class="panel premium-recent"><div class="premium-recent-head"><h2>🏆 近期开奖号码</h2><span>● 历史数据</span></div><div class="ref-table-head"><span>期号</span><span>开奖号码（前四位）</span></div><div class="premium-recent-body"><div><div class="muted small">最近记录（非官方期号）</div><strong id="homeLatestLabel">数据加载中</strong></div><div class="premium-balls" id="homeLatestBalls"></div><button data-go="draw">查看详情 ›</button></div><p class="muted small">历史序号不是官方期号，数据未更新时不代表当日开奖结果。</p></div><div class="layout internal-rules"><div class="panel"><h2>动态三位置排码</h2><div id="positions"></div></div><div class="panel"><h2>模型说明与万百差</h2><div id="tInfo"></div><p class="note">Q 为历史样本的平滑转移估计，不是真实开奖概率。历史覆盖率不能保证未来结果。</p></div></div><div class="panel internal-rules"><h2>顺序拦截统计</h2><div class="scroll"><table><thead><tr><th>规则</th><th class="num">新增排除</th><th class="num">累计排除</th></tr></thead><tbody id="overviewRules"></tbody></table></div><p id="balance" class="note"></p></div></section>
 <section id="filters" class="hidden"><div class="panel"><div class="row between"><div><h2>筛选号码</h2><p class="muted small">选择号码类型，查看或复制筛选结果。</p></div><div class="row"><select id="poolType"><option value="all">原码池</option><option value="unique">无对子缩水池</option><option value="pair">普通单对子池</option></select><button class="btn secondary" id="copyPool">复制全部</button><button class="btn" id="exportPool">导出 TXT</button></div></div><div class="row"><label>显示起点 <input id="startIndex" type="number" min="1" value="1" style="width:95px"></label><label>每页 <select id="pageSize"><option>100</option><option>300</option><option>500</option><option>1000</option></select></label><button class="btn secondary" id="showPool">显示</button><span class="muted small" id="poolInfo"></span></div><br><textarea id="poolText" readonly spellcheck="false"></textarea><div style="margin-top:18px;padding:14px;border:1px solid #37536a;border-radius:12px"><h3 style="margin:0 0 8px">分批复制</h3><p class="muted small">每批号码不重复。</p><div class="row" id="batchButtons"><button class="btn secondary" data-batch="0">第1批</button><button class="btn secondary" data-batch="1">第2批</button><button class="btn secondary" data-batch="2">第3批</button><button class="btn secondary" data-batch="3">第4批</button></div><div class="row" style="margin-top:10px"><span id="batchInfo" class="muted small"></span><button class="btn" id="copyBatch">复制当前批次</button></div><textarea id="batchText" readonly spellcheck="false" style="margin-top:10px"></textarea></div></div></section>
 <section id="backtest" class="hidden"><div class="panel"><h2>历史命中率 · 逐期核验</h2><p class="note">每期只用开奖之前的历史，动态重算全部规则。结果统计的是历史样本内覆盖情况，不构成未来收益承诺。</p><div class="row"><label>回测最近 <select id="backN"><option>10</option><option>20</option><option>30</option><option selected>50</option><option>60</option><option>100</option><option>150</option><option>200</option></select> 期</label><label>原码倍数 <input id="mainBet" type="number" min="0" value="2" style="width:70px"></label><label>无对子额外倍数 <input id="uniqueBet" type="number" min="0" value="1" style="width:70px"></label><button class="btn" id="runBack">开始回测</button></div><p id="backStatus" class="muted"></p><div id="backResult"></div></div></section>
 <section id="draw" class="hidden"><div class="panel"><h2>开奖动态</h2><p class="muted small">自动等待新开奖数据，取得可核实的新一期结果后，数字依次向上滚动并停在对应号码。现有数据源不提供官方摇奖开始信号，动画不代表实时摇奖。</p><div class="row"><span id="spinStatus" class="muted small">自动监测新一期开奖数据中</span></div></div><div class="sync-board" id="syncBoard"><div class="sync-top"><div><h2 style="margin:0 0 5px">最新开奖号码</h2><div class="muted small">排列5前四位 · 自动检查数据更新</div></div><span id="syncPill" class="sync-pill wait">正在检查数据</span></div><div class="draw-balls" id="syncBalls"><span class="muted">正在加载历史号码…</span></div><div class="draw-meta"><span id="syncIssue">期号：待核实</span><span id="syncDate">开奖日期：待核实</span><span id="syncCheck">上次检查：—</span></div><div class="sync-actions"><button type="button" id="syncRefresh">立即检查</button><button type="button" id="syncOfficial">查看体彩开奖公告</button></div><div class="draw-timeline" id="syncTimeline"></div><div class="sync-note" id="syncExplain">数据每5分钟自动重新检查一次。页面展示已获取的开奖数据，不是开奖直播；开奖号码须以中国体育彩票正式公告为准。</div></div><div class="wrap" style="padding-top:4px;padding-bottom:4px"><p id="autoDrawStatus" class="muted small">开奖自动同步：正在检查最新数据…</p></div><details class="panel"><summary>历史数据管理与手动补录</summary><div class="layout"><div class="panel"><h2>追加真实开奖</h2><p class="muted small">仅录入前四位，保留前导零。自动检查与当前最后一期是否相同；不能仅凭号码相同判断历史不同期是否重复。</p><div class="row"><input id="newDraw" maxlength="4" inputmode="numeric" placeholder="例如 0035"><button class="btn" id="appendDraw">确认追加</button></div><p id="appendStatus" class="small"></p><button class="btn secondary" id="resetHistory">恢复上传的7763期基准</button></div><div class="panel"><h2>历史数据库</h2><p id="historyInfo"></p><div class="row"><button class="btn secondary" id="exportHistory">导出完整历史</button></div><h3>最近10期</h3><div id="lastTen" class="digits" style="font-size:15px;line-height:2"></div></div></div></details></section>
