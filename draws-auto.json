@@ -1,6 +1,13 @@
 {
-  "source": "中国体育彩票开奖数据接口",
+  "source": "用户提供的开奖号码（尚未与官方公告核实）",
   "anchor": "4157",
-  "updatedAt": null,
-  "draws": []
+  "updatedAt": "2026-10-30T13:37:47.615Z",
+  "draws": [
+    {
+      "issue": "待核实",
+      "date": "待核实",
+      "front4": "2995",
+      "source": "user"
+    }
+  ]
 }
