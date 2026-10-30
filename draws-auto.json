@@ -1,13 +1,13 @@
 {
-  "source": "用户提供的开奖号码（尚未与官方公告核实）",
+  "source": "公开历史开奖CSV镜像（非官方）：BrookeMa/pl5-data",
+  "sourceUrl": "https://raw.githubusercontent.com/BrookeMa/pl5-data/main/pl5_5digit.csv",
   "anchor": "4157",
-  "updatedAt": "2026-10-30T13:37:47.615Z",
+  "updatedAt": "2026-10-30T19:23:22.896940+00:00",
   "draws": [
     {
-      "issue": "待核实",
-      "date": "待核实",
-      "front4": "2995",
-      "source": "user"
+      "issue": "2026289",
+      "date": "2026-10-30",
+      "front4": "2995"
     }
   ]
 }
