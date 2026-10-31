@@ -2,12 +2,17 @@
   "source": "公开历史开奖CSV镜像（非官方）：BrookeMa/pl5-data",
   "sourceUrl": "https://raw.githubusercontent.com/BrookeMa/pl5-data/main/pl5_5digit.csv",
   "anchor": "4157",
-  "updatedAt": "2026-10-30T19:23:22.896940+00:00",
+  "updatedAt": "2026-10-31T18:34:32.494690+00:00",
   "draws": [
     {
       "issue": "2026289",
       "date": "2026-10-30",
       "front4": "2995"
+    },
+    {
+      "issue": "2026290",
+      "date": "2026-10-31",
+      "front4": "0393"
     }
   ]
 }
