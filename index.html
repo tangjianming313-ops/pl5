@@ -236,7 +236,7 @@ const names=['万位','千位','百位','十位'];
 const rules=['手动四位置选号','最近1000期完整历史','四位和值9–27','重复结构（三重/四重/双对子）','012路至少两路','大小小大','最近2期二位定位','最近10期三位定位','万百差②','三位和值③（9–26）','三顺子与三倒顺（含四顺/四倒）'];
 const $=id=>document.getElementById(id),digits=s=>[+s[0],+s[1],+s[2],+s[3]],pad=i=>String(i).padStart(4,'0'),mod=n=>(n%10+10)%10;
 let allowed=['0123456789','0123456789','0123456789','0123456789'];
-function readAllowed(){return names.map((_,p)=>{const el=$('digitInput'+p);const raw=el?el.value.trim():allowed[p];if(!/^\\d+$/.test(raw)||![9,10].includes(raw.length)||new Set(raw).size!==raw.length)throw Error(names[p]+'请至少选择1个不重复数字');return raw})}
+function readAllowed(){return names.map((_,p)=>{const el=$('digitInput'+p);const raw=el?el.value.trim():allowed[p];if(!/^[0-9]+$/.test(raw)||raw.length<1||raw.length>10||new Set(raw).size!==raw.length)throw Error(names[p]+'请至少选择1个不重复数字');return raw})}
 function setup(h){if(h.length<1000)throw Error('历史不足1000期');const last=digits(h.at(-1));return {T:mod(last[0]-last[2]),last2:h.slice(-2).map(digits),last10:h.slice(-10).map(digits),historySet:new Set(h.slice(-1000))}}
 function reasons(s,m,sets=allowed){const arr=digits(s),[a,b,c,d]=arr,why=[];
 if(arr.some((v,p)=>!sets[p].includes(String(v))))why.push(0);
