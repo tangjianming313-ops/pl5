@@ -1,8 +1,8 @@
 {
-  "source": "公开历史开奖CSV镜像（非官方）：BrookeMa/pl5-data",
-  "sourceUrl": "https://raw.githubusercontent.com/BrookeMa/pl5-data/main/pl5_5digit.csv",
+  "source": "江苏省体育彩票管理中心（官方省级体彩开奖记录）",
+  "sourceUrl": "https://api.js-lottery.com/wfzq/p3p5/p5data",
   "anchor": "4157",
-  "updatedAt": "2026-11-01T18:57:05.792227+00:00",
+  "updatedAt": "2026-11-02T21:19:45.773Z",
   "draws": [
     {
       "issue": "2026289",
@@ -18,6 +18,11 @@
       "issue": "2026291",
       "date": "2026-11-01",
       "front4": "2762"
+    },
+    {
+      "issue": "2026292",
+      "date": "2026-11-02",
+      "front4": "4461"
     }
   ]
 }
