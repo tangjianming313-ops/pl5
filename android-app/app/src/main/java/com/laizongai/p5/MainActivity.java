@@ -2,6 +2,9 @@ package com.laizongai.p5;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Build;
+import android.graphics.Color;
+import android.view.WindowManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.View;
@@ -20,6 +23,18 @@ public class MainActivity extends Activity {
     private ProgressBar loading;
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
+        // Keep WebView below the Android status bar instead of drawing edge-to-edge.
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setStatusBarColor(Color.rgb(245, 246, 248));
+        getWindow().setNavigationBarColor(Color.rgb(245, 246, 248));
+        if (Build.VERSION.SDK_INT >= 30) {
+            getWindow().setDecorFitsSystemWindows(true);
+            getWindow().getDecorView().getWindowInsetsController().setSystemBarsAppearance(
+                android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS | android.view.WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
+                android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS | android.view.WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS);
+        } else {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+        }
         LinearLayout root = new LinearLayout(this); root.setOrientation(LinearLayout.VERTICAL);
         loading = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
         loading.setMax(100); root.addView(loading, new LinearLayout.LayoutParams(-1, 5));
