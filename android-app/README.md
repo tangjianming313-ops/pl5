@@ -1,4 +1,4 @@
-# 广东来总AI排码 Android V1
+# 广东来总排码 Android V1
 
 这是基于 Android WebView 的安卓应用源代码，展示现有网站 https://tangjianming313-ops.github.io/pl5/ 。目前**尚未编译成 APK、尚未在真机测试**。
 
