@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "广东来总AI排码",
-  "short_name": "来总AI排码",
+  "name": "广东来总排码",
+  "short_name": "来总排码",
   "description": "排列五前四位数据分析与历史回测",
   "start_url": "./?source=pwa",
   "scope": "./",
