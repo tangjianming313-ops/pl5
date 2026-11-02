@@ -33,12 +33,14 @@ return respond({used:row?.used||0,remaining:30-(row?.used||0),day});
 }
 if(path!=="/chat")return respond({error:"Not found"},404);
 const body=await req.json();
-if(typeof body.message!=="string"||body.message.length<1||body.message.length>1200)return respond({error:"问题长度需为1至1200字"},400);
+if(typeof body.message!=="string"||body.message.trim().length<1||body.message.length>1200)return respond({error:"问题长度需为1至1200字"},400);
+const history=body.history===undefined?[]:body.history;
+if(!Array.isArray(history)||history.length>8||history.some(item=>!item||!["user","assistant"].includes(item.role)||typeof item.content!=="string"||item.content.length<1||item.content.length>1200)||history.reduce((sum,item)=>sum+item.content.length,0)>9600)return respond({error:"聊天记录格式错误，请清空会话后重试"},400);
 if(!env.OPENAI_API_KEY)return respond({error:"AI服务尚未配置"},503);
 const reserved=await env.DB.prepare("INSERT INTO daily_usage(invite_id,day,used) VALUES(?,?,1) ON CONFLICT(invite_id,day) DO UPDATE SET used=used+1 WHERE used<30").bind(user.id,day).run();
 if(reserved.meta.changes!==1)return respond({error:"今日额度已用完",remaining:0},429);
 try{
-const r=await fetch("https://api.openai.com/v1/chat/completions",{method:"POST",headers:{"Authorization":"Bearer "+env.OPENAI_API_KEY,"Content-Type":"application/json"},body:JSON.stringify({model:env.MODEL||"gpt-4.1-mini",max_tokens:600,messages:[{role:"system",content:"你是广东来总AI排码的中文数据助手。客观解释规则与统计，不编造历史数据，不承诺预测中奖或盈利。不要询问邀请码或密钥。"},{"role":"user",content:body.message}]})});
+const r=await fetch("https://api.openai.com/v1/chat/completions",{method:"POST",headers:{"Authorization":"Bearer "+env.OPENAI_API_KEY,"Content-Type":"application/json"},body:JSON.stringify({model:env.MODEL||"gpt-4.1-mini",max_tokens:600,messages:[{role:"system",content:"你是广东来总AI排码的中文数据助手。客观解释规则与统计，不编造历史数据，不承诺预测中奖或盈利。不要询问邀请码或密钥。"},...history,{role:"user",content:body.message}]})});
 if(!r.ok)throw Error("upstream");
 const data=await r.json();const answer=data.choices?.[0]?.message?.content;
 if(!answer)throw Error("empty");
