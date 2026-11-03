@@ -1,0 +1,5 @@
+{
+  "enabled": false,
+  "apiBaseUrl": "",
+  "note": "部署安全中转 Worker 并启用后，将 apiBaseUrl 设为 Worker HTTPS 地址；这里不要写任何密钥。"
+}
