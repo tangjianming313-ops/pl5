@@ -1,8 +1,8 @@
 {
-  "source": "江苏省体育彩票管理中心（官方省级体彩开奖记录）",
-  "sourceUrl": "https://api.js-lottery.com/wfzq/p3p5/p5data",
+  "source": "江苏省体育彩票管理中心（省级官方开奖结果，核对第26293期公告）",
+  "sourceUrl": "https://api.js-lottery.com/cms/post-148190.html",
   "anchor": "4157",
-  "updatedAt": "2026-11-02T21:19:45.773Z",
+  "updatedAt": "2026-11-03T18:12:49.237Z",
   "draws": [
     {
       "issue": "2026289",
@@ -23,6 +23,11 @@
       "issue": "2026292",
       "date": "2026-11-02",
       "front4": "4461"
+    },
+    {
+      "issue": "2026293",
+      "date": "2026-11-03",
+      "front4": "8114"
     }
   ]
 }
