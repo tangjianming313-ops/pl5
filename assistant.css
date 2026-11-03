@@ -1,0 +1,24 @@
+/* AI assistant feature. Scoped to avoid changing lottery rules or styling. */
+.lzai-panel{max-width:920px;margin:0 auto}
+.lzai-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px}
+.lzai-head h2{margin:0 0 7px;font-size:21px;color:#173b59}
+.lzai-status{font-size:12px;border-radius:100px;padding:7px 11px;background:#f0f4f9;color:#627589;border:1px solid #dae6ef}
+.lzai-desc{font-size:13px;color:#6a8196;line-height:1.7;margin:0}
+.lzai-gate{padding:22px;border:1px solid #e1eaf2;border-radius:18px;background:#f9fbfe}
+.lzai-gate h3{margin:0 0 8px}
+.lzai-gate input{width:100%;flex:1;min-width:140px}
+.lzai-gate .lzai-submit{background:#1777bf;color:#fff;border:0;border-radius:11px;padding:10px 18px;font-weight:700;min-height:44px}
+.lzai-card{border:1px solid #e2eaf1;border-radius:18px;overflow:hidden;background:#fff}
+.lzai-top{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;background:#f7f9fc;border-bottom:1px solid #e5ebf2}
+.lzai-top strong{color:#20384f}
+.lzai-top button{font-size:12px;color:#446782;border:1px solid #cbdbe8;background:#fff;border-radius:9px;padding:7px 11px}
+.lzai-stream{height:min(52vh,500px);min-height:310px;overflow-y:auto;overscroll-behavior:contain;padding:18px;display:flex;flex-direction:column;gap:14px}
+.lzai-bubble{white-space:pre-wrap;overflow-wrap:anywhere;max-width:90%;line-height:1.65;font-size:14px;border-radius:15px;padding:12px 15px}
+.lzai-bubble.bot{align-self:flex-start;background:#f1f5fa;color:#233d55;border-bottom-left-radius:4px}
+.lzai-bubble.user{align-self:flex-end;background:#217bc1;color:#fff;border-bottom-right-radius:4px}
+.lzai-controls{padding:14px;border-top:1px solid #e5ebf2;display:flex;gap:10px;align-items:flex-end}
+.lzai-controls textarea{flex:1;min-height:44px;max-height:140px;resize:vertical;border:1px solid #cbd8e5;border-radius:12px;color:#16334d;background:#fff;padding:10px 12px;font:14px/1.5 inherit}
+.lzai-controls button{border:0;border-radius:12px;background:#1777bf;color:#fff;min-height:44px;padding:10px 16px;font-weight:700}
+.lzai-controls button:disabled,.lzai-submit:disabled{opacity:.45;cursor:not-allowed}
+.lzai-foot{margin-top:12px;font-size:12px;line-height:1.7;color:#71859a}
+@media(max-width:750px){.mobile-bottom-nav{grid-template-columns:repeat(5,minmax(0,1fr))!important}.lzai-head h2{font-size:18px}.lzai-stream{height:52vh;min-height:280px;padding:12px}.lzai-controls{padding:10px}.lzai-controls button{padding:10px 12px}.lzai-bubble{max-width:94%}}
