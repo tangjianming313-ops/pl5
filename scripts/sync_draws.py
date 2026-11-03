@@ -2,7 +2,7 @@
 """Synchronize verified P5 draw results with multiple independent sources.
 
 Primary: Jiangsu Sports Lottery public result history (official provincial).
-Backup: national Sporttery public API, then validated historical CSV mirror.
+Backup: Gansu official draw page, national Sporttery API, and validated CSV mirror.
 Never replace saved draws with missing, conflicting or out-of-order entries.
 """
 import csv
@@ -23,6 +23,7 @@ BASE_FILE = ROOT / "miniprogram/data/history.json"
 ANCHOR = "4157"
 ANCHOR_ISSUE = "2026288"
 JIANGSU = "https://api.js-lottery.com/wfzq/p3p5/p5data"
+GANSU = "https://www.gstc.org.cn/wanfa/pl"
 SPORTTERY = ("https://webapi.sporttery.cn/gateway/lottery/getHistoryPageListV1.qry"
              "?gameNo=37&provinceId=0&pageSize=50&isVerify=1&pageNo=1")
 MIRROR = "https://raw.githubusercontent.com/BrookeMa/pl5-data/main/pl5_5digit.csv"
@@ -120,6 +121,32 @@ class DrawTableParser(HTMLParser):
             self.in_cell = False
 
 
+class VisibleTextParser(HTMLParser):
+    """Read visible text independently of the source site's HTML table layout."""
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.values = []
+        self.ignored = 0
+
+    def handle_starttag(self, tag, attrs):
+        if tag in ("script", "style", "noscript"):
+            self.ignored += 1
+
+    def handle_endtag(self, tag):
+        if tag in ("script", "style", "noscript"):
+            self.ignored = max(0, self.ignored - 1)
+
+    def handle_data(self, data):
+        if not self.ignored and data.strip():
+            self.values.append(" ".join(data.split()))
+
+
+def page_text(html):
+    parser = VisibleTextParser()
+    parser.feed(html)
+    return " ".join(parser.values)
+
+
 def fetch_jiangsu():
     html = download(JIANGSU)
     parser = DrawTableParser()
@@ -131,9 +158,38 @@ def fetch_jiangsu():
         row = verified_draw(cells[1], cells[0], cells[2])
         if row is not None:
             parsed.append(row)
+
+    # Some versions of this public site render the list using div/li instead
+    # of <table> elements. Also accept normalized visible row text.
+    text = page_text(html)
+    pattern = re.compile(
+        r"(20\d{2}-\d{2}-\d{2})\s*(?:[|｜]\s*)?"
+        r"(\d{5}|20\d{5})\s*(?:[|｜]\s*)?"
+        r"((?:\d[\s,，]*){5})(?!\d)"
+    )
+    for match in pattern.finditer(text):
+        row = verified_draw(match.group(2), match.group(1), match.group(3))
+        if row is not None:
+            parsed.append(row)
     if not parsed:
-        raise ValueError("Jiangsu page has no parseable P5 results")
+        raise ValueError("Jiangsu official page returned no parseable P5 records")
     return consolidate(parsed)
+
+
+def fetch_gansu():
+    text = page_text(download(GANSU))
+    pattern = re.compile(
+        r"\b(\d{5}|20\d{5})\s*期.{0,240}?"
+        r"开奖日期\s*[：:]\s*(20\d{2}-\d{2}-\d{2}).{0,160}?"
+        r"排列\s*5\s*[：:]\s*((?:\d\s*){5})(?!\d)"
+    )
+    match = pattern.search(text)
+    if not match:
+        raise ValueError("Gansu official page returned no parseable current P5 draw")
+    record = verified_draw(match.group(1), match.group(2), match.group(3))
+    if record is None:
+        raise ValueError("Invalid Gansu official current draw")
+    return {record["issue"]: record}
 
 
 def fetch_sporttery():
@@ -227,13 +283,16 @@ def main():
     sources = {}
     for label, function in [
         ("江苏省体育彩票管理中心", fetch_jiangsu),
+        ("甘肃省体育彩票管理中心", fetch_gansu),
         ("中国体育彩票开奖查询接口", fetch_sporttery),
         ("第三方历史CSV备用镜像", lambda: fetch_mirror(baseline)),
     ]:
         try:
             entries = function()
             if not any(issue in known for issue in entries):
-                raise ValueError("Source has no overlapping verified draws")
+                next_expected = next_issue(max(known), entries)
+                if not next_expected:
+                    raise ValueError("Source has neither overlapping nor immediately next verified draw")
             for issue, item in entries.items():
                 if issue in known and known[issue] != item:
                     raise ValueError(f"Source conflicts with stored results at {issue}")
@@ -251,13 +310,14 @@ def main():
     combined = {}
     for label, records in sources.items():
         for issue, draw in records.items():
-            combined[issue] = (draw, label)
+            combined.setdefault(issue, (draw, label))
     updates = list(existing)
     last = max(known)
     latest_source = old.get("source", "已保存的历史开奖")
     latest_url = old.get("sourceUrl", "")
     urls = {
         "江苏省体育彩票管理中心": JIANGSU,
+        "甘肃省体育彩票管理中心": GANSU,
         "中国体育彩票开奖查询接口": SPORTTERY,
         "第三方历史CSV备用镜像": MIRROR,
     }
