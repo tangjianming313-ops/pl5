@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f5f7fb">
+<title>11因子动态9码 · 广东来总排码</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<style>
+:root{font-family:Inter,-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;color:#213247;background:#f5f7fb}
+*{box-sizing:border-box}
+body{margin:0;padding-bottom:env(safe-area-inset-bottom);background:#f5f7fb}
+a{color:#2473ad;text-decoration:none}
+button,select{font:inherit}
+button{cursor:pointer}
+.shell{max-width:1050px;margin:auto;padding:18px 18px 45px}
+.sitebar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:24px}
+.brand{font-size:14px;letter-spacing:.2px;color:#70829a;font-weight:600}
+.back{font-size:13px;background:white;color:#3b6587;border:1px solid #e2e8f1;border-radius:10px;padding:10px 14px}
+.intro{margin:18px 0 24px}
+.eyebrow{font-size:12px;color:#397dae;font-weight:750;letter-spacing:1.8px}
+h1{font-size:clamp(27px,4vw,38px);letter-spacing:-.7px;margin:9px 0 8px;color:#172b43}
+.intro p{color:#73839a;font-size:14px;line-height:1.85;margin:0;max-width:780px}
+.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:18px}
+.stat,.panel,.position{background:#fff;border:1px solid #e6ebf2;border-radius:18px;box-shadow:0 3px 15px #24446806}
+.stat{padding:18px 20px}
+.kicker{font-size:12px;color:#7b8da1}
+.big{font-size:clamp(21px,4.5vw,30px);font-weight:760;color:#172e49;margin-top:7px;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
+.sub{font-size:11px;color:#93a2b0;margin-top:5px}
+.panel{padding:22px;margin-bottom:17px}
+.panelhead{display:flex;gap:15px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:18px}
+.panelhead h2,.position h3{margin:0;font-size:18px;color:#223b58}
+.note{margin:6px 0 0;color:#788ca2;font-size:12px;line-height:1.7}
+button.primary{background:#1678d3;color:#fff;border:1px solid #1678d3;border-radius:11px;padding:11px 17px;font-weight:650}
+button.secondary{background:#eff5fb;color:#24658d;border:1px solid #dbe8f4;border-radius:11px;padding:11px 15px;font-weight:650}
+button:disabled{opacity:.5;cursor:not-allowed}
+.control{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.tag{border-radius:100px;background:#eff8ff;color:#2074a9;font-size:11px;padding:7px 11px}
+.status{color:#56718b;font-size:13px;line-height:1.65;margin-top:14px;white-space:pre-line}
+.status.error{color:#b94149}
+.grid4{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.position{padding:20px}
+.poshead{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:16px}
+.poshead span{font-size:12px;color:#8ba0b1}
+select{border:1px solid #dde6ef;background:#f7f9fc;color:#314f6b;border-radius:9px;padding:7px 6px;min-width:78px}
+.digits{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin-bottom:13px}
+.digit{height:44px;display:flex;align-items:center;justify-content:center;border-radius:11px;font-size:19px;font-weight:750;letter-spacing:0;font-variant-numeric:tabular-nums}
+.digit.keep{background:#e8f3fd;border:1px solid #d3e7f9;color:#146cba}
+.digit.drop{background:#fff0f0;border:1px solid #f7dada;color:#c64d52}
+.legend{display:flex;gap:14px;align-items:center;justify-content:space-between;color:#70869a;font-size:12px}
+.legend b{color:#be4c51;font-size:14px}
+.badge-keep{display:inline-block;width:9px;height:9px;border-radius:3px;background:#bcdcf7;margin-right:5px}
+.badge-drop{display:inline-block;width:9px;height:9px;border-radius:3px;background:#f2bcbc;margin-right:5px}
+.barlabel{font-size:12px;color:#8293a7;margin-top:17px}
+.rank{display:flex;align-items:center;gap:8px;margin-top:8px}
+.rank .digitno{width:18px;font-size:12px;color:#426079}
+.track{flex:1;background:#eef3f8;border-radius:99px;height:8px;overflow:hidden}
+.fill{height:100%;background:#78addb;border-radius:99px}
+.rank small{width:48px;font-size:10px;text-align:right;color:#8a9aab;font-variant-numeric:tabular-nums}
+.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:18px}
+.details{border:1px solid #e6ebf2;border-radius:15px;background:white;padding:13px 17px}
+.details summary{cursor:pointer;color:#375a79;font-weight:700}
+.weights{width:100%;border-collapse:collapse;margin-top:14px;font-size:12px}
+.weights th,.weights td{padding:9px 7px;border-bottom:1px solid #edf0f4;text-align:left}
+.weights th{color:#75889b;font-weight:650}
+.weights td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+.disclaimer{font-size:12px;color:#8a9bab;line-height:1.85;margin:18px 2px}
+@media(max-width:660px){
+.shell{padding:16px 13px 32px}
+.sitebar{margin-bottom:14px}
+.intro{margin:13px 2px 20px}
+.metrics{gap:7px}
+.stat{padding:14px 10px;border-radius:14px}
+.big{font-size:22px}
+.sub{font-size:10px}
+.panel{padding:15px;border-radius:15px}
+.grid4{grid-template-columns:1fr;gap:11px}
+.position{padding:15px;border-radius:15px}
+.digit{height:43px}
+.panelhead h2{font-size:17px}
+.actions button{flex:1;min-width:125px}
+}
+</style>
+</head>
+<body>
+<main class="shell">
+<div class="sitebar"><span class="brand">◈ 广东来总排码 / 11 FACTORS</span><a class="back" href="./index.html">返回网站首页</a></div>
+<div class="intro"><div class="eyebrow">ORIGINAL FACTORS · ALL HISTORY</div>
+<h1>原版11因子 · 动态9码</h1>
+<p>采用原版11因子的计算定义与权重学习逻辑，累计全部已公布历史进行评分。四个位置各保留综合评分最高的9个数字，未选中的数字即为排除码。此功能独立于网站原有排码规则。</p></div>
+<div class="metrics">
+<div class="stat"><div class="kicker">保留组合</div><div id="keepTotal" class="big">6,561</div><div class="sub">四位置选号笛卡尔积</div></div>
+<div class="stat"><div class="kicker">排除组合</div><div id="excludeTotal" class="big">3,439</div><div class="sub">0000–9999 全集</div></div>
+<div class="stat"><div class="kicker">理论随机覆盖率</div><div id="randomRate" class="big">65.61%</div><div class="sub">仅为数学基准</div></div>
+</div>
+<div class="panel">
+<div class="panelhead">
+<div><h2>历史数据与计算</h2><p class="note">使用网站相同的基础历史、自动更新及当前设备手动追加号码。</p></div>
+<span class="tag" id="historyLabel">正在读取历史…</span>
+</div>
+<div class="control">
+<button class="primary" id="calcBtn" disabled>开始计算下一期</button>
+<button class="secondary" id="reloadBtn">刷新开奖历史</button>
+</div>
+<div class="status" role="status" id="status">正在读取历史数据…</div>
+</div>
+<div class="panel">
+<div class="panelhead"><div><h2>四位置选号结果</h2><p class="note">蓝色为保留数字，红色为排除数字。可以调整每个位置保留的数量，默认9码。</p></div><span class="tag">独立计算 · 不叠加其他规则</span></div>
+<div class="grid4" id="positionGrid">
+<div class="position">万位 · 等待计算</div><div class="position">千位 · 等待计算</div><div class="position">百位 · 等待计算</div><div class="position">十位 · 等待计算</div>
+</div>
+<div class="actions">
+<button class="primary" id="copyBtn" disabled>复制当前选号</button>
+<button class="secondary" id="applyBtn" disabled>应用到原有手动选号页</button>
+</div>
+<p class="note">「应用到原有手动选号页」会覆盖本设备原有手动选码；随后原网站的其他筛选规则仍然适用。单独查看本页面的11因子结果时，不受那些规则影响。</p>
+</div>
+<details class="details"><summary>查看11因子权重与排名明细</summary>
+<p id="weightMeta" class="note">计算后显示。权重采用原版前段历史训练与评估方法，评分使用截至当前的全部历史。</p>
+<table class="weights"><thead><tr><th>因子</th><th>平均得分IC</th><th>最终权重</th></tr></thead><tbody id="weightRows"><tr><td colspan="3">暂无结果</td></tr></tbody></table></details>
+<p class="disclaimer">此工具用于历史数据研究。彩票开奖结果具有随机性，因子评分和历史表现不能保证提高下一期开奖命中概率。网站独立实现公开算法思想，不复制第三方无授权源码。</p>
+</main>
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const names=["万位","千位","百位","十位"];
+const factors=["长期频率","最近20期频率","最近5期频率","遗漏间隔","一阶马尔可夫","两期间隔马尔可夫","跨位置关联","奇偶反弹","大小反弹","和值趋势","五期周期"];
+const COUNT_KEY="p5-factor11-counts-v1";
+let counts=[9,9,9,9],history=[],model=null,active=null,historyStatus="";
+try{const saved=JSON.parse(localStorage.getItem(COUNT_KEY)||"null");if(Array.isArray(saved)&&saved.length===4&&saved.every(v=>Number.isInteger(v)&&v>=1&&v<=10))counts=saved}catch(_){}
+function setStatus(value,error=false){$("status").textContent=value;$("status").classList.toggle("error",error)}
+function syncMetrics(){const n=counts.reduce((a,b)=>a*b,1);$("keepTotal").textContent=n.toLocaleString("zh-CN");$("excludeTotal").textContent=(10000-n).toLocaleString("zh-CN");$("randomRate").textContent=(n/100).toFixed(2)+"%"}
+function readManual(){
+ for(const key of ["p5-device-appended-v1","p5-profile-draws-v1-1","binbin_p5_appended_v1"]){try{const rows=JSON.parse(localStorage.getItem(key)||"null");if(Array.isArray(rows)&&rows.every(s=>typeof s==="string"&&/^\d{4}$/.test(s)))return rows}catch(_){}}
+ return [];
+}
+function combine(base,automatic,manual){
+ if(!automatic.length)return base.concat(manual);
+ if(!manual.length)return base.concat(automatic);
+ for(let n=Math.min(manual.length,automatic.length);n>0;n--){if(manual.slice(0,n).join("|")===automatic.slice(0,n).join("|"))return base.concat(automatic,manual.slice(n))}
+ for(let n=Math.min(manual.length,automatic.length);n>0;n--){if(manual.slice(-n).join("|")===automatic.slice(0,n).join("|"))return base.concat(manual,automatic.slice(n))}
+ return base.concat(automatic);
+}
+async function load(){
+ if(active){active.terminate();active=null}
+ model=null;$("copyBtn").disabled=true;$("applyBtn").disabled=true;$("calcBtn").disabled=true;
+ setStatus("正在读取基础历史与开奖更新…");
+ try{
+  const resp=await fetch("./factor11-history.json?version=1",{cache:"no-store"});
+  if(!resp.ok)throw Error("基础历史数据文件无法访问");
+  const data=await resp.json();
+  if(data.anchor!=="4157"||!Array.isArray(data.draws)||data.draws.length!==7763||!data.draws.every(s=>typeof s==="string"&&/^\d{4}$/.test(s)))throw Error("基础历史数据校验失败");
+  let automatic=[],warn="";
+  try{
+   const response=await fetch("./draws-auto.json?t="+Date.now(),{cache:"no-store"});
+   if(!response.ok)throw Error("最新数据文件不可用");
+   const feed=await response.json();
+   if(feed.anchor!=="4157"||!Array.isArray(feed.draws))throw Error("自动开奖基准不匹配");
+   automatic=feed.draws.map(r=>r.front4);
+   if(!automatic.every(s=>typeof s==="string"&&/^\d{4}$/.test(s)))throw Error("自动开奖格式无效");
+  }catch(err){warn="；自动开奖暂不可用（"+err.message+"）"}
+  history=combine(data.draws,automatic,readManual());
+  if(history.length<1000)throw Error("有效历史数据不足");
+  historyStatus="共"+history.length.toLocaleString("zh-CN")+"期 · 最新前四位 "+history.at(-1);
+  $("historyLabel").textContent=historyStatus;
+  setStatus(historyStatus+warn+"。可开始计算。");
+  $("calcBtn").disabled=false;
+ }catch(err){setStatus("读取失败："+err.message,true);$("historyLabel").textContent="历史数据异常"}
+}
+function selectMarkup(index){
+ const value=counts[index];
+ return Array.from({length:10},(_,j)=>'<option value="'+(j+1)+'"'+(value===j+1?' selected':'')+'>'+(j+1)+'码</option>').join("");
+}
+function render(){
+ if(!model)return;
+ syncMetrics();
+ $("positionGrid").innerHTML=model.positions.map((pos,i)=>{
+   const chip=Array.from({length:10},(_,d)=>'<span class="digit '+(pos.kept.includes(d)?"keep":"drop")+'">'+d+'</span>').join("");
+   const rank=pos.ranking.map(d=>'<div class="rank"><span class="digitno">'+d+'</span><div class="track"><div class="fill" style="width:'+(pos.scores[d]*100).toFixed(3)+'%"></div></div><small>'+pos.scores[d].toFixed(4)+'</small></div>').join("");
+   return '<article class="position"><div class="poshead"><div><h3>'+names[i]+'</h3><span>第'+(i+1)+'位</span></div><select data-pos="'+i+'" aria-label="'+names[i]+'保留码数">'+selectMarkup(i)+'</select></div><div class="digits">'+chip+'</div><div class="legend"><span><i class="badge-keep"></i>保留 '+pos.kept.join("")+'</span><span><i class="badge-drop"></i>排除 <b>'+(pos.excluded.join("")||"无")+'</b></span></div><details><summary class="barlabel">展开评分排名</summary>'+rank+'</details></article>';
+ }).join("");
+ for(const select of $("positionGrid").querySelectorAll("select[data-pos]")){
+  select.addEventListener("change",e=>{const i=+e.target.dataset.pos;counts[i]=+e.target.value;try{localStorage.setItem(COUNT_KEY,JSON.stringify(counts))}catch(_){};syncMetrics();calculate()});
+ }
+ $("weightMeta").textContent="累计评分历史 "+model.historyLength+" 期；权重训练窗口 "+model.train+" 期；原版权重评估 "+model.test+" 期。权重结果未提前四舍五入参与评分。";
+ $("weightRows").innerHTML=factors.map((f,i)=>'<tr><td>'+(i+1)+'. '+f+'</td><td>'+model.ic[i].toFixed(5)+'</td><td>'+(model.weights[i]*100).toFixed(2)+'%</td></tr>').join("");
+ $("copyBtn").disabled=false;$("applyBtn").disabled=false;
+}
+function calculate(){
+ if(!history.length){setStatus("请先读取历史数据",true);return}
+ if(active){active.terminate();active=null}
+ model=null;
+ $("calcBtn").disabled=true;$("copyBtn").disabled=true;$("applyBtn").disabled=true;
+ setStatus("正在按原版11因子学习权重，并对累计"+history.length+"期历史进行评分…");
+ try{
+  active=new Worker("./factor11-worker.js");
+  active.onerror=()=>{setStatus("计算模块加载失败，请刷新网页重试",true);$("calcBtn").disabled=false;active?.terminate();active=null};
+  active.onmessage=event=>{
+   const data=event.data;active?.terminate();active=null;$("calcBtn").disabled=false;
+   if(!data?.ok){setStatus("计算失败："+(data?.error||"未知错误"),true);return}
+   model=data.result;render();setStatus(historyStatus+"。已完成11因子计算，下面显示下一期选号（无其他规则叠加）。");
+  };
+  active.postMessage({history,counts});
+ }catch(err){setStatus("计算启动失败："+err.message,true);$("calcBtn").disabled=false}
+}
+function outputText(){
+ if(!model)return "";
+ const keep=counts.reduce((a,b)=>a*b,1);
+ return "排列五原版11因子累计全部历史9码选号\n历史："+historyStatus+"\n"+
+   model.positions.map((p,i)=>names[i]+"：保留"+p.kept.join("")+"；排除"+(p.excluded.join("")||"无")).join("\n")+
+   "\n保留"+keep+"组；排除"+(10000-keep)+"组\n说明：11因子独立选号，不叠加网站其他规则";
+}
+async function copyText(){
+ const text=outputText();if(!text)return;
+ try{await navigator.clipboard.writeText(text);setStatus("选号结果已复制。")}catch(_){
+  const area=document.createElement("textarea");area.value=text;area.style.position="fixed";area.style.left="-1000px";document.body.appendChild(area);area.select();
+  const ok=document.execCommand("copy");area.remove();setStatus(ok?"选号结果已复制。":"复制失败，请使用浏览器的文字复制功能。",!ok);
+ }
+}
+function apply(){
+ if(!model)return;
+ if(!confirm("将11因子选中的数字写入本设备原有的手动选号设置？\n\n这会覆盖原有手动选码，并且原网站其他筛选规则仍会继续生效。"))return;
+ try{
+  localStorage.setItem("p5-device-allowed-v1",JSON.stringify(model.positions.map(p=>p.kept.join(""))));
+  location.href="./index.html?tab=filters";
+ }catch(err){setStatus("写入本机选号失败："+err.message,true)}
+}
+$("calcBtn").addEventListener("click",calculate);
+$("reloadBtn").addEventListener("click",load);
+$("copyBtn").addEventListener("click",copyText);
+$("applyBtn").addEventListener("click",apply);
+syncMetrics();
+load();
+})();
+</script>
+</body>
+</html>
