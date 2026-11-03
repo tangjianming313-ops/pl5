@@ -1,11 +1,19 @@
 name: 每日同步排列5开奖
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/sync_draws.py'
+      - '.github/workflows/sync-draws.yml'
   schedule:
-    # Beijing time: 21:45, 22:15, 22:45, 23:15, and next morning 08:30
-    - cron: '45 13 * * *'
-    - cron: '15 14 * * *'
-    - cron: '45 14 * * *'
-    - cron: '15 15 * * *'
+    # UTC times; Beijing = UTC+8. Daily checks: 21:10, 21:40,
+    # 22:10, 22:40, 23:10, next day 00:10 and 08:30.
+    - cron: '10 13 * * *'
+    - cron: '40 13 * * *'
+    - cron: '10 14 * * *'
+    - cron: '40 14 * * *'
+    - cron: '10 15 * * *'
+    - cron: '10 16 * * *'
     - cron: '30 0 * * *'
   workflow_dispatch:
 permissions:
@@ -13,7 +21,7 @@ permissions:
 jobs:
   sync:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 7
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
