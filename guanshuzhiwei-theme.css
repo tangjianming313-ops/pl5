@@ -367,3 +367,13 @@ tr:hover td { background: #F8FBFD !important; }
   html { scroll-behavior: auto !important; }
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
+
+/* Header cleanup: remove only the old blue diamond pseudo-icon.
+   Preserve the SVG eye emblem, brand name and all other header controls. */
+header .logo::before {
+  content: none !important;
+  display: none !important;
+}
+header > .wrap > div:first-child {
+  padding-left: 0 !important;
+}
