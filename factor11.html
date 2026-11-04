@@ -99,7 +99,7 @@ select{border:1px solid #dde6ef;background:#f7f9fc;color:#314f6b;border-radius:9
 <span class="tag" id="historyLabel">正在读取历史…</span>
 </div>
 <div class="control">
-<button class="primary" id="calcBtn" disabled>开始计算下一期</button>
+<button class="primary" id="calcBtn" disabled>重新计算9码</button>
 <button class="secondary" id="reloadBtn">刷新开奖历史</button>
 </div>
 <div class="status" role="status" id="status">正在读取历史数据…</div>
@@ -164,8 +164,9 @@ async function load(){
   if(history.length<1000)throw Error("有效历史数据不足");
   historyStatus="共"+history.length.toLocaleString("zh-CN")+"期 · 最新前四位 "+history.at(-1);
   $("historyLabel").textContent=historyStatus;
-  setStatus(historyStatus+warn+"。可开始计算。");
+  setStatus(historyStatus+warn+"。正在自动计算选号…");
   $("calcBtn").disabled=false;
+  calculate();
  }catch(err){setStatus("读取失败："+err.message,true);$("historyLabel").textContent="历史数据异常"}
 }
 function selectMarkup(index){
@@ -194,8 +195,8 @@ function calculate(){
  $("calcBtn").disabled=true;$("copyBtn").disabled=true;$("applyBtn").disabled=true;
  setStatus("正在按原版11因子学习权重，并对累计"+history.length+"期历史进行评分…");
  try{
-  active=new Worker("./factor11-worker.js");
-  active.onerror=()=>{setStatus("计算模块加载失败，请刷新网页重试",true);$("calcBtn").disabled=false;active?.terminate();active=null};
+  active=new Worker("./factor11-worker.js?v=2");
+  active.onerror=(event)=>{setStatus("计算模块加载失败，请点击「重新计算9码」重试。如果仍失败，请截图此提示发给我。",true);$("calcBtn").disabled=false;active?.terminate();active=null};
   active.onmessage=event=>{
    const data=event.data;active?.terminate();active=null;$("calcBtn").disabled=false;
    if(!data?.ok){setStatus("计算失败："+(data?.error||"未知错误"),true);return}
