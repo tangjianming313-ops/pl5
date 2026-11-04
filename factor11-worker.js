@@ -41,20 +41,16 @@ function factorsFor(draws){
   {
     const byPos=[],last=draws[n-1];
     for(let p=0;p<4;p++){
-      const row=[];
-      for(let d=0;d<10;d++){
-        let score=0;
-        for(let q=0;q<4;q++){
-          if(q===p)continue;
-          let count=0,joint=0;
-          for(let i=0;i<n;i++){
-            if(draws[i][q]===last[q]){count++;if(draws[i][p]===d)joint++}
-          }
-          if(count>0)score+=joint/count;
+      const row=Array(10).fill(0);
+      for(let q=0;q<4;q++){
+        if(q===p)continue;
+        let count=0;const joint=Array(10).fill(0);
+        for(let i=0;i<n;i++){
+          if(draws[i][q]===last[q]){count++;joint[draws[i][p]]++}
         }
-        row.push(score/3);
+        if(count>0)for(let d=0;d<10;d++)row[d]+=joint[d]/count;
       }
-      byPos.push(normalize(row));
+      byPos.push(normalize(row.map(x=>x/3)));
     }
     factors.push(byPos);
   }
@@ -128,4 +124,32 @@ function makePrediction(draws,model,counts){
   return {positions,weights:model.weights,ic:model.ic,train:model.train,test:model.test,historyLength:draws.length};
 }
 
-self.onmessage=function(event){try{const msg=event.data||{};const lines=msg.history;if(!Array.isArray(lines)||lines.length<60||!lines.every(s=>typeof s==="string"&&/^[0-9]{4}$/.test(s)))throw Error("历史数据格式不正确");const counts=msg.counts;if(!Array.isArray(counts)||counts.length!==4||counts.some(n=>!Number.isInteger(n)||n<1||n>10))throw Error("选号数量必须为1–10");const draws=lines.map(s=>[+s[0],+s[1],+s[2],+s[3]]);const model=learnWeights(draws);const result=makePrediction(draws,model,counts);self.postMessage({ok:true,result})}catch(error){self.postMessage({ok:false,error:String(error&&error.message||error)})}};
+// Batch mode uses the same original IC learning window. With N>=1010,
+ // original learn_optimal_weights always evaluates only the oldest 1000 draws;
+ // all later historic prefixes therefore have the same learned weights.
+self.onmessage=function(event){
+  try{
+    const msg=event.data||{},lines=msg.history;
+    if(!Array.isArray(lines)||lines.length<1010||!lines.every(v=>typeof v==="string"&&/^\d{4}$/.test(v)))throw Error("历史数据不足或格式错误");
+    const counts=msg.counts||[9,9,9,9];
+    if(!Array.isArray(counts)||counts.length!==4||counts.some(v=>!Number.isInteger(v)||v<1||v>10))throw Error("保留码数错误");
+    const draws=lines.map(v=>[+v[0],+v[1],+v[2],+v[3]]);
+    const model=learnWeights(draws);
+    if(msg.mode==="batch"){
+      const amount=Math.min(Math.max(0,Number(msg.amount)||0),200,draws.length-1010);
+      const results=[];
+      for(let k=draws.length-amount;k<draws.length;k++){
+        const result=makePrediction(draws.slice(0,k),model,[9,9,9,9]);
+        results.push({length:k,exclude:result.positions.map(p=>p.excluded.join(""))});
+        if((k-(draws.length-amount)+1)%25===0)
+          self.postMessage({progress:true,done:k-(draws.length-amount)+1,total:amount});
+      }
+      const latest=makePrediction(draws,model,[9,9,9,9]);
+      results.push({length:draws.length,exclude:latest.positions.map(p=>p.excluded.join(""))});
+      self.postMessage({ok:true,mode:"batch",results,training:model.train,evaluation:model.test});
+      return;
+    }
+    const result=makePrediction(draws,model,counts);
+    self.postMessage({ok:true,mode:"predict",result});
+  }catch(error){self.postMessage({ok:false,error:String(error&&error.message||error)})}
+};
