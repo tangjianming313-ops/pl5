@@ -1,6 +1,18 @@
 <!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>运营后台 · 观数知微</title><style>
 *{box-sizing:border-box}body{margin:0;background:#edf4fc;color:#153959;font-family:system-ui,"Microsoft YaHei",sans-serif}.wrap{max-width:760px;margin:30px auto;padding:16px}.card{background:white;border:1px solid #dce7f4;border-radius:18px;padding:24px;margin-bottom:16px;box-shadow:0 8px 30px #1345750a}h1{font-size:24px}h2{font-size:18px;margin:0 0 16px}label{display:block;margin:14px 0 6px;font-weight:650;font-size:14px}input,textarea,select{display:block;width:100%;border:1px solid #c7d8e9;background:#fff;border-radius:10px;padding:12px;font:inherit;color:#173b5e}textarea{min-height:110px;resize:vertical}button{border:0;background:#086dcc;color:white;border-radius:10px;padding:12px 17px;font-weight:750;cursor:pointer}button.secondary{background:#edf4fc;color:#195a98}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.hint{font-size:13px;color:#69829a;line-height:1.7}.status{white-space:pre-wrap;font-size:14px;margin:14px 0;color:#18669d}.danger{color:#bc3939}.preview{border:1px solid #dce7f4;border-radius:12px;padding:16px;white-space:pre-wrap}.preview img{max-width:100%;max-height:250px;object-fit:contain}a{color:#096ecb}
-</style><style id="admin-ios-v1">:root{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}body{background:#f5f6f8;color:#1e3043}.wrap{max-width:1000px;margin:20px auto;padding:16px 16px 70px}.card{border:1px solid #e5eaf0;border-radius:19px;box-shadow:0 2px 12px rgba(24,46,68,.035);padding:clamp(17px,3vw,26px)}h1{font-size:clamp(22px,4vw,28px);letter-spacing:-.025em}h2{color:#1d3146}input,textarea,select{border-color:#dce5ee;border-radius:11px;background:#fbfcfd}button{border-radius:11px;background:#1678d4}button.secondary{background:#eef2f6;color:#28648d}.hint{color:#718397}.admin-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}.admin-top a{background:white;border:1px solid #e3e8ee;border-radius:11px;padding:10px 13px;font-size:13px;font-weight:700}.admin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:15px 0 18px}.admin-tile{background:white;border:1px solid #e5eaf0;border-radius:16px;padding:17px}.admin-tile strong{display:block;margin:9px 0 5px;color:#1f344a}.admin-tile small{color:#76889a;line-height:1.5}.admin-note{padding:13px 16px;background:#fff6e8;border:1px solid #efdfc5;border-radius:13px;color:#795721;font-size:13px;line-height:1.7;margin:15px 0}@media(max-width:650px){.admin-grid{grid-template-columns:1fr}.wrap{margin:0 auto}.card{padding:17px}}</style></head><body><main class="wrap"><div class="admin-top"><span style="font-weight:750;color:#53738d;font-size:12px;letter-spacing:.08em">OPERATIONS CONSOLE · V1</span><a href="./">返回用户端</a></div><h1>观数知微 · 简易运营后台</h1><p class="hint">独立广告公告管理页。发布后网站与 Android 软件中的在线页面均可读取同一条公告。</p>
+</style><style id="admin-ios-v1">:root{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}body{background:#f5f6f8;color:#1e3043}.wrap{max-width:1000px;margin:20px auto;padding:16px 16px 70px}.card{border:1px solid #e5eaf0;border-radius:19px;box-shadow:0 2px 12px rgba(24,46,68,.035);padding:clamp(17px,3vw,26px)}h1{font-size:clamp(22px,4vw,28px);letter-spacing:-.025em}h2{color:#1d3146}input,textarea,select{border-color:#dce5ee;border-radius:11px;background:#fbfcfd}button{border-radius:11px;background:#1678d4}button.secondary{background:#eef2f6;color:#28648d}.hint{color:#718397}.admin-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}.admin-top a{background:white;border:1px solid #e3e8ee;border-radius:11px;padding:10px 13px;font-size:13px;font-weight:700}.admin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:15px 0 18px}.admin-tile{background:white;border:1px solid #e5eaf0;border-radius:16px;padding:17px}.admin-tile strong{display:block;margin:9px 0 5px;color:#1f344a}.admin-tile small{color:#76889a;line-height:1.5}.admin-note{padding:13px 16px;background:#fff6e8;border:1px solid #efdfc5;border-radius:13px;color:#795721;font-size:13px;line-height:1.7;margin:15px 0}@media(max-width:650px){.admin-grid{grid-template-columns:1fr}.wrap{margin:0 auto}.card{padding:17px}}<style id="admin-ops-style">
+.admin-item{border:1px solid #E2EAF1;border-radius:13px;background:#FAFCFE;padding:14px;margin:10px 0}
+.admin-item strong{display:inline-block;margin-right:8px;font-size:14px}
+.admin-item small{color:#71889C;font-size:11px}
+.admin-item p{margin:8px 0 10px}
+.ops-admin-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.ops-admin-grid .card{margin-bottom:0}
+.admin-ops-kicker{letter-spacing:.12em;color:#5680A0;font-size:11px;font-weight:800}
+.admin-ops-note{background:#F0F7FC;border:1px solid #DCE9F3;color:#50728B;padding:12px;border-radius:12px;font-size:12px;line-height:1.7}
+.admin-section-title{margin:25px 0 10px;font-size:20px;color:#153959}
+#opsAdminStatus{border:1px solid #DCE9F3;border-radius:12px;padding:12px;background:#F6FBFE;margin:12px 0;font-size:13px}
+@media(max-width:720px){.ops-admin-grid{grid-template-columns:1fr}}
+</style></head><body><main class="wrap"><div class="admin-top"><span style="font-weight:750;color:#53738d;font-size:12px;letter-spacing:.08em">OPERATIONS CONSOLE · V1</span><a href="./">返回用户端</a></div><h1>观数知微 · 简易运营后台</h1><p class="hint">独立广告公告管理页。发布后网站与 Android 软件中的在线页面均可读取同一条公告。</p>
 <div class="admin-grid"><div class="admin-tile"><small>实时在线</small><strong>尚未接入统计</strong><small>接入统计服务后显示活跃访客估算</small></div><div class="admin-tile"><small>累计使用</small><strong>尚未接入统计</strong><small>将显示访问量与独立访客估算</small></div><div class="admin-tile"><small>弹窗广告与公告</small><strong>已支持发布</strong><small>可设置图片、链接、时段和开关</small></div></div><div class="admin-note">后台只保留访问统计和广告公告管理。访问数据目前尚未采集，不能显示真实在线人数。广告发布需要你自己的 GitHub 授权令牌；此页面本身是公开网页，不是私密登录后台。</div><div class="card"><h2>网站访问统计</h2><p class="hint">接入轻量统计后，可查看今日、最近7天、累计访客及近似在线人数。现在还没有统计服务，因此不会显示虚构数字。</p><div class="row"><a href="https://dash.cloudflare.com/" target="_blank" rel="noopener">打开 Cloudflare 统计服务</a><a href="https://www.cloudflare.com/web-analytics/" target="_blank" rel="noopener">了解免费 Web Analytics</a></div><p class="hint">Cloudflare Web Analytics 适合查看访问趋势与访客数量；若需要准确的近实时在线估算，还需额外的活跃会话统计，不能直接把浏览量当在线人数。</p></div><div class="card"><h2>GitHub 发布授权</h2><p class="hint">此页面没有公共管理密码。发布需要你本人 GitHub 的细粒度访问令牌（Fine-grained personal access token），仅授予仓库 tangjianming313-ops/pl5 的 Contents: Read and write 权限。令牌只保存在当前页面内存，不写入网站、localStorage 或 GitHub。</p>
 <label for="token">GitHub 访问令牌</label><input id="token" type="password" autocomplete="off" placeholder="github_pat_..."><div class="row" style="margin-top:12px"><button id="load">读取当前公告</button><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">创建专用令牌</a></div><p class="status" id="status">尚未连接</p></div>
 <div class="card"><h2>编辑弹窗广告 / 公告</h2><label><input type="checkbox" id="enabled" style="width:auto;display:inline"> 启用弹窗</label>
@@ -14,6 +26,49 @@
 <label for="endAt">结束时间（可选，浏览器本地时间）</label><input id="endAt" type="datetime-local">
 <div class="row" style="margin-top:18px"><button id="publish">发布到网站</button><button class="secondary" id="previewButton">预览内容</button><button class="secondary" id="disable">立即停用</button></div><p class="hint">更新发布后，访客刷新页面即可获取新公告；不会改变排码规则。请确保广告内容真实、合法，并标明广告性质。</p></div>
 <div class="card"><h2>本地预览</h2><div class="preview" id="preview">尚未预览</div></div>
+<div id="operations-console" class="card">
+<div class="admin-ops-kicker">SOFTWARE OPERATIONS · 软件运营管理</div>
+<h2 class="admin-section-title">任务 · 公告 · 版本升级</h2>
+<p class="hint">这里发布的内容会同步到网站和安卓软件的「任务」页面。弹窗广告仍使用上面的独立管理模块。所有发布均要求 GitHub 授权，普通访客只有读取权限。</p>
+<div class="row"><button type="button" id="opsLoad" class="secondary">读取已发布内容</button><a href="./?tab=tasks" target="_blank" rel="noopener">查看用户端任务页</a></div>
+<div id="opsAdminStatus" role="status">请先在上方「GitHub 发布授权」输入令牌，再读取运营数据。</div>
+<div class="admin-ops-note">注意：任务完成标记目前仅保存在用户本机，不会统计每个人是否完成。这里发布版本说明和 APK 下载链接，不会自动编译、签名或上传安装包，也不会绕过安卓的安装确认。</div>
+</div>
+<div class="ops-admin-grid">
+<section class="card">
+<h2>发布用户任务</h2>
+<label for="taskTitle">任务标题</label><input id="taskTitle" maxlength="100" placeholder="例如：查看最新一期数据">
+<label for="taskDescription">任务内容</label><textarea id="taskDescription" maxlength="2000" placeholder="任务说明、执行步骤、注意事项"></textarea>
+<label for="taskCategory">任务分类（可选）</label><input id="taskCategory" maxlength="30" placeholder="平台任务">
+<label for="taskPriority">优先级</label><select id="taskPriority"><option value="normal">普通</option><option value="high">重点</option></select>
+<label for="taskDeadline">截止时间（可选）</label><input id="taskDeadline" type="datetime-local">
+<label for="taskLink">任务详情 HTTPS 链接（可选）</label><input id="taskLink" type="url" placeholder="https://...">
+<div class="row" style="margin-top:15px"><button type="button" id="taskPublish">发布任务</button></div>
+<h3>已发布任务</h3><div id="opsAdminTasks"><p class="hint">读取后显示</p></div>
+</section>
+<section class="card">
+<h2>发布平台公告</h2>
+<label for="noticeTitle">公告标题</label><input id="noticeTitle" maxlength="100" placeholder="例如：功能更新通知">
+<label for="noticeMessage">公告正文</label><textarea id="noticeMessage" maxlength="3000" placeholder="输入公告内容"></textarea>
+<label for="noticeLink">公告详情 HTTPS 链接（可选）</label><input id="noticeLink" type="url" placeholder="https://...">
+<div class="row" style="margin-top:15px"><button type="button" id="noticePublish">发布公告</button></div>
+<h3>已发布公告</h3><div id="opsAdminNotices"><p class="hint">读取后显示</p></div>
+</section>
+</div>
+<section class="card" style="margin-top:16px">
+<h2>发布软件版本更新</h2>
+<p class="hint" id="publishedRelease">尚未发布新版安装包</p>
+<div class="ops-admin-grid">
+<div><label for="releaseVersion">版本号</label><input id="releaseVersion" placeholder="1.1.0"></div>
+<div><label for="releaseCode">Android 版本代码（递增整数）</label><input id="releaseCode" type="number" min="1" step="1" placeholder="2"></div>
+</div>
+<label for="releaseTitle">更新标题</label><input id="releaseTitle" maxlength="100" placeholder="观数知微新版发布">
+<label for="releaseNotes">更新内容</label><textarea id="releaseNotes" maxlength="3000" placeholder="本次修复了什么、新增了什么"></textarea>
+<label for="releaseApkUrl">新版 APK 的 HTTPS 安装地址（可留空）</label><input id="releaseApkUrl" type="url" placeholder="https://github.com/.../releases/download/.../app.apk">
+<label><input id="releaseRequired" type="checkbox" style="display:inline;width:auto"> 标记为重要更新（仅显示提醒，不强制安装）</label>
+<div class="row" style="margin-top:15px"><button type="button" id="releasePublish">发布版本说明与更新入口</button></div>
+<p class="hint">正式 APK 更新必须由相同签名证书签名且 versionCode 递增；GitHub Actions 的临时调试包不等同于正式发布包。请勿上传签名密钥到公开仓库。</p>
+</section>
 <p class="hint">安全提醒：不要把 GitHub 令牌发给任何人；在共享设备上使用后关闭本页面，并可随时在 GitHub 撤销令牌。</p></main>
 <script>
 'use strict';
@@ -29,4 +84,4 @@ async function publish(obj){status('正在发布…');const body={message:'Manag
 $('publish').onclick=async()=>{try{await publish(readForm())}catch(e){status('发布失败：'+e.message,true)}};
 $('disable').onclick=async()=>{try{const obj=readForm();obj.enabled=false;await publish(obj);$('enabled').checked=false}catch(e){status('停用失败：'+e.message,true)}};
 $('previewButton').onclick=()=>{try{const x=readForm(),p=$('preview');p.replaceChildren();const h=document.createElement('h3');h.textContent=x.title;p.append(h);if(x.imageUrl){const im=document.createElement('img');im.src=x.imageUrl;p.append(im)}const msg=document.createElement('p');msg.textContent=x.message;p.append(msg);if(x.linkUrl){const a=document.createElement('a');a.href=x.linkUrl;a.textContent=x.buttonText;a.target='_blank';a.rel='noopener';p.append(a)}}catch(e){status('预览失败：'+e.message,true)}};
-</script></body></html>
+</script><script defer src="./admin-ops.js?v=1"></script></body></html>
