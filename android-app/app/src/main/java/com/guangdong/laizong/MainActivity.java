@@ -16,7 +16,7 @@ import android.widget.LinearLayout;
 public class MainActivity extends Activity {
     private WebView web;
     private ProgressBar progress;
-    private static final String URL = "https://tangjianming313-ops.github.io/pl5/";
+    private static final String URL = "https://tangjianming313-ops.github.io/pl5/?app=android&version=1.1.0";
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
