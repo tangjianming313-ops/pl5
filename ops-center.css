@@ -1,0 +1,42 @@
+/* 观数知微 · 软件运营中心 */
+#opsNoticeSummary[hidden]{display:none!important}
+#opsNoticeSummary{margin:0 0 17px}
+.ops-notice-inner{display:flex;gap:14px;align-items:center;justify-content:space-between;background:linear-gradient(115deg,#F0F7FC,#FFFFFF);border:1px solid #D9E8F2;border-radius:17px;padding:16px 19px}
+.ops-notice-text{display:flex;flex-direction:column;gap:6px;min-width:0}
+.ops-notice-text strong{font-size:15px;line-height:1.45;color:#1B4562}
+.ops-notice-text p{font-size:12px;color:#6A8497;line-height:1.6;margin:0;overflow-wrap:anywhere}
+.ops-overline{font-size:10px;letter-spacing:.11em;font-weight:800;color:#5486A3}
+.ops-notice-link{white-space:nowrap;background:#E4F0F8!important;color:#265E83!important;border:1px solid #CEE0ED!important;border-radius:11px!important;padding:10px 14px!important;font-size:12px;font-weight:750}
+.ops-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:15px}
+.ops-toolbar h2{margin:0 0 6px}
+.ops-toolbar p{margin:0;font-size:12px;color:#71879B}
+.ops-columns{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ops-panel{padding:23px}
+.ops-panel h2{margin:0 0 13px}
+.ops-list{display:flex;flex-direction:column;gap:11px}
+.ops-item{border:1px solid #E4ECF3;border-radius:15px;background:#FAFCFE;padding:16px}
+.ops-item-head{display:flex;justify-content:space-between;align-items:center;gap:9px;flex-wrap:wrap}
+.ops-item-title{color:#203F57;font-size:15px;line-height:1.5;overflow-wrap:anywhere}
+.ops-task-pill,.ops-version{font-size:11px;border-radius:999px;background:#E8F3FB;border:1px solid #D3E8F5;color:#33729A;padding:5px 10px;font-weight:700}
+.ops-task-pill.is-done{color:#1C8062;background:#E8F8F1;border-color:#CAEDDC}
+.ops-item-copy{white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.85;color:#607A90;margin:10px 0}
+.ops-item-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:11px;color:#8498AA;margin:10px 0}
+.ops-item-meta>span{display:inline-block}
+.ops-item-meta .ops-priority{color:#AD6340;font-weight:700}
+.ops-item-actions{display:flex;gap:9px;margin-top:14px;align-items:center;flex-wrap:wrap}
+.ops-small-button,.ops-small-link,.ops-download{font:inherit;border-radius:10px;padding:9px 13px;text-decoration:none;font-size:12px;font-weight:750}
+.ops-small-button{border:1px solid #123047;background:#123047;color:white}
+.ops-small-button.secondary{background:#EDF4F8;border-color:#D6E5EF;color:#376985}
+.ops-small-link{color:#2C719E;background:#E9F3FA;border:1px solid #D2E7F5;display:inline-flex}
+.ops-empty{color:#8398A9;font-size:13px;line-height:1.7;margin:6px 0 12px}
+.ops-time{font-size:11px;color:#8399AA}
+.ops-release{background:linear-gradient(120deg,#F1F8FD,#FFFFFF);border:1px solid #DFEBF4;border-radius:15px;padding:17px}
+.ops-update-hint{background:#FFF9E9;color:#8D6319;border:1px solid #F1DFBA;border-radius:10px;padding:10px;margin-top:12px;font-size:12px}
+.ops-download{display:inline-flex;background:#123047;color:white;border:1px solid #123047;margin-top:12px;padding:12px 17px}
+.ops-footnote{font-size:11px;color:#8398AA;line-height:1.75;margin:9px 0 0}
+.ops-section-tabs{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.ops-count{background:#EAF4FC;color:#3078A2;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:750}
+#opsStatus{font-size:12px;color:#70899D;margin:0 0 15px}
+.mobile-bottom-nav{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+.mobile-bottom-nav button{min-width:0}
+@media(max-width:720px){.ops-columns{grid-template-columns:1fr}.ops-panel{padding:17px}.ops-notice-inner{padding:13px 14px}.ops-notice-text strong{font-size:14px}.ops-notice-link{padding:9px 10px!important}.mobile-bottom-nav button{font-size:11px!important}}
