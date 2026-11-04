@@ -18,14 +18,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
-    private static final String HOME = "https://tangjianming313-ops.github.io/pl5/";
+    private static final String HOME = "https://tangjianming313-ops.github.io/pl5/?app=android&version=1.1.0";
     private WebView web;
     private ProgressBar loading;
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
         // Keep WebView below the Android status bar instead of drawing edge-to-edge.
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getWindow().setStatusBarColor(Color.rgb(245, 246, 248));
+        getWindow().setStatusBarColor(Color.rgb(247, 249, 252));
         getWindow().setNavigationBarColor(Color.rgb(245, 246, 248));
         if (Build.VERSION.SDK_INT >= 30) {
             getWindow().setDecorFitsSystemWindows(true);
@@ -56,6 +56,13 @@ public class MainActivity extends Activity {
             @Override public void onProgressChanged(WebView view, int progress) {
                 loading.setProgress(progress); loading.setVisibility(progress == 100 ? View.GONE : View.VISIBLE);
             }
+        });
+        web.setDownloadListener((url, userAgent, disposition, mimeType, length) -> {
+            try {
+                Uri target = Uri.parse(url);
+                if ("https".equals(target.getScheme()))
+                    startActivity(new Intent(Intent.ACTION_VIEW, target));
+            } catch (Exception ignored) {}
         });
         if (state == null) web.loadUrl(HOME); else web.restoreState(state);
     }
