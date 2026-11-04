@@ -22,6 +22,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 header {
+  padding-top: env(safe-area-inset-top, 0px) !important;
   background: rgba(255,255,255,.89) !important;
   border-bottom: 1px solid rgba(18,48,71,.075) !important;
   backdrop-filter: saturate(180%) blur(20px) !important;
@@ -355,7 +356,7 @@ tr:hover td { background: #F8FBFD !important; }
   .brand-hero-actions button { flex: 1; min-width: 110px; }
   .panel, .metric, .sync-board { border-radius: 17px !important; }
   .premium-shortcuts button { border-radius: 15px !important; }
-  .mobile-bottom-nav { padding-bottom: max(env(safe-area-inset-bottom), 3px); }
+  .mobile-bottom-nav { padding-bottom: max(env(safe-area-inset-bottom), 6px) !important; }
 }
 @media (max-width: 390px) {
   header .ref-status { display: none; }
