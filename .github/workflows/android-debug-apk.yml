@@ -1,10 +1,7 @@
 name: Build Android debug APK
+# Manual fallback builder; the primary Android APK workflow builds automatically on push.
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - 'android-app/**'
-      - '.github/workflows/android-debug-apk.yml'
 jobs:
   build:
     runs-on: ubuntu-latest
