@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "updatedAt": "",
+  "tasks": [],
+  "announcements": [],
+  "release": {
+    "version": "",
+    "versionCode": 0,
+    "title": "",
+    "notes": "",
+    "apkUrl": "",
+    "publishedAt": "",
+    "required": false
+  }
+}
