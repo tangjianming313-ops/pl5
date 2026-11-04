@@ -1,1 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="#1678d4"/><rect x="84" y="110" width="344" height="292" rx="56" fill="#fff" opacity=".12"/><text x="256" y="284" font-family="Arial,sans-serif" font-weight="bold" font-size="126" fill="#fff" text-anchor="middle">AI</text><text x="256" y="355" font-family="Arial,sans-serif" font-weight="bold" font-size="48" fill="#fff" text-anchor="middle">P5</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="观数知微品牌图标">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#255371"/><stop offset="1" stop-color="#123047"/></linearGradient>
+  <linearGradient id="lens" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#C8E8FA"/></linearGradient>
+</defs>
+<rect x="0" y="0" width="512" height="512" rx="118" fill="url(#bg)"/>
+<circle cx="256" cy="256" r="171" fill="none" stroke="#D6EBF8" stroke-opacity=".12" stroke-width="3"/>
+<path d="M96 256C153 177 204 141 256 141S359 177 416 256C359 335 308 371 256 371S153 335 96 256Z" fill="none" stroke="#E8F6FF" stroke-width="20" stroke-linejoin="round"/>
+<circle cx="256" cy="256" r="71" fill="url(#lens)"/>
+<circle cx="256" cy="256" r="29" fill="#4193C2"/>
+<circle cx="241" cy="242" r="10" fill="#FFFFFF" opacity=".84"/>
+</svg>
