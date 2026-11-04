@@ -9,6 +9,25 @@ android {
         versionCode 2
         versionName '1.1.0'
     }
-    buildTypes { release { minifyEnabled false } }
+    // Production signing is injected exclusively from GitHub Actions secrets.
+    // Never commit the keystore or passwords.
+    signingConfigs {
+        production {
+            if (System.getenv('GSZW_ANDROID_KEYSTORE_PATH')) {
+                storeFile file(System.getenv('GSZW_ANDROID_KEYSTORE_PATH'))
+                storePassword System.getenv('GSZW_ANDROID_STORE_PASSWORD')
+                keyAlias System.getenv('GSZW_ANDROID_KEY_ALIAS')
+                keyPassword System.getenv('GSZW_ANDROID_KEY_PASSWORD')
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            if (System.getenv('GSZW_ANDROID_KEYSTORE_PATH')) {
+                signingConfig signingConfigs.production
+            }
+        }
+    }
     compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
 }
