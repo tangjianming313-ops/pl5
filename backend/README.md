@@ -1,6 +1,15 @@
-# 广东来总排码 · 安全后台部署说明
+# 观数知微 · 运营后台与安全说明
 
-当前网站由 GitHub Pages 托管，不能单独提供安全的账号密码登录。本目录是**待部署的 Supabase 数据库与权限基础**，尚未接入线上 Supabase 项目。
+当前用户网站和 Android WebView 软件共享 GitHub Pages 内容。已具备基于 GitHub Contents 写入权限的运营后台 `admin.html`，可以管理：
+
+- `ops.json`：用户任务、普通公告、Android 软件版本说明及 APK 下载地址；
+- `ads.json`：全屏弹窗公告 / 广告；
+- 网站和软件端每 5 分钟读取最新运营数据，也支持手动刷新；
+- 任务完成状态仅保存在用户设备，不能统计跨设备完成情况。
+
+**安全边界**：`admin.html` 是公开可访问的页面，不存在私密密码登录。所有发布操作需要管理员本人提供具备仓库 Contents: Read and write 权限的 GitHub Fine-grained token，令牌只在页面内存使用、不写入网站存储。请注意浏览器环境及令牌泄露风险。正式多管理员后台应部署认证与权限服务，不能依赖隐藏网址或写死密码。
+
+本目录的 Supabase 数据库结构是用于未来安全后台的**待部署基础**，尚未接入真实 Supabase 项目。
 
 ## 1. 创建 Supabase 项目
 在 https://supabase.com/dashboard 创建项目，选择合适的数据库区域。请保管数据库密码、service_role 密钥等私密凭据，**不要上传到 GitHub**。
@@ -30,6 +39,10 @@ values ('这里替换为已核实的管理员Auth UUID');
 6. 做真实浏览器测试后再对外宣布后台已上线。
 
 ## 当前边界
-- `admin.html` 仍是已有的 GitHub 授权公告管理页，**不是**已部署的 Supabase 安全后台。
+- `admin.html` 当前已支持 GitHub 授权发布任务、普通公告、原有弹窗和版本信息，但**不是**已部署的 Supabase 安全后台。
 - `site-config.json` 仍由 GitHub 发布，网站尚未改用数据库配置。
 - 此脚本没有创建任何真实管理员账号，也没有连接任何线上数据库。
+
+## 软件发布与升级
+
+安卓调试包由 GitHub Actions 构建；正式版需要稳定的发布签名。请见 [android-app/README.md](../android-app/README.md) 与 `.github/workflows/android-release.yml`。在后台发布 APK 下载 URL 不等于自动编译或签名软件，也不会绕过 Android 系统确认安装。
