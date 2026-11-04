@@ -467,10 +467,10 @@ function factor11UpdateCard(){
 function factor11SeparateText(){
  const rejected=Factor11.get(history.length);
  if(!rejected)return '';
- return '排列五11因子累计全部历史动态9码（独立模块）\\n'+
-  '历史期数：'+history.length+'，最新前四位：'+history.at(-1)+'\\n'+
-  names.map((name,i)=>name+' 保留：'+[...'0123456789'].filter(d=>d!==rejected[i]).join('')+'；排除：'+rejected[i]).join('\\n')+
-  '\\n共保留6561组，排除3439组；不叠加原网站排码规则。';
+ return '排列五11因子累计全部历史动态9码（独立模块）\n'+
+  '历史期数：'+history.length+'，最新前四位：'+history.at(-1)+'\n'+
+  names.map((name,i)=>name+' 保留：'+[...'0123456789'].filter(d=>d!==rejected[i]).join('')+'；排除：'+rejected[i]).join('\n')+
+  '\n共保留6561组，排除3439组；不叠加原网站排码规则。';
 }
 
 let current;function render(){history=mergeDraws();const autoStatus=$('autoDrawStatus');if(autoStatus)autoStatus.textContent=autoMeta?'开奖自动同步：已读取 '+autoDraws.length+' 期新增开奖 · 最近同步 '+(autoMeta.updatedAt||'未知')+' · 来源：中国体育彩票（请核对官方公告）':'开奖自动同步：尚未取得可验证的新数据，可手动更新';updateSyncBoard();
