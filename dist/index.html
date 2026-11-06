@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#183c32">
+  <meta name="description" content="斌斌排码：排列五前四位排码工作台。导入历史、设置规则、全量筛选、滚动回测与分批复制。">
+  <title>斌斌排码 · 前四位工作台</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.mjs"></script>
+</head>
+<body>
+<svg class="svg-defs" aria-hidden="true"><defs>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24"><path d="M3 11a9 9 0 1 1 2 7M3 4v7h7M12 7v5l4 2"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 3v17h17M8 15l4-5 4 2 5-7"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h5l3 3h6a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><path d="M3 10h18"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 16V4m-5 5 5-5 5 5M4 16v4h16v-4"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h4"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 4v16M4 12h16"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16M8 3v6m8 0v6m-6 0v6"/></symbol>
+</defs></svg>
+<a class="skip-link" href="#main">跳到主要内容</a>
+<aside class="sidebar">
+  <a class="brand" href="#workbench" aria-label="斌斌排码首页"><span class="brand-mark">P<span>5</span><i></i></span><span><strong>斌斌排码</strong><small>前四位 · 数字工作台</small></span></a>
+  <div class="nav-label">我的工作空间</div>
+  <nav aria-label="主导航">
+    <button class="nav-item active" data-view="workbench"><svg><use href="#i-grid"/></svg>排码工作台<span class="nav-dot"></span></button>
+    <button class="nav-item" data-view="history"><svg><use href="#i-history"/></svg>历史开奖<span class="nav-badge" id="nav-history-count">—</span></button>
+    <button class="nav-item" data-view="backtest"><svg><use href="#i-chart"/></svg>滚动回测</button>
+    <button class="nav-item" data-view="schemes"><svg><use href="#i-folder"/></svg>我的方案</button>
+  </nav>
+  <div class="side-bottom"><div class="scope-visual"><span>万</span><span>千</span><span>百</span><span>十</span><span class="muted-digit">个</span></div><strong>专注前四位</strong><p>每次从 0000–9999<br>完整重算，保留前导零。</p><div class="local-indicator"><span></span><span id="save-status">正在载入数据</span></div></div>
+</aside>
+<div class="app-shell">
+  <header class="topbar"><div class="breadcrumb">工作空间 <span>/</span> <strong id="page-crumb">排码工作台</strong></div><div class="top-actions"><span class="edition">P5 / FRONT FOUR</span><button class="btn text-btn" id="help-button">使用说明 <span class="help-icon">?</span></button><button class="btn small-btn" id="backup-button"><svg><use href="#i-down"/></svg><span>备份数据</span></button></div></header>
+  <main id="main">
+    <div id="load-error" class="notice danger" hidden></div>
+    <section id="view-workbench" class="view">
+      <div class="page-heading"><div><div class="eyebrow"><span></span> 把规则交给计算</div><h1>前四位，按你的规则来。</h1><p>从 10,000 组开始，筛选、核对，再带走你的号码。</p></div><button class="btn" data-open-import><svg><use href="#i-up"/></svg>导入历史</button></div>
+      <div class="overview-grid">
+        <article class="stat-card"><span class="stat-label">历史数据 <svg><use href="#i-history"/></svg></span><div><strong id="stat-history">—</strong><span class="unit">期</span></div><small id="history-source">正在读取历史文件…</small></article>
+        <article class="stat-card latest-card"><span class="stat-label">最近一期 · 前四位 <button class="inline-link" data-view="history">更新 <span>↗</span></button></span><div class="draw-balls" id="latest-balls"><b>—</b><b>—</b><b>—</b><b>—</b></div><small id="previous-draw">上期 —</small></article>
+        <article class="stat-card stat-candidates"><span class="stat-label">当前候选 <button class="live-label" id="jump-results" aria-label="跳到候选号码">查看号码 ↓</button></span><div><strong id="stat-count">—</strong><span class="unit">组</span></div><small id="stat-coverage">等待计算</small></article>
+        <article class="stat-card"><span class="stat-label">有效规则 <svg><use href="#i-sliders"/></svg></span><div><strong id="stat-rules">—</strong><span class="unit">项</span></div><small id="stat-time">条件叠加，逐层筛选</small></article>
+      </div>
+      <div class="work-grid">
+        <section class="panel rules-panel" aria-labelledby="rules-title">
+          <div class="panel-heading"><div><h2 id="rules-title"><svg><use href="#i-sliders"/></svg>筛选规则</h2><p>修改后自动重算</p></div><button class="inline-link" id="reset-rules">恢复常用</button></div>
+          <div class="preset-row"><span class="preset-tag" id="preset-label">常用规则</span><button class="inline-link" id="empty-rules">全部放开</button><button class="inline-link" id="save-scheme">＋ 保存方案</button></div>
+          <div class="rule-section position-section"><div class="section-title"><span class="section-number">01</span><h3>固定位置排码</h3><span class="soft-label">点选即排除</span></div><div id="position-grids"></div><div class="legend"><span></span>深色数字为排除项；未选数字保留</div></div>
+          <details class="rule-section" open><summary><span class="section-number">02</span><h3>基础条件</h3><span class="chevron">⌄</span></summary><div class="detail-content">
+            <div class="setting-row"><label class="switch-label"><input type="checkbox" data-rule="historyEnabled"><span class="switch"></span>历史排除</label><label class="compact-number">最近 <input type="number" min="1" max="100000" data-rule="historyWindow" aria-label="历史排除期数"> 期</label></div>
+            <p class="field-help">完整四位一致才排除；先取窗口，再去重。</p>
+            <div class="setting-row"><label for="frequency-select">全历史出现次数</label><select id="frequency-select" data-rule="frequency"><option value="any">不限</option><option value="never">仅从未开出</option><option value="once">仅开过一次</option><option value="ever">仅已开出</option><option value="atMostOnce">排开过两次及以上</option></select></div>
+            <div class="setting-row"><label class="switch-label"><input type="checkbox" data-rule="sumEnabled"><span class="switch"></span>和值范围</label><div class="range-input"><input type="number" min="0" max="36" data-rule="sumMin" aria-label="和值下限"><span>—</span><input type="number" min="0" max="36" data-rule="sumMax" aria-label="和值上限"></div></div>
+            <div class="setting-row"><span>保留重复结构</span></div><div class="choice-row" id="structure-choices"></div>
+            <div class="setting-row"><label class="switch-label"><input type="checkbox" data-rule="routeEnabled"><span class="switch"></span>012 路至少两路</label><span class="field-hint">按除以 3 的余数</span></div>
+          </div></details>
+          <details class="rule-section" open><summary><span class="section-number">03</span><h3>近期定位排除</h3><span class="chevron">⌄</span></summary><div class="detail-content">
+            <div class="setting-row"><label class="switch-label"><input type="checkbox" data-rule="recent2Enabled"><span class="switch"></span>规则 A</label><div class="position-condition">近 <input type="number" min="1" max="100000" data-rule="recent2Window" aria-label="定位 A 期数"> 期，同位 ≥ <select data-rule="recent2Threshold" aria-label="定位 A 阈值"><option>1</option><option>2</option><option>3</option><option>4</option></select> 位</div></div>
+            <div class="setting-row"><label class="switch-label"><input type="checkbox" data-rule="recent3Enabled"><span class="switch"></span>规则 B</label><div class="position-condition">近 <input type="number" min="1" max="100000" data-rule="recent3Window" aria-label="定位 B 期数"> 期，同位 ≥ <select data-rule="recent3Threshold" aria-label="定位 B 阈值"><option>1</option><option>2</option><option>3</option><option>4</option></select> 位</div></div>
+            <p class="field-help">与每一期分别比较；达到阈值即排除，不跨期累加。</p>
+          </div></details>
+          <details class="rule-section"><summary><span class="section-number">04</span><h3>合分与形态</h3><span class="summary-status" id="advanced-status">2 项启用</span><span class="chevron">⌄</span></summary><div class="detail-content">
+            <div class="setting-row"><label class="switch-label"><input type="checkbox" data-rule="hefen1"><span class="switch"></span>合分①</label><span class="formula-target" id="hefen1-target"></span></div><p class="field-help">候选（千＋百＋十）%10 ＝ 上期（万＋百）%10 时排除。</p>
+            <div class="setting-row"><label class="switch-label"><input type="checkbox" data-rule="hefen4"><span class="switch"></span>合分④</label><span class="formula-target" id="hefen4-target"></span></div><p class="field-help">候选（千＋百）%10 ＝ 上期（百＋十）%10 时排除。</p>
+            <h4>排除单双形态</h4><div class="pattern-grid" id="parity-choices"></div>
+            <h4>排除大小形态 <small>0–4 为小，5–9 为大</small></h4><div class="pattern-grid" id="size-choices"></div>
+          </div></details>
+          <div class="rules-bottom"><button class="btn primary-btn wide" id="calculate-button"><svg><use href="#i-sliders"/></svg>重新计算全部号码<svg><use href="#i-arrow"/></svg></button><button class="inline-link" id="copy-rules">复制完整规则说明</button></div>
+        </section>
+        <div class="results-column">
+          <section class="panel results-panel" aria-labelledby="result-title"><div class="panel-heading"><div><h2 id="result-title">候选号码 <span class="count-pill" id="result-count">—</span></h2><p>按万位升序 · 每行一组导出</p></div><span class="computed-label" id="computed-label"><svg><use href="#i-check"/></svg>等待计算</span></div>
+            <div class="subset-tabs" role="group" aria-label="候选子集"><button data-subset="all" class="active">全部 <span></span></button><button data-subset="distinct">无对子 <span></span></button><button data-subset="pair">单对子 <span></span></button><button data-subset="shrink">缩水池 <span></span></button></div>
+            <p id="subset-help" class="subset-help">所有通过当前规则的四位号码</p>
+            <div class="result-toolbar"><label class="search-box"><svg><use href="#i-search"/></svg><input id="candidate-search" maxlength="4" inputmode="numeric" placeholder="搜索号码 / 前缀" aria-label="搜索候选号码"></label><select id="first-digit" aria-label="按万位筛选"><option value="">全部万位</option><option value="0">万位 0</option><option value="1">万位 1</option><option value="2">万位 2</option><option value="3">万位 3</option><option value="4">万位 4</option><option value="5">万位 5</option><option value="6">万位 6</option><option value="7">万位 7</option><option value="8">万位 8</option><option value="9">万位 9</option></select></div>
+            <div id="result-error" class="notice danger" hidden></div><div id="result-warning" class="notice" hidden></div>
+            <div id="number-grid" class="number-grid" aria-live="polite"></div>
+            <div class="pagination"><span id="page-info">—</span><div><button id="prev-page" class="page-btn" aria-label="上一页">‹</button><span id="page-number">1 / 1</span><button id="next-page" class="page-btn" aria-label="下一页">›</button></div></div>
+            <div class="export-area"><div class="export-heading"><strong>把号码带走</strong><span id="export-scope">导出当前子集</span></div><div class="export-buttons"><button class="btn primary-btn" id="copy-all"><svg><use href="#i-copy"/></svg>复制全部</button><button class="btn" id="download-txt"><svg><use href="#i-down"/></svg>下载 TXT</button><button class="btn" id="download-csv">CSV</button></div><div class="batch-row"><span>分批复制</span><label>分 <select id="batch-total" aria-label="分成几批"><option>2</option><option>3</option><option selected>4</option><option>5</option><option>10</option></select> 批</label><select id="batch-index" aria-label="选择批次"></select><button class="inline-link" id="copy-batch">复制本批 ↗</button></div><small id="batch-info"></small></div>
+          </section>
+          <section class="panel audit-panel"><div class="panel-heading"><div><h2>筛选过程</h2><p>每一步都可核对</p></div><span class="soft-label">起点 10,000 组</span></div><div id="pipeline"></div><div class="audit-note">按顺序统计新增排除量，同一号码不会重复计数。</div></section>
+        </div>
+      </div>
+    </section>
+    <section id="view-history" class="view" hidden>
+      <div class="page-heading"><div><div class="eyebrow"><span></span> 每次开奖，从这里开始</div><h1>历史开奖</h1><p>按从旧到新的顺序保存；导入完整五位时自动保留前四位。</p></div><button class="btn primary-btn" data-open-import><svg><use href="#i-up"/></svg>导入历史</button></div>
+      <div class="history-layout"><section class="panel history-main"><div class="panel-heading"><h2>开奖记录 <span class="count-pill" id="history-total">—</span></h2><button class="btn small-btn" id="export-history">导出历史</button></div><div class="table-wrap"><table><thead><tr><th>历史序号</th><th>前四位</th><th>和值</th><th>结构</th><th>单双</th></tr></thead><tbody id="history-table"></tbody></table></div><div class="pagination"><span>最新记录在上方 · 序号不是官方期号</span><button class="btn small-btn" id="more-history">再显示 100 期</button></div></section><aside class="history-side"><section class="panel padded"><h2>追加最新一期</h2><p>输入本期四位或完整五位号码</p><form id="append-form"><input id="append-number" class="big-number-input" maxlength="5" inputmode="numeric" placeholder="例如 4157" aria-label="新开奖号码" required pattern="[0-9]{4,5}"><button class="btn primary-btn wide" type="submit"><svg><use href="#i-plus"/></svg>追加并重新排码</button></form><p class="field-help">追加后，历史窗口、最近两期及合分参照会一起更新。</p><button id="undo-draw" class="inline-link muted-link">移除最后一期</button></section><section class="panel padded"><h3>数据属于你</h3><p>修改保存在当前浏览器，换设备前请下载备份。清除浏览器数据可能会移除本地修改。</p><button class="btn wide" id="restore-backup">恢复备份 JSON</button><input type="file" id="backup-file" accept=".json,application/json" hidden></section></aside></div>
+    </section>
+    <section id="view-backtest" class="view" hidden>
+      <div class="page-heading"><div><div class="eyebrow"><span></span> 用历史检验规则</div><h1>逐期回测，过程透明。</h1><p>每一期都只使用它之前的历史，以当前规则从 0000–9999 重新计算。</p></div></div>
+      <section class="panel padded"><div class="backtest-controls"><div><h2>当前规则 · 滚动回测</h2><p>历史不足时仅回测具有完整前置窗口的期数。</p></div><label>最近 <select id="backtest-window"><option>10</option><option>20</option><option>30</option><option>50</option><option>60</option><option selected>100</option><option>200</option></select> 期</label><button class="btn primary-btn" id="run-backtest"><svg><use href="#i-chart"/></svg>开始回测</button></div><div id="backtest-progress" class="progress-area" hidden><progress id="progress-bar" max="100" value="0"></progress><span id="progress-label"></span><button id="cancel-backtest" class="inline-link">取消</button></div><div class="notice" id="backtest-stale" hidden>规则或历史已改变，请重新回测。</div></section>
+      <div id="backtest-empty" class="empty-state panel"><svg><use href="#i-chart"/></svg><h2>先看看规则过去的表现</h2><p>选择回测期数，查看命中、候选规模和最长连续未中。</p><small>历史表现不代表未来开奖结果。</small></div>
+      <div id="backtest-result" hidden><div class="overview-grid backtest-stats"><article class="stat-card"><span class="stat-label">命中期数</span><div><strong id="bt-hits"></strong><span class="unit" id="bt-total"></span></div><small>中奖前四位在当期候选中</small></article><article class="stat-card"><span class="stat-label">历史命中率</span><div><strong id="bt-rate"></strong></div><small>仅描述所选历史窗口</small></article><article class="stat-card"><span class="stat-label">平均候选规模</span><div><strong id="bt-average"></strong><span class="unit">组</span></div><small id="bt-coverage"></small></article><article class="stat-card"><span class="stat-label">最长连续未中</span><div><strong id="bt-miss"></strong><span class="unit">期</span></div><small>仅计算本次回测窗口内</small></article></div><section class="panel padded"><div class="panel-heading flush"><h2>命中记录</h2><span class="hit-legend"><i></i>命中 <i class="miss"></i>未中</span></div><div id="hit-tape" class="hit-tape"></div><p class="field-help">从旧到新排列，点击方格查看该期详情。</p></section><section class="panel"><div class="panel-heading"><h2>逐期明细</h2><button class="btn small-btn" id="export-backtest">导出回测 CSV</button></div><div class="table-wrap"><table><thead><tr><th>历史序号</th><th>开奖号</th><th>候选组数</th><th>结果</th></tr></thead><tbody id="backtest-table"></tbody></table></div></section></div>
+    </section>
+    <section id="view-schemes" class="view" hidden><div class="page-heading"><div><div class="eyebrow"><span></span> 留住好用的设置</div><h1>我的排码方案</h1><p>保存规则快照。切换方案时，始终使用当前最新历史重新计算。</p></div><button class="btn primary-btn" id="save-scheme-secondary"><svg><use href="#i-plus"/></svg>保存当前规则</button></div><div id="scheme-list" class="scheme-grid"></div><section class="panel padded"><div class="panel-heading flush"><h2>当前规则说明</h2><button class="btn small-btn" id="copy-rules-secondary">复制说明</button></div><pre id="rules-text" class="rules-text"></pre></section></section>
+    <footer><span><strong>斌斌排码</strong> · 每一组，都算清楚。</span><span>筛选工具不预测开奖结果，也不保证中奖。</span></footer>
+  </main>
+</div>
+<dialog id="import-dialog"><form method="dialog" class="dialog-heading"><div><h2>导入历史开奖</h2><p>支持 TXT、CSV 或直接粘贴</p></div><button class="icon-button" aria-label="关闭">×</button></form><div class="dialog-body"><label class="file-drop"><svg><use href="#i-up"/></svg><strong>选择历史文件</strong><span>每行一组，支持序号＋号码、四位或完整五位</span><input type="file" id="history-file" accept=".txt,.csv,.tsv,text/plain,text/csv"></label><textarea id="import-text" rows="7" placeholder="例如：&#10;1 1544&#10;2 4157" aria-label="粘贴历史数据"></textarea><div class="import-options"><label>数据顺序 <select id="import-order"><option value="oldest">最旧在前，最新在后</option><option value="newest">最新在前，最旧在后</option></select></label><label>导入方式 <select id="import-mode"><option value="replace">替换现有历史</option><option value="append">追加到现有历史后</option></select></label></div><div class="notice" id="import-preview">请选择文件或粘贴号码，确认预览后导入。</div><button class="btn primary-btn wide" id="confirm-import" disabled>确认导入并重新计算</button></div></dialog>
+<dialog id="save-dialog"><form id="save-scheme-form"><div class="dialog-heading"><div><h2>保存当前排码方案</h2><p>只保存规则，历史会随开奖继续更新</p></div><button class="icon-button" type="button" data-close="save-dialog" aria-label="关闭">×</button></div><div class="dialog-body"><label class="field-label" for="scheme-name">方案名称</label><input id="scheme-name" maxlength="40" placeholder="例如：单对子 · 和值 9–25" required><button class="btn primary-btn wide" type="submit">保存方案</button></div></form></dialog>
+<dialog id="help-dialog"><form method="dialog" class="dialog-heading"><div><h2>三步开始排码</h2><p>你的规则，你的数据</p></div><button class="icon-button" aria-label="关闭">×</button></form><div class="dialog-body help-content"><h3>01 更新历史</h3><p>网站带有已核对的 7,763 期前四位历史，截至 4157。可逐期追加，或导入 TXT / CSV；五位号码只取前四位。保留重复开奖，保留前导零。序号用于排序，不是官方期号。</p><h3>02 调整筛选规则</h3><p>深色位置数字表示排除。开关、和值、历史窗口和定位阈值都可改。全部条件叠加，每次从 10,000 组重新计算。常用规则只是可编辑预设。</p><h3>03 核对并导出</h3><p>查看每条规则新增排除数，切换无对子或单对子；搜索和万位筛选会同时限定复制与下载范围。TXT 每行一组。CSV 的号码列请按文本导入，以保留前导零。</p><h3>缩水池口径</h3><p>在当前主池内，仅留普通单对子、和值 9–25、万位 2/3/5/7/9；这是附加子集，不改变主池。</p><h3>数据与回测</h3><p>数据保存在当前浏览器，跨设备请导出并恢复 JSON 备份。回测逐期使用开奖前数据，不含被测当期。没有自动抓取开奖，需主动追加或导入。</p></div></dialog>
+<dialog id="copy-dialog"><form method="dialog" class="dialog-heading"><h2>长按或全选复制</h2><button class="icon-button" aria-label="关闭">×</button></form><div class="dialog-body"><p>当前浏览器未允许直接写入剪贴板，请复制下方文本。</p><textarea id="copy-fallback" rows="12" readonly></textarea><button id="select-copy" class="btn primary-btn wide">全选文本</button></div></dialog>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

@@ -32,3 +32,11 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+# P5 static website
+node_modules/
+.DS_Store
+*.tar.gz
+.env*
+!.env.example
+.openai/
