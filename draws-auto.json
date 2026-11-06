@@ -2,7 +2,7 @@
   "source": "江苏省体育彩票管理中心",
   "sourceUrl": "https://api.js-lottery.com/wfzq/p3p5/p5data",
   "anchor": "4157",
-  "updatedAt": "2026-11-05T20:37:28.000883+00:00",
+  "updatedAt": "2026-11-06T19:56:13.640255+00:00",
   "draws": [
     {
       "issue": "2026289",
@@ -38,6 +38,11 @@
       "issue": "2026295",
       "date": "2026-11-05",
       "front4": "2912"
+    },
+    {
+      "issue": "2026296",
+      "date": "2026-11-06",
+      "front4": "3205"
     }
   ]
 }
