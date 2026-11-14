@@ -435,7 +435,7 @@ const freq=arr.reduce((o,v)=>(o[v]=(o[v]||0)+1,o),{}),pattern=Object.values(freq
 if(pattern==='3,1')why.push(3);
 if(pattern==='4')why.push(4);
 if(pattern==='2,2')why.push(5);
-if(!(a>=5&&b<5&&c<5&&d>=5))why.push(6);
+if(a>=5&&b<5&&c<5&&d>=5)why.push(6);
 const routes=new Set(arr.map(v=>v%3===0?0:v%3===1?1:2));if(routes.size<2)why.push(7);
 if(m.last2.some(x=>x.reduce((n,v,p)=>n+(v===arr[p]),0)>=2))why.push(8);
 if(m.last10.some(x=>x.reduce((n,v,p)=>n+(v===arr[p]),0)>=3))why.push(9);
