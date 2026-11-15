@@ -437,7 +437,7 @@ if(pattern==='4')why.push(4);
 if(pattern==='2,2')why.push(5);
 if(a>=5&&b<5&&c<5&&d>=5)why.push(6);
 const routes=new Set(arr.map(v=>v%3===0?0:v%3===1?1:2));if(routes.size<2)why.push(7);
-if(m.last10.some(x=>x.reduce((n,v,p)=>n+(v===arr[p]),0)>=3))why.push(9);
+if(m.last10.some(x=>x.reduce((n,v,p)=>n+(v===arr[p]),0)>=3))why.push(8);
 
 return why}
 function calc(h,opts={}){const m=setup(h),sets=opts.allowed||allowed,counts=Array(rules.length).fill(0),pool=[],unique=[],pair=[];for(let i=0;i<10000;i++){const s=pad(i),why=reasons(s,m,sets);if(why.length){counts[why[0]]++;continue}pool.push(s);if(new Set(s).size===4)unique.push(s);else pair.push(s)}if(counts.reduce((a,b)=>a+b,0)+pool.length!==10000||unique.length+pair.length!==pool.length)throw Error('筛选数量校验失败');return {m,counts,pool,unique,pair}}
