@@ -1,0 +1,10 @@
+{
+  "name": "AI HUB 一站式 AI 订阅中心",
+  "short_name": "AI HUB",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#090e1c",
+  "theme_color": "#0b1020",
+  "lang": "zh-CN",
+  "description": "AI 官方订阅信息导航中心"
+}
