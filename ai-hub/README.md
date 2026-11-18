@@ -1,6 +1,10 @@
 # AI HUB｜一站式 AI 订阅中心
 
-当前版本：**MVP v0.4（开发预览，未正式部署）**。
+当前版本：**MVP v0.4（网站演示版已发布；后台和支付未上线）**。
+
+演示网址：https://tangjianming313-ops.github.io/pl5/ai-hub/
+
+GitHub Pages 已成功发布。安卓 WebView 测试包已通过 GitHub Actions 构建（debug 签名），请在 Actions 的 Build AI HUB Android APK 工作流获取安装包。
 
 这是服务发现、官方订阅跳转、会员记录及售前咨询的基础系统，不是可在站内完成支付/自动开通第三方订阅的线上商城。AI HUB 未声明与所列品牌有代理关系；获得必要销售授权前，不得推出代理收款业务。
 
@@ -15,15 +19,15 @@
 - `.github/workflows/ai-hub-checks.yml`：仅针对开发分支的检查，不部署/修改原有网站
 
 ## 尚未完成
-- 独立公网部署、真实 Supabase 连接、Email OTP 测试
+- 真实 Supabase 连接、Email OTP 线上联调
 - 独立仓库 / 域名 / 云端邮箱发信服务
 - 商家资质、代理授权与分销协议核验；真实售价与地区政策
 - 正式客服邮箱、法务审核的隐私政策/服务协议、反滥用机制
 - 正规支付、订单状态、验签回调、发货、退款/售后和审计
-- 正式安卓 APK/AAB 和真机完整登录/购买回归测试
+- 正式签名安卓 APK/AAB 和真机完整登录/购买回归测试（现有 debug 测试包不是生产版）
 
 ## 开发顺序
-1. 部署静态演示，参见 [DEPLOY.md](./DEPLOY.md)
+1. 静态演示已部署到 GitHub Pages，可先在 Android Chrome 直接打开上方网址并安装 PWA
 2. 创建隔离的 Supabase 项目，应用 `schema.sql`，配置 `config.js` 中**仅可公开的 URL 和 publishable/anon key**
 3. 在 Supabase 上设置 Auth 重定向和邮件服务，管理员使用 User UID 加入 `staff_members`
 4. 运行 `npm test`，再对所有角色、状态、登录/退出、咨询删除做真实联调
