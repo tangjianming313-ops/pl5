@@ -45,7 +45,7 @@ button:disabled{opacity:.55;cursor:not-allowed}.actions{display:flex;gap:9px;fle
   </div>
   <div class="panel">
     <h2>商品列表</h2>
-    <p class="muted">官方订阅页面由顾客直接访问。发布前需要人工核对 URL、地区资格以及品牌相关政策。</p>
+    <p class="muted">官方订阅页面由顾客直接访问。发布前需要人工核对 URL、地区资格以及品牌相关政策。已知品牌会进行域名校验，但不能替代真实授权审查。</p>
     <div id="products" aria-live="polite"></div>
     <div id="listMsg" class="msg" aria-live="polite"></div>
     <button class="secondary" id="signOut" type="button">退出管理员账户</button>
@@ -73,9 +73,21 @@ const say=(id,text)=>el(id).textContent=text||"";
 function clearForm(){
  el("productForm").reset();el("editId").value="";el("formTitle").textContent="添加商品";say("formMsg","");
 }
-function validateUrl(value){
+const knownBrandHosts={
+ chatgpt:["chatgpt.com","openai.com"],
+ claude:["claude.com","anthropic.com"],
+ gemini:["gemini.google","google.com"],
+ deepseek:["deepseek.com"],
+ perplexity:["perplexity.ai"],
+ midjourney:["midjourney.com"]
+};
+function validateUrl(value,slug){
  const url=new URL(value);
- if(url.protocol!=="https:"||url.username||url.password||url.hostname.includes(" ")) throw Error("必须填写真实的 HTTPS 官方订阅地址。");
+ if(url.protocol!=="https:"||url.username||url.password||url.hostname.includes(" "))
+   throw Error("必须填写 HTTPS 网址，不得包含账户凭据。");
+ const brand=Object.keys(knownBrandHosts).find(k=>slug===k||slug.startsWith(k+"-"));
+ if(brand&&!knownBrandHosts[brand].some(d=>url.hostname===d||url.hostname.endsWith("."+d)))
+   throw Error("该品牌商品的链接域名不匹配，请使用已核对的品牌官方网站。");
  return url.toString();
 }
 function getForm(){
@@ -83,7 +95,7 @@ function getForm(){
  if(!name||!/^[a-z0-9-]+$/.test(slug))throw Error("请填写正确的名称和英文商品标识。");
  return {name,slug,description:el("description").value.trim(),
   category:el("cat").value,status:el("statusValue").value,
-  official_url:validateUrl(el("url").value)};
+  official_url:validateUrl(el("url").value,slug)};
 }
 function editProduct(x){
  el("editId").value=x.id;el("name").value=x.name;el("slug").value=x.slug;
