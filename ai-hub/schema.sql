@@ -159,3 +159,8 @@ grant select, insert, update on public.subscription_inquiries to authenticated;
 -- No browser-side DELETE policy. User deletion requests require operator processing.
 -- This prototype has no backend spam protection. Before production, configure CAPTCHA,
 -- abuse protection and request rate limiting at the API / gateway layer.
+
+drop policy if exists "Inquiries owner delete" on public.subscription_inquiries;
+create policy "Inquiries owner delete" on public.subscription_inquiries
+ for delete to authenticated using (user_id = (select auth.uid()));
+grant delete on public.subscription_inquiries to authenticated;
