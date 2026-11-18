@@ -1,1 +1,216 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b1020"><title>我的订阅｜AI HUB</title><style>*{box-sizing:border-box}body{margin:0;background:#0b1020;color:#edf2ff;font:15px/1.6 system-ui,-apple-system,sans-serif}.wrap{max-width:780px;margin:auto;padding:22px}a{color:#aebcff;text-decoration:none}header{display:flex;justify-content:space-between;align-items:center;padding:10px 0 30px}.panel{background:#131f34;border:1px solid #293954;border-radius:18px;padding:20px;margin:16px 0}h1{font-size:29px;margin:8px 0}p,small{color:#a7b5ce}label{display:block;margin-top:14px;font-size:13px}input,select{width:100%;background:#0d1728;border:1px solid #40506b;border-radius:10px;color:#fff;padding:12px;margin-top:5px;font:inherit}button{background:#dce4ff;color:#111a2e;border:0;border-radius:11px;padding:11px 17px;font-weight:700;cursor:pointer;margin-top:16px}.item{display:flex;justify-content:space-between;gap:12px;border-top:1px solid #344158;padding:14px 0;align-items:center}.item button{margin:0;background:#26334a;color:#fff}.muted{color:#a7b5ce;font-size:12px}.warning{background:#3b2a22;border:1px solid #775038;padding:10px;border-radius:10px;font-size:12px}</style></head><body><div class="wrap"><header><b>AI HUB / 我的订阅</b><a href="./index.html">返回商城</a></header><h1>我的订阅记录</h1><p>记录已在官方平台购买的 AI 服务及到期日。此页面是本机管理工具，不会替你购买、续费或验证真实订阅状态。</p><div class="warning">数据仅保存在当前浏览器设备中。清除浏览器数据或更换设备可能丢失记录；不要输入密码、支付卡号或敏感信息。</div><section class="panel"><h2>添加订阅</h2><form id="form"><label>服务名称<select id="service" required><option>ChatGPT</option><option>Claude</option><option>Gemini</option><option>DeepSeek</option><option>Perplexity</option><option>Midjourney</option><option>其他 AI 服务</option></select></label><label>套餐备注（选填）<input id="plan" maxlength="80" placeholder="例如：Pro"></label><label>到期或续费日期<input id="date" type="date" required></label><button type="submit">保存到本机</button></form></section><section class="panel"><h2>订阅列表</h2><div id="list" aria-live="polite"></div><button id="export" type="button">导出 JSON 备份</button></section><small>AI HUB 独立导航原型 · 未接入账户服务器和支付系统</small></div><script>const KEY='aihub-subscriptions-v1';let data=[];try{const raw=JSON.parse(localStorage.getItem(KEY)||'[]');data=Array.isArray(raw)?raw:[]}catch{};const list=document.getElementById('list');function save(){localStorage.setItem(KEY,JSON.stringify(data))}function draw(){list.replaceChildren();if(!data.length){const p=document.createElement('p');p.textContent='尚无订阅记录。';list.append(p);return}data.sort((a,b)=>a.date.localeCompare(b.date));data.forEach(x=>{const div=document.createElement('div');div.className='item';const info=document.createElement('div');const title=document.createElement('strong');title.textContent=x.service+(x.plan?' · '+x.plan:'');const meta=document.createElement('div');meta.className='muted';const days=Math.ceil((new Date(x.date+'T00:00:00')-new Date())/86400000);meta.textContent='记录日期：'+x.date+' · '+(days<0?'已过期 '+(-days)+' 天':days<=7?'即将到期':'距离日期约 '+days+' 天');info.append(title,meta);const del=document.createElement('button');del.textContent='删除';del.onclick=()=>{if(confirm('删除这条本机记录？')){data=data.filter(v=>v.id!==x.id);save();draw()}};div.append(info,del);list.append(div)})}document.getElementById('form').addEventListener('submit',e=>{e.preventDefault();data.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random(),service:document.getElementById('service').value,plan:document.getElementById('plan').value.trim(),date:document.getElementById('date').value});save();draw();e.target.reset()});document.getElementById('export').onclick=()=>{const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='aihub-subscriptions.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),500)};draw()</script></body></html>
+<!doctype html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1020">
+<title>我的订阅｜AI HUB</title>
+<style>
+:root{color-scheme:dark;--bg:#090e1c;--card:#121e32;--line:#2d3d59;--muted:#a8b7cc;--text:#eef3ff;--accent:#dce4ff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 70% 0%,#24335a,transparent 50%),var(--bg);color:var(--text);font:15px/1.6 system-ui,-apple-system,sans-serif}
+a{color:#b8c6ff;text-decoration:none}.wrap{max-width:930px;margin:auto;padding:16px 20px 60px}
+header{display:flex;align-items:center;justify-content:space-between;padding:13px 0 34px;gap:20px}.brand{font-weight:850;letter-spacing:.07em;color:white}
+h1{font-size:clamp(28px,5vw,40px);margin:0 0 9px}h2{font-size:20px;margin:0 0 10px}p{color:var(--muted)}
+.grid{display:grid;grid-template-columns:310px 1fr;gap:17px;margin-top:24px}
+.card{background:linear-gradient(145deg,#17243b,#111a2b);border:1px solid var(--line);border-radius:18px;padding:22px}
+.card p,.hint{font-size:13px}.hint{color:var(--muted)}.status{padding:10px 13px;background:#25354e;border-radius:12px;font-size:12px;color:#cddcf7}
+label{display:block;font-size:13px;font-weight:650;margin-top:13px}input,select{display:block;width:100%;background:#0b1424;color:white;border:1px solid #465875;border-radius:10px;padding:11px 12px;margin-top:7px;font:inherit}
+button{background:#e5eaff;color:#111727;border:0;border-radius:11px;padding:11px 16px;font-weight:800;cursor:pointer}button:disabled{opacity:.55;cursor:not-allowed}
+button.subtle{border:1px solid #455675;background:transparent;color:#dbe5ff}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:15px}
+.row{border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 0}
+.title{font-weight:800}.meta{font-size:12px;color:var(--muted)}.msg{min-height:24px;font-size:13px;color:#a5ddcf}
+.notice{font-size:12px;border:1px solid #5e516a;padding:12px;border-radius:12px;margin-top:16px;color:#b9c7dd;background:#1d2234}
+.hidden{display:none!important}
+@media(max-width:750px){.grid{grid-template-columns:1fr}.wrap{padding:16px}.card{padding:17px}}
+</style></head>
+<body><div class="wrap">
+<header><a href="./index.html" class="brand">AI HUB</a><a href="./index.html">← 返回商城</a></header>
+<h1>我的 AI 订阅</h1>
+<p>集中记录在各品牌官网购买的订阅。AI HUB 目前只管理你自行填写的记录，不读取或验证第三方订阅状态。</p>
+<div id="mode" class="status" role="status">正在检查本机与云端配置…</div>
+<div class="grid">
+  <div>
+    <section class="card" id="loginCard">
+      <h2>会员账户</h2>
+      <p id="loginDescription">配置 Supabase 后可通过邮件登录，在不同设备间同步订阅记录。</p>
+      <form id="loginForm" class="hidden">
+        <label for="email">邮箱地址</label><input id="email" type="email" autocomplete="email" required maxlength="254" placeholder="name@example.com">
+        <div class="actions"><button type="submit" id="loginButton">发送登录邮件</button></div>
+      </form>
+      <div id="accountInfo" class="hidden">
+        <div id="accountEmail" class="title"></div>
+        <div class="actions"><button id="signOut" class="subtle" type="button">退出登录</button></div>
+      </div>
+      <div id="loginMsg" class="msg" aria-live="polite"></div>
+    </section>
+    <section class="card" style="margin-top:17px">
+      <h2>添加记录</h2>
+      <form id="recordForm">
+        <label for="service">AI 服务</label>
+        <select id="service" required><option>ChatGPT</option><option>Claude</option><option>Gemini</option><option>DeepSeek</option><option>Perplexity</option><option>Midjourney</option><option>其他 AI 服务</option></select>
+        <label for="plan">套餐名称（可选）</label><input id="plan" maxlength="80" placeholder="例如：Pro">
+        <label for="renewal">下次续费 / 到期日期</label><input id="renewal" type="date" required>
+        <div class="actions"><button id="saveRecord" type="submit">保存订阅记录</button></div>
+      </form>
+      <div id="recordMsg" class="msg" aria-live="polite"></div>
+    </section>
+  </div>
+  <section class="card">
+    <h2>订阅记录</h2><p id="listCaption" class="hint"></p>
+    <div id="records" aria-live="polite"></div>
+    <div class="actions">
+      <button type="button" class="subtle" id="export">导出当前记录</button>
+      <button type="button" class="subtle hidden" id="importLocal">将本机记录导入云端</button>
+    </div>
+    <div id="listMsg" class="msg" aria-live="polite"></div>
+    <div class="notice">请勿在套餐备注中填写账号密码、支付资料或其他敏感信息。使用本机记录时，清除浏览器缓存可能导致数据丢失，建议定期导出备份。</div>
+  </section>
+</div>
+</div>
+<script src="./config.js"></script>
+<script type="module">
+import { client, configured, friendlyError } from "./cloud.js";
+const KEY = "aihub-subscriptions-v1";
+const el = id => document.getElementById(id);
+let db = null, user = null, records = [], view = "local";
+const localRecords = () => {
+  try {
+    const value = JSON.parse(localStorage.getItem(KEY) || "[]");
+    return Array.isArray(value) ? value.filter(x => x && typeof x === "object").slice(0,500) : [];
+  } catch { return []; }
+};
+const writeLocal = rows => localStorage.setItem(KEY, JSON.stringify(rows));
+const info = (id, text) => {el(id).textContent = text || "";};
+const genId = () => globalThis.crypto?.randomUUID?.() || String(Date.now())+"-"+String(Math.random());
+function draw() {
+  const root = el("records");
+  root.replaceChildren();
+  el("listCaption").textContent = view === "cloud" ? "仅显示你在 AI HUB 云端保存的记录" : "仅保存于当前设备浏览器";
+  el("importLocal").classList.toggle("hidden",view!=="cloud" || localRecords().length===0);
+  if (!records.length) {
+    const empty=document.createElement("p");empty.textContent="暂无订阅记录。";root.append(empty);
+    return;
+  }
+  records.sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+  records.forEach(x=>{
+    const row=document.createElement("div");row.className="row";
+    const left=document.createElement("div");
+    const title=document.createElement("div");title.className="title";title.textContent=String(x.service||"其他服务")+(x.plan?" · "+String(x.plan):"");
+    const meta=document.createElement("div");meta.className="meta";
+    const date=String(x.date||"");
+    const days=Math.ceil((new Date(date+"T00:00:00").getTime()-new Date().getTime())/86400000);
+    meta.textContent="续费 / 到期："+date+(Number.isFinite(days)?" · "+(days<0?"已过期":days<=7?"即将到期":"记录中"):"");
+    left.append(title,meta);
+    const del=document.createElement("button");del.type="button";del.className="subtle";del.textContent="删除";
+    del.addEventListener("click",()=>removeRecord(x.id));
+    row.append(left,del);root.append(row);
+  });
+}
+function drawLogin() {
+  el("loginForm").classList.toggle("hidden", !db || Boolean(user));
+  el("accountInfo").classList.toggle("hidden", !user);
+  el("accountEmail").textContent=user?.email || "";
+  el("loginDescription").textContent=!db?"尚未配置云端账户服务，当前使用本机记录。":
+    user?"已登录。订阅记录将保存到与你的账户关联的云端数据库。":"输入邮箱后接收官方登录邮件；无需设置密码。";
+  info("mode", !db?"本机模式 · 云端尚未配置":user?"云端同步模式 · 已登录":"本机模式 · 可以登录后启用云端同步");
+}
+async function load() {
+  info("listMsg","");
+  if (!db || !user) {
+    view="local";records=localRecords();drawLogin();draw();return;
+  }
+  view="cloud";drawLogin();records=[];draw();
+  const {data,error}=await db.from("subscription_records")
+    .select("id,product_name,plan_label,renewal_date")
+    .order("renewal_date",{ascending:true});
+  if (error) {info("listMsg","加载失败："+friendlyError(error));return;}
+  records=(data||[]).map(x=>({id:x.id,service:x.product_name,plan:x.plan_label,date:x.renewal_date}));draw();
+}
+async function refreshAuth() {
+  if (!db) {user=null;await load();return;}
+  const {data,error}=await db.auth.getUser();
+  user=error?null:data.user;
+  await load();
+}
+el("loginForm").addEventListener("submit",async e=>{
+  e.preventDefault();if(!db)return;
+  const email=el("email").value.trim();
+  const button=el("loginButton");button.disabled=true;
+  info("loginMsg","正在发送登录邮件…");
+  try {
+    const {error}=await db.auth.signInWithOtp({
+      email,options:{emailRedirectTo:location.origin+location.pathname}
+    });
+    info("loginMsg",error?"发送失败："+friendlyError(error):"如果邮箱可用于登录，你将收到一封登录邮件。请检查收件箱。");
+  }catch(e){info("loginMsg",friendlyError(e))}
+  finally{button.disabled=false}
+});
+el("signOut").addEventListener("click",async()=>{
+  if(!db)return;const {error}=await db.auth.signOut();
+  if(error){info("loginMsg",friendlyError(error));return;}user=null;await load();
+});
+el("recordForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const service=el("service").value,plan=el("plan").value.trim(),date=el("renewal").value;
+  if(!date) return;
+  const button=el("saveRecord");button.disabled=true;
+  info("recordMsg","");
+  try{
+    if(view==="cloud"){
+      const {error}=await db.from("subscription_records").insert({
+        user_id:user.id,product_name:service,plan_label:plan,renewal_date:date
+      });
+      if(error)throw error;
+    }else{
+      const updated=localRecords();
+      updated.push({id:genId(),service,plan,date});writeLocal(updated);
+    }
+    el("recordForm").reset();info("recordMsg","记录已保存。");await load();
+  }catch(e){info("recordMsg","保存失败："+friendlyError(e))}
+  finally{button.disabled=false}
+});
+async function removeRecord(id){
+  if(!confirm("确定删除这条订阅记录？"))return;
+  try{
+    if(view==="cloud"){
+      const {error}=await db.from("subscription_records").delete().eq("id",id);
+      if(error)throw error;
+    }else{writeLocal(localRecords().filter(x=>x.id!==id))}
+    await load();
+  }catch(e){info("listMsg","删除失败："+friendlyError(e))}
+}
+el("export").addEventListener("click",()=>{
+  const blob=new Blob([JSON.stringify(records,null,2)],{type:"application/json;charset=utf-8"});
+  const url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download="aihub-subscriptions-"+(view==="cloud"?"cloud":"local")+".json";a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),3000);
+});
+el("importLocal").addEventListener("click",async()=>{
+  const local=localRecords();if(!db||!user||!local.length)return;
+  if(!confirm("将本机 "+local.length+" 条记录导入你的云端账户？重复导入不会重复创建同一条本机记录。"))return;
+  const button=el("importLocal");button.disabled=true;
+  try{
+    const rows=local.filter(x=>x.service&&x.date).map(x=>({
+      user_id:user.id,source_id:String(x.id||genId()),product_name:String(x.service).slice(0,120),
+      plan_label:String(x.plan||"").slice(0,80),renewal_date:x.date
+    }));
+    const {error}=await db.from("subscription_records").upsert(rows,{
+      onConflict:"user_id,source_id",ignoreDuplicates:true
+    });
+    if(error)throw error;
+    info("listMsg","已导入云端。原本机记录保留，可自行删除本机数据。");
+    await load();
+  }catch(e){info("listMsg","导入失败："+friendlyError(e))}
+  finally{button.disabled=false}
+});
+async function boot(){
+  if(configured()){
+    try{db=await client();await refreshAuth();
+      db.auth.onAuthStateChange((event)=>{
+        if(event==="SIGNED_IN"||event==="SIGNED_OUT"||event==="TOKEN_REFRESHED")
+          setTimeout(()=>refreshAuth().catch(()=>{}),0);
+      });
+    }catch(e){db=null;user=null;await load();info("loginMsg","云端连接失败："+friendlyError(e))}
+  }else await load();
+}
+boot();
+</script></body></html>
