@@ -6,5 +6,13 @@
   "background_color": "#090e1c",
   "theme_color": "#0b1020",
   "lang": "zh-CN",
-  "description": "AI 官方订阅信息导航中心"
+  "description": "AI 官方订阅信息导航中心",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
 }
