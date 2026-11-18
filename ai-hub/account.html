@@ -12,8 +12,8 @@ h1{font-size:clamp(28px,5vw,40px);margin:0 0 9px}h2{font-size:20px;margin:0 0 10
 .grid{display:grid;grid-template-columns:310px 1fr;gap:17px;margin-top:24px}
 .card{background:linear-gradient(145deg,#17243b,#111a2b);border:1px solid var(--line);border-radius:18px;padding:22px}
 .card p,.hint{font-size:13px}.hint{color:var(--muted)}.status{padding:10px 13px;background:#25354e;border-radius:12px;font-size:12px;color:#cddcf7}
-label{display:block;font-size:13px;font-weight:650;margin-top:13px}input,select{display:block;width:100%;background:#0b1424;color:white;border:1px solid #465875;border-radius:10px;padding:11px 12px;margin-top:7px;font:inherit}
-button{background:#e5eaff;color:#111727;border:0;border-radius:11px;padding:11px 16px;font-weight:800;cursor:pointer}button:disabled{opacity:.55;cursor:not-allowed}
+label{display:block;font-size:13px;font-weight:650;margin-top:13px}input,select,textarea{display:block;width:100%;background:#0b1424;color:white;border:1px solid #465875;border-radius:10px;padding:11px 12px;margin-top:7px;font:inherit}
+textarea{min-height:105px;resize:vertical}input[type=checkbox]{width:auto;display:inline;margin:0 8px 0 0}.consent{display:flex;align-items:flex-start;gap:5px;line-height:1.5;font-weight:400}button{background:#e5eaff;color:#111727;border:0;border-radius:11px;padding:11px 16px;font-weight:800;cursor:pointer}button:disabled{opacity:.55;cursor:not-allowed}
 button.subtle{border:1px solid #455675;background:transparent;color:#dbe5ff}
 .actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:15px}
 .row{border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 0}
@@ -65,6 +65,21 @@ button.subtle{border:1px solid #455675;background:transparent;color:#dbe5ff}
     <div class="notice">请勿在套餐备注中填写账号密码、支付资料或其他敏感信息。使用本机记录时，清除浏览器缓存可能导致数据丢失，建议定期导出备份。</div>
   </section>
 </div>
+<section class="card hidden" id="inquiryBox" style="margin-top:18px">
+  <h2>售前咨询</h2>
+  <p>对订阅方式或官方渠道有疑问？登录后可提交咨询，由 AI HUB 运营人员查看并通过注册邮箱联系你。<strong>这是咨询，不是购买订单，不代表任何品牌承诺开通。</strong></p>
+  <form id="inquiryForm">
+    <label for="inquiryService">咨询的 AI 服务</label>
+    <select id="inquiryService" required><option>ChatGPT</option><option>Claude</option><option>Gemini</option><option>DeepSeek</option><option>Perplexity</option><option>Midjourney</option><option>其他 AI 服务</option></select>
+    <label for="inquiryQuestion">你的问题（10–1000 字）</label>
+    <textarea id="inquiryQuestion" required minlength="10" maxlength="1000" placeholder="例如：我所在地区能否使用官方套餐？请勿提交密码、支付信息等敏感内容。"></textarea>
+    <label class="consent"><input type="checkbox" id="inquiryConsent" required><span>我同意 AI HUB 为处理本次咨询，使用我的注册邮箱与我联系。我已阅读 <a href="./privacy.html">隐私说明</a>。</span></label>
+    <div class="actions"><button id="inquirySubmit" type="submit">提交咨询</button></div>
+  </form>
+  <div id="inquiryMsg" class="msg" aria-live="polite"></div>
+  <h2 style="margin-top:25px">我的咨询</h2>
+  <div id="inquiryList" aria-live="polite"></div>
+</section>
 </div>
 <script src="./config.js"></script>
 <script type="module">
@@ -109,6 +124,7 @@ function drawLogin() {
   el("loginForm").classList.toggle("hidden", !db || Boolean(user));
   el("accountInfo").classList.toggle("hidden", !user);
   el("accountEmail").textContent=user?.email || "";
+  el("inquiryBox").classList.toggle("hidden", !db || !user);
   el("loginDescription").textContent=!db?"尚未配置云端账户服务，当前使用本机记录。":
     user?"已登录。订阅记录将保存到与你的账户关联的云端数据库。":"输入邮箱后接收官方登录邮件；无需设置密码。";
   info("mode", !db?"本机模式 · 云端尚未配置":user?"云端同步模式 · 已登录":"本机模式 · 可以登录后启用云端同步");
@@ -124,6 +140,7 @@ async function load() {
     .order("renewal_date",{ascending:true});
   if (error) {info("listMsg","加载失败："+friendlyError(error));return;}
   records=(data||[]).map(x=>({id:x.id,service:x.product_name,plan:x.plan_label,date:x.renewal_date}));draw();
+  await loadInquiries();
 }
 async function refreshAuth() {
   if (!db) {user=null;await load();return;}
@@ -200,6 +217,53 @@ el("importLocal").addEventListener("click",async()=>{
     info("listMsg","已导入云端。原本机记录保留，可自行删除本机数据。");
     await load();
   }catch(e){info("listMsg","导入失败："+friendlyError(e))}
+  finally{button.disabled=false}
+});
+
+async function loadInquiries(){
+  if(!db||!user)return;
+  const root=el("inquiryList");root.replaceChildren();
+  const {data,error}=await db.from("subscription_inquiries")
+    .select("id,service_name,question,status,created_at").order("created_at",{ascending:false}).limit(40);
+  if(error){info("inquiryMsg","查询咨询记录失败："+friendlyError(error));return;}
+  if(!(data||[]).length){const p=document.createElement("p");p.textContent="尚未提交咨询。";root.append(p);return;}
+  for(const item of data){
+    const row=document.createElement("div");row.className="row";
+    const detail=document.createElement("div");
+    const title=document.createElement("div");title.className="title";title.textContent=item.service_name;
+    const msg=document.createElement("div");msg.className="meta";msg.textContent=item.question;
+    const meta=document.createElement("div");meta.className="meta";
+    const status=item.status==="replied"?"已联系":item.status==="closed"?"已关闭":"待处理";
+    meta.textContent=status+" · "+new Date(item.created_at).toLocaleDateString();
+    detail.append(title,msg,meta);
+    const del=document.createElement("button");del.className="subtle";del.type="button";del.textContent="删除";
+    del.addEventListener("click",async()=>{
+      if(!confirm("删除这条咨询及其联系信息？"))return;
+      const {error}=await db.from("subscription_inquiries").delete().eq("id",item.id);
+      if(error){info("inquiryMsg",friendlyError(error));return;}
+      await loadInquiries();
+    });
+    row.append(detail,del);root.append(row);
+  }
+}
+el("inquiryForm").addEventListener("submit",async e=>{
+  e.preventDefault();if(!db||!user)return;
+  const question=el("inquiryQuestion").value.trim();
+  if(question.length<10||question.length>1000||!el("inquiryConsent").checked)return;
+  const button=el("inquirySubmit");button.disabled=true;
+  info("inquiryMsg","");
+  try{
+    const {error}=await db.from("subscription_inquiries").insert({
+      user_id:user.id,
+      contact_email:user.email,
+      service_name:el("inquiryService").value,
+      question,consent_to_contact:true,status:"pending"
+    });
+    if(error)throw error;
+    el("inquiryForm").reset();
+    info("inquiryMsg","咨询已提交。此记录不是订单，也不是购买确认。");
+    await loadInquiries();
+  }catch(error){info("inquiryMsg","提交失败："+friendlyError(error))}
   finally{button.disabled=false}
 });
 async function boot(){
