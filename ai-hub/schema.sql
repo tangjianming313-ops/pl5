@@ -164,3 +164,28 @@ drop policy if exists "Inquiries owner delete" on public.subscription_inquiries;
 create policy "Inquiries owner delete" on public.subscription_inquiries
  for delete to authenticated using (user_id = (select auth.uid()));
 grant delete on public.subscription_inquiries to authenticated;
+
+-- Allow staff to change workflow status but not rewrite customer identity/content.
+revoke update on public.subscription_inquiries from authenticated;
+grant update (status, updated_at) on public.subscription_inquiries to authenticated;
+
+-- Minimal database-side abuse limit: 3 inquiries per user per rolling 24h.
+-- Additional anti-bot, email verification and edge rate limits are still required.
+create or replace function public.guard_inquiry_submission()
+returns trigger language plpgsql set search_path = ''
+as $$
+begin
+  -- Prevent clients from backdating records or choosing a privileged status.
+  new.created_at := now();
+  new.updated_at := now();
+  new.status := 'pending';
+  if (select count(*) from public.subscription_inquiries
+      where user_id = new.user_id and created_at > now() - interval '24 hours') >= 3 then
+    raise exception 'Daily inquiry limit reached';
+  end if;
+  return new;
+end;
+$$;
+drop trigger if exists trg_inquiry_guard on public.subscription_inquiries;
+create trigger trg_inquiry_guard before insert on public.subscription_inquiries
+for each row execute function public.guard_inquiry_submission();
