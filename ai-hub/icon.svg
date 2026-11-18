@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="AI HUB">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8b9cff"/><stop offset="1" stop-color="#55d6c2"/></linearGradient></defs>
+<rect width="512" height="512" rx="118" fill="#0b1020"/>
+<rect x="52" y="52" width="408" height="408" rx="100" fill="url(#g)"/>
+<path d="M136 330L200 181h36l64 149h-39l-14-35h-60l-14 35zm62-67h38l-19-50z" fill="#11192a"/>
+<path d="M320 181h40v149h-40z" fill="#11192a"/>
+</svg>
