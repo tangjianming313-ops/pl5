@@ -1,6 +1,6 @@
 // AI HUB PWA: cache only own-origin static pages. Never cache Supabase user data.
-const CACHE = 'ai-hub-v4';
-const STATIC = ['./','./index.html','./account.html','./admin.html','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./cloud.js','./config.js'];
+const CACHE = 'ai-hub-v5';
+const STATIC = ['./','./index.html','./account.html','./admin.html','./privacy.html','./terms.html','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./cloud.js','./config.js'];
 self.addEventListener('install',e=>{
   e.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(STATIC)).then(()=>self.skipWaiting()));
 });
