@@ -1,1 +1,153 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI HUB 管理后台规划</title><style>body{background:#0b1020;color:#eaf0ff;font:15px/1.6 system-ui;max-width:800px;margin:40px auto;padding:20px}section{background:#142039;border:1px solid #2c3d5b;border-radius:18px;padding:22px;margin:18px 0}a{color:#acbaff}span{color:#aab9d0}h1{font-size:30px}</style></head><body><a href="./index.html">← 返回商城</a><h1>AI HUB 管理后台</h1><section><h2>后台尚未启用</h2><p>本页面仅为开发规划，不是已上线的管理员入口。不能通过静态网页提供安全的管理员登录、真实订单管理或支付管理。</p></section><section><h2>下一阶段模块</h2><p>商品管理：上架、下架、授权证明、官方购买链接</p><p>订单管理：仅在获得销售授权并接入合规支付后启用</p><p>用户管理：服务端身份验证、角色权限、操作审计</p><p>运营配置：公告、分类、服务说明</p></section><span>建议后端：Supabase Auth + Row Level Security；支付回调必须由服务端验证。</span></body></html>
+<!doctype html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1020"><title>管理后台｜AI HUB</title>
+<style>
+:root{color-scheme:dark;--bg:#090e1c;--card:#141f33;--line:#30405b;--muted:#a7b7cc}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 60% 0%,#24355b,transparent 54%),var(--bg);color:#edf2ff;font:15px/1.6 system-ui,-apple-system,sans-serif}
+.wrap{max-width:1100px;margin:auto;padding:15px 20px 70px}a{color:#afc0ff;text-decoration:none}
+header{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:13px 0 28px}
+.brand{font-weight:800;letter-spacing:.08em;color:#fff}h1{font-size:36px;margin:3px 0}h2{font-size:20px;margin:0 0 12px}
+p,.muted{color:var(--muted)}.status{background:#202e47;border:1px solid #3b4c66;border-radius:12px;padding:12px 16px;font-size:13px;margin:15px 0}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:19px;padding:20px;margin-top:17px}
+.cols{display:grid;grid-template-columns:360px 1fr;gap:18px;align-items:start}
+label{display:block;font-size:13px;margin:13px 0 0;font-weight:650}
+input,select,textarea{display:block;width:100%;font:inherit;color:#fff;background:#0a1526;border:1px solid #455979;padding:11px 12px;border-radius:10px;margin-top:6px}
+textarea{resize:vertical;min-height:75px}button{border:0;border-radius:10px;background:#e0e7ff;color:#121a30;padding:10px 13px;cursor:pointer;font-weight:750}
+button.secondary{background:#273855;color:#e8efff;border:1px solid #52617a}
+button.warn{background:#48313a;color:#ffced5;border:1px solid #754d56}
+button:disabled{opacity:.55;cursor:not-allowed}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:17px}
+.item{border-top:1px solid #34445b;padding:14px 0;display:flex;gap:12px;align-items:start;justify-content:space-between}
+.pname{font-weight:800}.details{font-size:12px;color:var(--muted);overflow-wrap:anywhere}
+.pill{display:inline-block;font-size:11px;border-radius:8px;background:#2e405a;padding:3px 7px;margin-top:4px}
+.msg{min-height:25px;color:#a8e6ce;font-size:13px}
+.hidden{display:none!important}
+@media(max-width:760px){.cols{grid-template-columns:1fr}.wrap{padding:15px}.panel{padding:16px}}
+</style></head><body><div class="wrap">
+<header><a href="./index.html" class="brand">AI HUB / 管理后台</a><a href="./index.html">返回商城</a></header>
+<h1>商品管理</h1>
+<p>只有列入管理员名单的账户才能编辑商品。当前不开放未经授权的第三方订阅转售，也不支持站内收款。</p>
+<div id="status" class="status" aria-live="polite">正在检查数据库与管理员权限…</div>
+<section id="app" class="cols hidden">
+  <div class="panel">
+    <h2 id="formTitle">添加商品</h2>
+    <form id="productForm">
+      <input id="editId" type="hidden">
+      <label for="name">商品名称</label><input id="name" maxlength="100" required placeholder="例如 ChatGPT">
+      <label for="slug">唯一标识（英文）</label><input id="slug" maxlength="70" required pattern="[a-z0-9-]+" placeholder="例如 chatgpt">
+      <label for="cat">分类</label><select id="cat"><option value="chat">AI 对话</option><option value="research">研究搜索</option><option value="creative">创作工具</option></select>
+      <label for="url">服务商官方地址（HTTPS）</label><input id="url" type="url" required placeholder="https://...">
+      <label for="description">商品描述</label><textarea id="description" maxlength="500" placeholder="用途与服务说明"></textarea>
+      <label for="statusValue">展示状态</label><select id="statusValue"><option value="draft">草稿（仅管理员可见）</option><option value="published">发布（公开展示）</option><option value="archived">归档（不展示）</option></select>
+      <div class="actions"><button type="submit" id="save">保存商品</button><button type="button" class="secondary" id="clear">清空表单</button></div>
+    </form>
+    <div id="formMsg" class="msg" aria-live="polite"></div>
+  </div>
+  <div class="panel">
+    <h2>商品列表</h2>
+    <p class="muted">官方订阅页面由顾客直接访问。发布前需要人工核对 URL、地区资格以及品牌相关政策。</p>
+    <div id="products" aria-live="polite"></div>
+    <div id="listMsg" class="msg" aria-live="polite"></div>
+    <button class="secondary" id="signOut" type="button">退出管理员账户</button>
+  </div>
+</section>
+<section class="panel" id="setup">
+  <h2>安全部署说明</h2>
+  <p>正式启用前需要：配置 Supabase 项目、执行 <code>schema-v2.sql</code>、启用邮箱登录，并在 SQL Editor 中将指定用户 ID 加入 <code>staff_members</code> 表。</p>
+  <p>管理员权限由数据库 RLS 检查。页面隐藏不能代替权限控制，网站前端也不能保存 Supabase service_role 密钥。</p>
+  <p>请先通过 <a href="./account.html">会员中心</a> 登录，再返回本页。</p>
+</section>
+</div>
+<script src="./config.js"></script>
+<script type="module">
+import {client,configured,friendlyError} from "./cloud.js";
+const el = id => document.getElementById(id);
+let db=null,user=null,products=[];
+const say=(id,text)=>el(id).textContent=text||"";
+function clearForm(){
+ el("productForm").reset();el("editId").value="";el("formTitle").textContent="添加商品";say("formMsg","");
+}
+function validateUrl(value){
+ const url=new URL(value);
+ if(url.protocol!=="https:"||url.username||url.password||url.hostname.includes(" ")) throw Error("必须填写真实的 HTTPS 官方订阅地址。");
+ return url.toString();
+}
+function getForm(){
+ const name=el("name").value.trim(),slug=el("slug").value.trim().toLowerCase();
+ if(!name||!/^[a-z0-9-]+$/.test(slug))throw Error("请填写正确的名称和英文商品标识。");
+ return {name,slug,description:el("description").value.trim(),
+  category:el("cat").value,status:el("statusValue").value,
+  official_url:validateUrl(el("url").value)};
+}
+function editProduct(x){
+ el("editId").value=x.id;el("name").value=x.name;el("slug").value=x.slug;
+ el("description").value=x.description||"";el("cat").value=x.category;
+ el("url").value=x.official_url;el("statusValue").value=x.status;
+ el("formTitle").textContent="编辑："+x.name;
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+function draw(){
+ const root=el("products");root.replaceChildren();
+ if(!products.length){const p=document.createElement("p");p.textContent="暂时没有商品。";root.append(p);return;}
+ products.forEach(x=>{
+  const row=document.createElement("div");row.className="item";
+  const left=document.createElement("div");
+  const name=document.createElement("div");name.className="pname";name.textContent=x.name;
+  const slug=document.createElement("div");slug.className="details";slug.textContent=x.slug+" · "+x.official_url;
+  const badge=document.createElement("span");badge.className="pill";
+  badge.textContent=x.status==="published"?"已上架":x.status==="archived"?"已归档":"草稿";
+  left.append(name,slug,badge);
+  const actions=document.createElement("div");actions.className="actions";actions.style.marginTop="0";
+  const edit=document.createElement("button");edit.className="secondary";edit.textContent="编辑";edit.onclick=()=>editProduct(x);
+  const del=document.createElement("button");del.className="warn";del.textContent="删除";
+  del.onclick=()=>removeProduct(x);
+  actions.append(edit,del);row.append(left,actions);root.append(row);
+ });
+}
+async function load(){
+ const {data,error}=await db.from("catalog_products")
+  .select("id,slug,name,description,official_url,category,status,authorized_resale")
+  .order("created_at",{ascending:false});
+ if(error)throw error;
+ products=data||[];draw();
+}
+async function removeProduct(x){
+ if(!confirm("永久删除商品「"+x.name+"」？如只是暂时下架，建议改为草稿。"))return;
+ try{
+  const {error}=await db.from("catalog_products").delete().eq("id",x.id);
+  if(error)throw error;await load();say("listMsg","商品已删除。");
+ }catch(e){say("listMsg","删除失败："+friendlyError(e))}
+}
+el("productForm").addEventListener("submit",async e=>{
+ e.preventDefault();const save=el("save");save.disabled=true;say("formMsg","");
+ try{
+  const payload=getForm(),id=el("editId").value;
+  const result=id?await db.from("catalog_products").update(payload).eq("id",id):
+    await db.from("catalog_products").insert({...payload,authorized_resale:false});
+  if(result.error)throw result.error;
+  clearForm();await load();say("formMsg","商品已保存。");
+ }catch(e){say("formMsg","保存失败："+friendlyError(e))}
+ finally{save.disabled=false}
+});
+el("clear").onclick=clearForm;
+el("signOut").onclick=async()=>{
+ const {error}=await db.auth.signOut();if(error){say("listMsg",friendlyError(error));return}
+ location.assign("./account.html");
+};
+async function boot(){
+ if(!configured()){say("status","尚未配置云端：请先填写 config.js 中的 Supabase URL 与 publishable/anon key。");return}
+ try{
+  db=await client();
+  const auth=await db.auth.getUser();if(auth.error)throw auth.error;
+  user=auth.data.user;
+  if(!user){say("status","尚未登录：请先到会员中心通过邮箱登录。");return}
+  const {data:staff,error}=await db.from("staff_members").select("user_id").eq("user_id",user.id).maybeSingle();
+  if(error)throw error;
+  if(!staff){say("status","该账户不是管理员，无法查看或修改商品。管理员由项目所有者在数据库中授权。");return}
+  await load();
+  say("status","管理员已验证："+(user.email||"")+". 可以编辑商品。");
+  el("app").classList.remove("hidden");el("setup").classList.add("hidden");
+ }catch(e){say("status","后台未就绪："+friendlyError(e))}
+}
+boot();
+</script></body></html>
