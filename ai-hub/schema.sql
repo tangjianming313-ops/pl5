@@ -108,3 +108,54 @@ on conflict (slug) do nothing;
 -- then run in SQL Editor (replace the placeholder UUID):
 -- insert into public.staff_members(user_id) values ('YOUR_AUTH_USER_UUID')
 -- on conflict (user_id) do nothing;
+
+
+-- v0.4: Optional pre-sale questions. This is not an order or payment record.
+create table if not exists public.subscription_inquiries (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  contact_email text not null check (length(contact_email) between 3 and 254),
+  service_name text not null check (length(service_name) between 1 and 100),
+  question text not null check (length(question) between 10 and 1000),
+  consent_to_contact boolean not null default false check (consent_to_contact = true),
+  status text not null default 'pending'
+    check (status in ('pending','replied','closed')),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+create index if not exists inquiries_owner_created_idx
+  on public.subscription_inquiries (user_id, created_at desc);
+create index if not exists inquiries_status_created_idx
+  on public.subscription_inquiries (status, created_at desc);
+alter table public.subscription_inquiries enable row level security;
+drop policy if exists "Inquiries owner select" on public.subscription_inquiries;
+drop policy if exists "Inquiries owner insert" on public.subscription_inquiries;
+drop policy if exists "Inquiries staff select" on public.subscription_inquiries;
+drop policy if exists "Inquiries staff update" on public.subscription_inquiries;
+
+create policy "Inquiries owner select" on public.subscription_inquiries
+ for select to authenticated using (user_id = (select auth.uid()));
+
+create policy "Inquiries owner insert" on public.subscription_inquiries
+ for insert to authenticated with check (
+   user_id = (select auth.uid())
+   and contact_email = (select auth.jwt() ->> 'email')
+   and status = 'pending'
+   and consent_to_contact = true
+ );
+
+create policy "Inquiries staff select" on public.subscription_inquiries
+ for select to authenticated using (
+   exists (select 1 from public.staff_members s where s.user_id = (select auth.uid()))
+ );
+
+create policy "Inquiries staff update" on public.subscription_inquiries
+ for update to authenticated
+ using (exists (select 1 from public.staff_members s where s.user_id = (select auth.uid())))
+ with check (exists (select 1 from public.staff_members s where s.user_id = (select auth.uid())));
+
+revoke all on public.subscription_inquiries from anon, authenticated;
+grant select, insert, update on public.subscription_inquiries to authenticated;
+-- No browser-side DELETE policy. User deletion requests require operator processing.
+-- This prototype has no backend spam protection. Before production, configure CAPTCHA,
+-- abuse protection and request rate limiting at the API / gateway layer.
