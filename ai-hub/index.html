@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1020"><meta name="description" content="AI HUB 一站式 AI 官方订阅导航与会员服务中心">
+<link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icon.svg" type="image/svg+xml">
+<title>AI HUB｜一站式 AI 订阅中心</title>
+<style>
+:root{color-scheme:dark;--bg:#090e1c;--panel:#111a2d;--panel2:#17233a;--line:#263550;--muted:#9aa9c1;--text:#f3f6fc;--accent:#8b9cff;--accent2:#55d6c2}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 75% -10%,#25356a 0,transparent 42%),var(--bg);color:var(--text);font:15px/1.55 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:inherit;text-decoration:none}.wrap{max-width:1160px;margin:auto;padding:0 22px}.top{height:76px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ffffff12}.brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:.08em}.logo{width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,#8b9cff,#55d6c2);display:grid;place-items:center;color:#09111e;font-weight:900}.nav{display:flex;gap:25px;color:var(--muted);font-size:13px}.nav a:hover{color:white}.topbtn,.primary{border:0;border-radius:12px;padding:11px 16px;background:#e9edff;color:#11182b;font-weight:750;cursor:pointer}.hero{padding:72px 0 48px;display:grid;grid-template-columns:1.2fr .8fr;gap:36px;align-items:center}.eyebrow{color:var(--accent2);font-size:12px;letter-spacing:.18em;font-weight:800}.hero h1{font-size:clamp(38px,6vw,66px);line-height:1.08;letter-spacing:-.045em;margin:15px 0}.hero p{max-width:590px;color:#aebbd0;font-size:16px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}.secondary{border:1px solid var(--line);background:#ffffff08;color:#e9efff;border-radius:12px;padding:11px 16px;font-weight:700}.hero-card{border:1px solid #ffffff18;border-radius:24px;padding:24px;background:linear-gradient(145deg,#182744dd,#101729dd);box-shadow:0 25px 80px #0006}.hero-card .big{font-size:36px;font-weight:800}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}.stat{padding:14px;border-radius:14px;background:#ffffff08}.stat b{display:block;font-size:18px}.stat span{font-size:11px;color:var(--muted)}.section{padding:34px 0}.section-head{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:20px}.section h2{font-size:25px;margin:0 0 5px}.sub{color:var(--muted);font-size:13px}.tools{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}.search{flex:1;min-width:190px;background:#111a2d;border:1px solid var(--line);border-radius:12px;padding:12px 14px;color:white}.chip{border:1px solid var(--line);border-radius:999px;padding:9px 14px;background:#ffffff08;color:#bdc9dc;cursor:pointer}.chip.active{background:#dce3ff;color:#11182b;border-color:#dce3ff}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.product{background:linear-gradient(155deg,#151f34,#101827);border:1px solid var(--line);border-radius:19px;padding:19px;display:flex;flex-direction:column;min-height:230px;transition:.2s}.product:hover{transform:translateY(-3px);border-color:#6275a7}.product-top{display:flex;align-items:center;gap:12px}.picon{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:#ffffff12;font-weight:850;font-size:16px}.product h3{margin:0;font-size:16px}.product small{color:var(--muted)}.tag{margin-left:auto;font-size:10px;padding:5px 8px;border-radius:99px;background:#273a59;color:#b9cbff}.product p{color:#aab8cd;font-size:13px;flex:1}.product-foot{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #ffffff12;padding-top:13px}.official{font-size:12px;color:var(--accent2)}.go{font-size:12px;font-weight:800;color:#11182b;background:#e4eaff;padding:9px 12px;border-radius:10px}.notice{border:1px solid #4c5a7c;background:#121d33;border-radius:16px;padding:18px;color:#b8c5da;font-size:12px}.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.step{border:1px solid var(--line);background:#ffffff06;border-radius:16px;padding:18px}.step b{display:block;margin:8px 0}.step span{color:var(--muted);font-size:12px}.footer{border-top:1px solid #ffffff12;margin-top:45px;padding:28px 0 42px;color:var(--muted);font-size:12px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+@media(max-width:760px){.nav{display:none}.hero{grid-template-columns:1fr;padding:48px 0 25px}.hero-card{max-width:520px}.grid{grid-template-columns:repeat(2,1fr)}.steps{grid-template-columns:1fr}.section-head{align-items:start;flex-direction:column}}
+@media(max-width:480px){.wrap{padding:0 16px}.grid{grid-template-columns:1fr}.hero h1{font-size:42px}.stats{grid-template-columns:repeat(3,1fr)}}
+</style></head>
+<body><header class="wrap top"><a class="brand" href="#"><span class="logo">AI</span><span>AI HUB</span></a><nav class="nav"><a href="#market">订阅商城</a><a href="#how">购买流程</a><a href="#support">服务说明</a><a href="./account.html">我的订阅</a><a href="./account.html#inquiryBox">售前咨询</a></nav><a class="topbtn" href="./account.html">我的订阅</a></header>
+<main class="wrap"><section class="hero"><div><div class="eyebrow">ONE PLACE · MANY AI SERVICES</div><h1>让 AI 订阅<br><span style="color:#a9b6ff">简单一点。</span></h1><p>集中发现主流 AI 服务，查看官方套餐信息，并安全跳转至服务商官方页面完成订阅。清晰、透明，不碰账号密码。</p><div class="actions"><a class="primary" href="#market">探索 AI 服务 ↗</a><a class="secondary" href="./account.html">管理我的订阅</a><a class="secondary" href="./account.html#inquiryBox">咨询官方订阅方式</a></div></div><div class="hero-card"><div class="eyebrow">AI SUBSCRIPTION DIRECTORY</div><div class="big">你的 AI 服务入口</div><p>从对话、研究到创作，按需求找到合适的官方 AI 服务。</p><div class="stats"><div class="stat"><b>多品牌</b><span>集中发现</span></div><div class="stat"><b>官方渠道</b><span>跳转订阅</span></div><div class="stat"><b>透明说明</b><span>政策优先</span></div></div></div></section>
+<section id="market" class="section"><div class="section-head"><div><h2>精选 AI 服务</h2><div class="sub">选择服务后前往品牌官方页面，价格与资格以官方页面为准。</div></div></div><div class="tools"><input id="search" class="search" placeholder="搜索 AI 服务，例如 ChatGPT、写作、图片…" aria-label="搜索 AI 服务"><button class="chip active" data-filter="all">全部</button><button class="chip" data-filter="chat">AI 对话</button><button class="chip" data-filter="research">研究搜索</button><button class="chip" data-filter="creative">创作工具</button></div><div id="products" class="grid"></div><p id="catalogNote" class="sub" role="status"></p></section>
+<section id="how" class="section"><div class="section-head"><div><h2>简单三步，完成订阅</h2><div class="sub">首期采用官方渠道购买，避免非授权账号交付风险。</div></div></div><div class="steps"><div class="step"><div class="eyebrow">01 / DISCOVER</div><b>选择 AI 服务</b><span>查看服务用途、套餐类型与官方说明。</span></div><div class="step"><div class="eyebrow">02 / VERIFY</div><b>核对官方价格</b><span>确认所在地区、币种、税费和订阅资格。</span></div><div class="step"><div class="eyebrow">03 / SUBSCRIBE</div><b>前往官方订阅</b><span>在服务商网站或应用内自行完成付款与账户管理。</span></div></div></section>
+<section id="support" class="section"><div class="notice"><b style="color:#edf2ff">订阅与授权说明</b><br><br>AI HUB 当前为官方订阅信息导航原型，不代表任何 AI 品牌的官方代理或合作伙伴。所有商标归其各自权利人所有。实际套餐、价格、地区可用性、退款与自动续费规则均以服务商官方页面为准。本站不会要求用户提交第三方账号密码，也不销售未经授权的共享账号。后续如取得正式授权，可再上线平台内订单与支付功能。</div></section>
+<footer class="footer"><span>© 2026 AI HUB · AI Subscription Center</span><span>独立信息导航平台 · 非服务商官方站点 · <a href="./privacy.html">隐私说明</a> · <a href="./terms.html">使用说明</a> · <a href="./admin.html">管理后台</a></span></footer></main>
+<script src="./config.js"></script>
+<script type="module">
+import {client,configured} from "./cloud.js";
+const fallback=[
+{name:"ChatGPT",mark:"GPT",cat:"chat",desc:"通用 AI 助手，适合对话、推理、写作、编程与文件分析。",plan:"官方套餐",url:"https://chatgpt.com/pricing/",tag:"热门"},
+{name:"Claude",mark:"C",cat:"chat",desc:"面向长文本理解、写作、代码协作与复杂任务的 AI 助手。",plan:"官方套餐",url:"https://claude.com/pricing",tag:"写作"},
+{name:"Gemini",mark:"G",cat:"chat",desc:"Google AI 多模态助手与 Google 生态服务。",plan:"官方套餐",url:"https://gemini.google/subscriptions/",tag:"多模态"},
+{name:"DeepSeek",mark:"DS",cat:"chat",desc:"提供对话与推理能力；付费服务及方案以官方信息为准。",plan:"官方信息",url:"https://www.deepseek.com/",tag:"推理"},
+{name:"Perplexity",mark:"P",cat:"research",desc:"AI 搜索与研究工具，适合资料检索与来源追踪。",plan:"官方套餐",url:"https://www.perplexity.ai/pro",tag:"研究"},
+{name:"Midjourney",mark:"MJ",cat:"creative",desc:"AI 图像生成服务，查看官方方案与使用规则。",plan:"官方套餐",url:"https://www.midjourney.com/plans",tag:"图像"}
+];
+const root=document.getElementById("products"),search=document.getElementById("search");
+const note=document.getElementById("catalogNote");
+let items=fallback,filter="all";
+function textNode(tag,cls,value){
+ const e=document.createElement(tag);if(cls)e.className=cls;e.textContent=value||"";return e;
+}
+const officialDomains={
+ "ChatGPT":["chatgpt.com","openai.com"],
+ "Claude":["claude.com","anthropic.com"],
+ "Gemini":["gemini.google","google.com"],
+ "DeepSeek":["deepseek.com"],
+ "Perplexity":["perplexity.ai"],
+ "Midjourney":["midjourney.com"]
+};
+function matchKnown(name){
+ return Object.keys(officialDomains).find(label=>name===label||name.startsWith(label+" "))||null;
+}
+function allowedUrl(s,name){
+ try{
+  const u=new URL(s);
+  if(u.protocol!=="https:"||u.username||u.password)return null;
+  const brand=matchKnown(name);
+  if(brand&&!officialDomains[brand].some(domain=>u.hostname===domain||u.hostname.endsWith("."+domain)))return null;
+  return u.href;
+ }catch{return null}
+}
+function render(){
+ const q=search.value.trim().toLowerCase();
+ const rows=items.filter(x=>(filter==="all"||x.cat===filter)&&(!q||
+  (x.name+" "+x.desc+" "+x.plan).toLowerCase().includes(q)));
+ root.replaceChildren();
+ if(!rows.length){root.append(textNode("div","notice","暂无匹配的 AI 服务。"));return}
+ rows.forEach(x=>{
+  const url=allowedUrl(x.url,x.name);
+  if(!url)return;
+  const article=document.createElement("article");article.className="product";
+  const top=textNode("div","product-top","");
+  const icon=textNode("div","picon",x.mark||x.name.slice(0,2));
+  const heading=document.createElement("div");heading.append(
+   textNode("h3","",x.name),textNode("small","",x.plan));
+  top.append(icon,heading,textNode("span","tag",x.tag||"AI 服务"));
+  const desc=textNode("p","",x.desc);
+  const foot=textNode("div","product-foot","");
+  const official=textNode("span","official","↗ "+new URL(url).hostname);
+  const link=textNode("a","go",matchKnown(x.name)?"查看官方方案":"访问外部网站");
+  link.href=url;link.target="_blank";link.rel="noopener noreferrer";
+  foot.append(official,link);article.append(top,desc,foot);root.append(article);
+ });
+}
+document.querySelectorAll("[data-filter]").forEach(b=>
+ b.addEventListener("click",()=>{
+  document.querySelectorAll("[data-filter]").forEach(n=>n.classList.remove("active"));
+  b.classList.add("active");filter=b.dataset.filter;render();
+ }));
+search.addEventListener("input",render);
+render();
+if(configured()){
+ try{
+  const db=await client();
+  const {data,error}=await db.from("catalog_products")
+    .select("name,slug,description,official_url,category,status")
+    .eq("status","published").order("name",{ascending:true});
+  if(error)throw error;
+  items=(data||[]).map(x=>({
+   name:x.name,mark:x.name.slice(0,2).toUpperCase(),
+   cat:x.category,desc:x.description,plan:"查看官方套餐",
+   url:x.official_url,tag:"官方入口"
+  }));
+  note.textContent="当前目录来自 AI HUB 商品后台；点击后前往外部服务商官网。";
+  render();
+ }catch(e){
+  note.textContent="云端商品暂不可用，正在显示静态示例目录。请以服务商官网信息为准。";
+ }
+}else note.textContent="当前为静态示例目录，尚未接入在线商品数据库。";
+if("serviceWorker" in navigator && location.protocol.startsWith("http")){
+ window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+}
+</script></body></html>
