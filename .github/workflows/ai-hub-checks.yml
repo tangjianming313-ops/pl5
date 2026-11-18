@@ -1,0 +1,26 @@
+name: AI HUB checks
+
+on:
+  push:
+    branches: [ai-hub-prototype]
+    paths:
+      - 'ai-hub/**'
+      - '.github/workflows/ai-hub-checks.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ai-hub
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax, links and PWA asset checks
+        run: npm test
