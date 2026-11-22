@@ -76,3 +76,18 @@
 @media(max-width:750px){.mobile-bottom-nav:has([data-mobile-tab="strategy789"]){grid-template-columns:repeat(6,minmax(0,1fr))}.mobile-bottom-nav button[data-mobile-tab="strategy789"]{color:#145de8;font-weight:750}.mobile-bottom-nav button[data-mobile-tab="strategy789"].active{color:#0753d4}}
 
 @media(max-width:390px){.mobile-bottom-nav:has([data-mobile-tab="strategy789"]) button{font-size:9px;padding-inline:1px}.mobile-bottom-nav:has([data-mobile-tab="strategy789"]) .nav-icon{font-size:19px}}
+
+/* Fixed 7+8+9 seven-part copy and profit tables */
+#strategy789 .s789-batch-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:7px;margin-top:8px}
+#strategy789 .s789-batch-btn{border-radius:11px;padding:10px 5px;min-height:44px;text-align:center;background:#eef6ff;color:#316387;border:1px solid #cbdff1;font-size:11px;font-weight:800;transition:background .16s,border .16s}
+#strategy789 .s789-batch-btn.active{background:linear-gradient(110deg,#185ee0,#247fdb);border-color:#1467df;color:white;box-shadow:0 4px 12px #1468df26}
+#strategy789 .s789-batch-btn:disabled{opacity:.48;cursor:not-allowed}
+#strategy789 .s789-batch-text{width:100%;display:block;resize:vertical;min-height:190px;height:230px;margin:10px 0;background:#f8fbff!important;color:#244463!important;font:500 13px/1.7 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace!important;letter-spacing:1px;border:1px solid #d8e6f2;border-radius:13px;padding:13px}
+#strategy789 .s789-subhead{margin-top:24px!important}
+#strategy789 #s789Breakdown .s789-tablewrap{margin-top:9px}
+#strategy789 #s789Breakdown table{min-width:500px}
+#strategy789 #s789Breakdown td strong{color:#173f69}
+#strategy789 #s789Breakdown .s789-neg{color:#b8434f;font-weight:780}
+#strategy789 #s789Breakdown .s789-pos{color:#118464;font-weight:780}
+@media(max-width:850px){#strategy789 .s789-batch-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:420px){#strategy789 .s789-batch-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}#strategy789 .s789-batch-btn{padding:9px 3px;min-height:41px;font-size:10px}#strategy789 .s789-batch-text{height:215px;font-size:12px!important}}
