@@ -8,7 +8,7 @@ var SETS=[
  {id:'9',name:'固定9码',digits:['123456789','012345789','012345689','012345789']}
 ];
 var P=['05','16','27','38','49'], ALL=10000, STAKE=.1,PRIZE=932;
-var get=function(id){return document.getElementById(id)},historyRows=[],metadata=null,info=[],recentRecords=[],nowPools=null,nowBase=null,nowBaseKey='',ready=false,busy=false;
+var get=function(id){return document.getElementById(id)},historyRows=[],metadata=null,info=[],recentRecords=[],nowPools=null,nowBase=null,nowBaseKey='',lastHistoryKey='',ready=false,busy=false;
 var nfmt=function(n){return Number(n).toLocaleString('zh-CN',{maximumFractionDigits:2})};
 var money=function(n){return (n>=0?'+':'-')+'¥'+Math.abs(n).toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2})};
 var strmoney=function(n){return '¥'+n.toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2})};
@@ -80,7 +80,7 @@ function recordForIndex(index){return recentRecords.find(function(r){return r.as
 function issueOrIndex(index){var r=recordForIndex(index);return r&&r.issue?r.issue:'历史第'+(index+1)+'条'}
 function actualHits(record,code){var n=Number(code);return record.poolBits.map(function(b){return hasCode(b,n)?1:0})}
 function verifyRecord(record){
- if(record.asOfIndex>=historyRows.length)return null;
+ if(record.asOfIndex>=historyRows.length||historyRows[record.asOfIndex-1]!==record.baseLast)return null;
  var act=historyRows[record.asOfIndex];
  var a=actualHits(record,act),hits=a.reduce(function(x,y){return x+y},0);
  return {actual:act,tiers:a,hits:hits,cost:record.counts.reduce(function(x,y){return x+y},0)*STAKE,prize:hits*PRIZE};
@@ -236,8 +236,8 @@ function importRecords(file){
 function onHistoryChange(hist,meta){
  if(!Array.isArray(hist)||hist.length<20)return;
  var key=hist.length+'|'+hist.slice(-10).join('/');
- if(ready&&key===nowBaseKey.replace(/\|/g,'|')&&meta===metadata)return;
- historyRows=hist.slice();metadata=meta||null;nowBaseKey='';ready=true;recentRecords=saved();
+ if(ready&&key===lastHistoryKey){metadata=meta||metadata;get('s789Issue').textContent=currentIssue();return;}
+ lastHistoryKey=key;historyRows=hist.slice();metadata=meta||null;nowBaseKey='';ready=true;recentRecords=saved();
  updateInputs();renderRecords();
 }
 function init(){
