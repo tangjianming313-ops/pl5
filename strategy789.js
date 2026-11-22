@@ -223,6 +223,68 @@ async function backtestSimulation(n){
   ['预期覆盖',expectedHitPeriods.toFixed(1)+'期'],['预期中奖注数',expectedHits.toFixed(1)+'注'],['累计投入期望',strmoney(totalCost)],['中奖奖金期望',strmoney(expectedHits*PRIZE)],['模拟净收益期望',money(expectedHits*PRIZE-totalCost)],['平均每期注数',nfmt(averageSizes.reduce(function(a,b){return a+b},0)/period)]
  ],'7/8/9各套平均注数：'+averageSizes.map(function(c){return nfmt(c/period)}).join(' / ')+'。这里对每期10种对数组合计算等概率数学期望，不会生成实际的整数命中期数，不能据此统计真实连中、连错。',rows.reverse(),['历史序号','开奖','随机覆盖概率','预期中奖','平均成本']);
 }
+/* 事后条件随机：每期先看实际开奖号，随机选两组均未完整出现的对数。
+   此计算使用当期未来信息，仅作理想化条件模拟；绝不可计入实盘回测。 */
+function safeRandom(seed){
+ var state=(Number(seed)>>>0)||1;
+ return function(){
+  state=(state+0x6D2B79F5)>>>0;
+  var t=state;
+  t=Math.imul(t^(t>>>15),t|1);
+  t^=t+Math.imul(t^(t>>>7),t|61);
+  return ((t^(t>>>14))>>>0)/4294967296;
+ }
+}
+async function backtestSafeRandom(n){
+ var seed=Number(get('s789RandomSeed').value);
+ if(!Number.isSafeInteger(seed)||seed<1||seed>4294967295)throw Error('随机种子须在1—4294967295之间。');
+ var random=safeRandom(seed),combos=comboMasks(),end=historyRows.length,start=Math.max(0,end-n);
+ var totalCost=0,totalPrize=0,totalHits=0,totalHitPeriods=0,totalGroups=0,byTier=[0,0,0],byTierGroups=[0,0,0],distribution=[0,0,0,0],missStreak=0,hitStreak=0,maxMiss=0,maxHit=0,maxMissStart=-1,maxMissEnd=-1,maxHitStart=-1,maxHitEnd=-1;
+ var records=[];
+ for(var i=start;i<end;i++){
+  var actual=historyRows[i],candidate=info[Number(actual)],actualPairMask=bits(actual);
+  var safe=combos.filter(function(p){return !(p.mask&actualPairMask)});
+  if(!safe.length)throw Error('历史第'+(i+1)+'期找不到两组排不中的对数。');
+  var chosen=safe[Math.floor(random()*safe.length)];
+  var base=baseFor(historyRows.slice(0,i)),sizes=sumCountsForBase(base,chosen.mask);
+  var nGroups=sizes[0]+sizes[1]+sizes[2],cost=nGroups*STAKE;
+  var eligible=!!candidate&&base.some(function(e){return e.n===Number(actual)});
+  var tiers=[0,0,0];
+  if(eligible){for(var j=0;j<3;j++)tiers[j]=(candidate.tierMask&(1<<j))?1:0;}
+  var hits=tiers[0]+tiers[1]+tiers[2],prize=hits*PRIZE,profit=prize-cost;
+  distribution[hits]++;totalHits+=hits;totalGroups+=nGroups;totalCost+=cost;totalPrize+=prize;
+  for(var k=0;k<3;k++){byTier[k]+=tiers[k];byTierGroups[k]+=sizes[k]}
+  if(hits){
+   totalHitPeriods++;hitStreak++;missStreak=0;
+   if(hitStreak>maxHit){maxHit=hitStreak;maxHitEnd=i;maxHitStart=i-hitStreak+1}
+  }else{
+   missStreak++;hitStreak=0;
+   if(missStreak>maxMiss){maxMiss=missStreak;maxMissEnd=i;maxMissStart=i-missStreak+1}
+  }
+  records.push({index:i,actual:actual,pairA:chosen.a,pairB:chosen.b,tiers:tiers,hits:hits,groups:nGroups,cost:cost,profit:profit,miss:hits?null:missReasons({asOfIndex:i,pairA:chosen.a,pairB:chosen.b},actual)});
+  if((i-start)%5===0){
+   get('s789BackStatus').textContent='事后安全随机回测 '+(i-start+1)+'/'+(end-start)+'期…';
+   await new Promise(function(resolve){setTimeout(resolve,0)});
+  }
+ }
+ var count=end-start,moneyStr=money(totalPrize-totalCost);
+ var indexName=function(j){return j<0?'—':'历史第'+(j+1)+'条'};
+ showResults('两组都排不中 · 事后安全随机 · 最近'+count+'期',[
+  ['命中期数',totalHitPeriods+' / '+count+'期'],
+  ['累计中奖注数',totalHits+'注'],
+  ['0/1/2/3套命中',distribution.join(' / ')+'期'],
+  ['7/8/9各套中奖',byTier.join(' / ')+'注'],
+  ['累计模拟投入',strmoney(totalCost)],
+  ['模拟净收益',moneyStr],
+  ['平均每期注数',nfmt(totalGroups/count)+'注'],
+  ['最长连续不中',maxMiss+'期'],
+  ['最长连续命中',maxHit+'期']
+ ],'【事后条件模拟，不是开奖前真实预测】每期根据已知开奖号码，先筛出两组都不会完整出现的对数组合，再用固定种子'+seed+'随机挑选其中1种。每期均重新排最近750期历史，三套各1倍且不去重。累计奖金'+strmoney(totalPrize)+'；平均每期7/8/9注数'+byTierGroups.map(function(v){return nfmt(v/count)}).join(' / ')+'。最长连错：'+indexName(maxMissStart)+'—'+indexName(maxMissEnd)+'；最长连中：'+indexName(maxHitStart)+'—'+indexName(maxHitEnd)+'。同一种子结果可复现，换种子可重新随机；这利用了开奖后信息，不能代表实际盈利。',
+ records.slice().reverse().map(function(r){
+  return [String(r.index+1),escapeHTML(r.actual),escapeHTML(r.pairA+'＋'+r.pairB),r.tiers.join('/'),r.hits+'注',nfmt(r.groups),money(r.profit),r.miss?escapeHTML(r.miss):'—'];
+ }),['历史序号','开奖号码','本期随机排除对数','7/8/9命中','总中奖','总注数','净收益','未中原因']);
+}
+
 function showResults(title,metrics,foot,rows,headers){
  get('s789BackTitle').textContent=title;
  get('s789BackMetrics').innerHTML=metrics.map(function(x){return '<div class="s789-metric"><small>'+escapeHTML(x[0])+'</small><strong>'+escapeHTML(x[1])+'</strong></div>'}).join('');
@@ -235,7 +297,7 @@ async function runBacktest(){
  var n=Number(get('s789BackN').value),mode=get('s789BackMode').value;
  try{
   get('s789BackStatus').textContent='开始回测…';
-  if(mode==='recorded'){backtestRecorded(n)}else{await backtestSimulation(n)}
+  if(mode==='recorded'){backtestRecorded(n)}else if(mode==='safe-random'){await backtestSafeRandom(n)}else{await backtestSimulation(n)}
   get('s789BackStatus').textContent='回测完成。';
  }catch(e){get('s789BackStatus').textContent='回测失败：'+e.message}
  finally{busy=false;get('s789RunBack').disabled=false}
@@ -276,6 +338,20 @@ function init(){
  get('s789PairA').onchange=function(){if(!recordForIndex(historyRows.length))resetMetrics()};
  get('s789PairB').onchange=function(){if(!recordForIndex(historyRows.length))resetMetrics()};
  get('s789RunBack').onclick=runBacktest;
+ var seedInput=get('s789RandomSeed'),reroll=get('s789Reroll'),modeSelect=get('s789BackMode');
+ if(seedInput&&reroll&&modeSelect){
+  try{var lastSeed=localStorage.getItem('gszw-s789-safe-random-seed-v1');if(lastSeed&&Number(lastSeed)>0)seedInput.value=lastSeed}catch(_){}
+  function refreshMode(){var show=modeSelect.value==='safe-random';get('s789RandomControls').style.display=show?'flex':'none';}
+  seedInput.onchange=function(){try{localStorage.setItem('gszw-s789-safe-random-seed-v1',String(this.value))}catch(_){}};
+  reroll.onclick=function(){
+   var x=Number(seedInput.value);if(!Number.isSafeInteger(x)||x<1||x>4294967295)x=20261123;
+   seedInput.value=String(x===4294967295?1:x+1);
+   seedInput.onchange();
+   runBacktest();
+  };
+  modeSelect.onchange=refreshMode;refreshMode();
+ }
+
  var budget=get('s789Budget');if(budget){try{var old=localStorage.getItem('gszw-s789-budget-v1');if(old!==null&&Number(old)>0)budget.value=old}catch(_){}budget.onchange=function(){try{localStorage.setItem('gszw-s789-budget-v1',String(this.value))}catch(_){}updateBudget()}}
  get('s789Export').onclick=exportRecords;
  get('s789Import').onclick=function(){get('s789ImportFile').click()};
