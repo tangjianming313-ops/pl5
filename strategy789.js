@@ -223,6 +223,15 @@ async function backtestSimulation(n){
   ['预期覆盖',expectedHitPeriods.toFixed(1)+'期'],['预期中奖注数',expectedHits.toFixed(1)+'注'],['累计投入期望',strmoney(totalCost)],['中奖奖金期望',strmoney(expectedHits*PRIZE)],['模拟净收益期望',money(expectedHits*PRIZE-totalCost)],['平均每期注数',nfmt(averageSizes.reduce(function(a,b){return a+b},0)/period)]
  ],'7/8/9各套平均注数：'+averageSizes.map(function(c){return nfmt(c/period)}).join(' / ')+'。这里对每期10种对数组合计算等概率数学期望，不会生成实际的整数命中期数，不能据此统计真实连中、连错。',rows.reverse(),['历史序号','开奖','随机覆盖概率','预期中奖','平均成本']);
 }
+function historyIssueAt(index){
+ var rows=metadata&&metadata.draws,latest=rows&&rows.length?rows[rows.length-1]:null;
+ var offset=historyRows.length-index-1;
+ if(latest&&historyRows[historyRows.length-1]===latest.front4&&/^\d{7}$/.test(latest.issue||'')){
+  var n=Number(latest.issue.slice(4))-offset;
+  if(n>0&&n<=365)return latest.issue.slice(0,4)+String(n).padStart(3,'0');
+ }
+ return '历史第'+(index+1)+'条';
+}
 /* 事后条件随机：每期先看实际开奖号，随机选两组均未完整出现的对数。
    此计算使用当期未来信息，仅作理想化条件模拟；绝不可计入实盘回测。 */
 function safeRandom(seed){
@@ -268,7 +277,7 @@ async function backtestSafeRandom(n){
   }
  }
  var count=end-start,moneyStr=money(totalPrize-totalCost);
- var indexName=function(j){return j<0?'—':'历史第'+(j+1)+'条'};
+ var indexName=function(j){return j<0?'—':historyIssueAt(j)};
  showResults('两组都排不中 · 事后安全随机 · 最近'+count+'期',[
   ['命中期数',totalHitPeriods+' / '+count+'期'],
   ['累计中奖注数',totalHits+'注'],
@@ -281,8 +290,8 @@ async function backtestSafeRandom(n){
   ['最长连续命中',maxHit+'期']
  ],'【事后条件模拟，不是开奖前真实预测】每期根据已知开奖号码，先筛出两组都不会完整出现的对数组合，再用固定种子'+seed+'随机挑选其中1种。每期均重新排最近750期历史，三套各1倍且不去重。累计奖金'+strmoney(totalPrize)+'；平均每期7/8/9注数'+byTierGroups.map(function(v){return nfmt(v/count)}).join(' / ')+'。最长连错：'+indexName(maxMissStart)+'—'+indexName(maxMissEnd)+'；最长连中：'+indexName(maxHitStart)+'—'+indexName(maxHitEnd)+'。同一种子结果可复现，换种子可重新随机；这利用了开奖后信息，不能代表实际盈利。',
  records.slice().reverse().map(function(r){
-  return [String(r.index+1),escapeHTML(r.actual),escapeHTML(r.pairA+'＋'+r.pairB),r.tiers.join('/'),r.hits+'注',nfmt(r.groups),money(r.profit),r.miss?escapeHTML(r.miss):'—'];
- }),['历史序号','开奖号码','本期随机排除对数','7/8/9命中','总中奖','总注数','净收益','未中原因']);
+  return [escapeHTML(historyIssueAt(r.index)),escapeHTML(r.actual),escapeHTML(r.pairA+'＋'+r.pairB),r.tiers.join('/'),r.hits+'注',nfmt(r.groups),money(r.profit),r.miss?escapeHTML(r.miss):'—'];
+ }),['期号','开奖号码','本期随机排除对数','7/8/9命中','总中奖','总注数','净收益','未中原因']);
 }
 
 function showResults(title,metrics,foot,rows,headers){
