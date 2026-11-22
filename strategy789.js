@@ -119,7 +119,15 @@ function resetMetrics(){
  nowPools=null;
  for(var j=0;j<3;j++)metric('s789Count'+j,'—');
  metric('s789Total','—');metric('s789Unique','—');metric('s789Cost','—');
- get('s789Download').disabled=true;get('s789Copy').disabled=true;
+ get('s789Download').disabled=true;get('s789Copy').disabled=true;updateBudget();
+}
+function updateBudget(){
+ var el=get('s789Budget'),v=el?Number(el.value):0,exposure=get('s789BudgetShare'),note=get('s789BudgetNote');if(!exposure||!note)return;
+ if(!nowPools){exposure.textContent='待计算';note.textContent='先选择两组对数，生成本期注数后核算投入占比。';return}
+ var cost=nowPools.reduce(function(n,p){return n+p.length},0)*STAKE;
+ if(!(v>0)){exposure.textContent='请填写预算';note.textContent='金额必须大于0；这是支出提醒，不会自动购买或下注。';return}
+ var pct=cost/v*100;exposure.textContent=pct.toFixed(1)+'%';exposure.className=pct>10?'negative':'';
+ note.textContent='本期模拟投入'+strmoney(cost)+'，占预算'+pct.toFixed(1)+'%。'+(pct>10?'单期占比偏高；请控制资金风险，不要为了追回损失追加投入。':'仅供评估资金占用；本功能不会实际下单。');
 }
 function validPairs(){
  var a=get('s789PairA').value,b=get('s789PairB').value;
@@ -132,7 +140,7 @@ function preview(){
   var pair=validPairs();nowPools=applyPairs(baseCurrent(),pair[0],pair[1]);
   var total=0,union=new Set();
   nowPools.forEach(function(p,j){metric('s789Count'+j,nfmt(p.length));total+=p.length;p.forEach(function(x){union.add(x)})});
-  metric('s789Total',nfmt(total)+' 注');metric('s789Unique',nfmt(union.size)+' 组');metric('s789Cost',strmoney(total*STAKE));
+  metric('s789Total',nfmt(total)+' 注');metric('s789Unique',nfmt(union.size)+' 组');metric('s789Cost',strmoney(total*STAKE));updateBudget();
   get('s789Download').disabled=false;get('s789Copy').disabled=false;
   var r=recordForIndex(historyRows.length);
   setStatus((r?'已保存并锁定本期方案。':'预览已完成，尚未保存。')+' 对数 '+pair.join('＋')+'；三套不去重 '+nfmt(total)+' 注。',r?'ok':'');
@@ -268,6 +276,7 @@ function init(){
  get('s789PairA').onchange=function(){if(!recordForIndex(historyRows.length))resetMetrics()};
  get('s789PairB').onchange=function(){if(!recordForIndex(historyRows.length))resetMetrics()};
  get('s789RunBack').onclick=runBacktest;
+ var budget=get('s789Budget');if(budget){try{var old=localStorage.getItem('gszw-s789-budget-v1');if(old!==null&&Number(old)>0)budget.value=old}catch(_){}budget.onchange=function(){try{localStorage.setItem('gszw-s789-budget-v1',String(this.value))}catch(_){}updateBudget()}}
  get('s789Export').onclick=exportRecords;
  get('s789Import').onclick=function(){get('s789ImportFile').click()};
  get('s789ImportFile').onchange=function(){if(this.files&&this.files[0])importRecords(this.files[0]);this.value=''};
