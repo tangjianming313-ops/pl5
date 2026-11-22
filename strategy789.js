@@ -79,6 +79,24 @@ function hasCode(encoded,n){try{var raw=atob(encoded);return !!(raw.charCodeAt(n
 function recordForIndex(index){return recentRecords.find(function(r){return r.asOfIndex===index})}
 function issueOrIndex(index){var r=recordForIndex(index);return r&&r.issue?r.issue:'历史第'+(index+1)+'条'}
 function actualHits(record,code){var n=Number(code);return record.poolBits.map(function(b){return hasCode(b,n)?1:0})}
+function missReasons(record,code){
+ var a=code.split('').map(Number),issues=[],past=historyRows.slice(0,record.asOfIndex),sum=a.reduce(function(x,y){return x+y},0);
+ var uncovered=SETS.filter(function(set){return !a.every(function(v,i){return set.digits[i].indexOf(String(v))>=0})}).map(function(set){return set.id+'码位置缺码'});
+ if(uncovered.length===3)issues.push('三套位置均未覆盖');
+ else if(uncovered.length)issues.push(uncovered.join('、'));
+ if(new Set(past.slice(-750)).has(code))issues.push('最近750期历史重复');
+ if(sum<10||sum>30)issues.push('和值'+sum+'超出10–30');
+ var f={};a.forEach(function(v){f[v]=(f[v]||0)+1});
+ var pat=Object.values(f).sort(function(x,y){return y-x}).join(',');
+ if(pat==='3,1')issues.push('三重');if(pat==='4')issues.push('四重');if(pat==='2,2')issues.push('双对子');
+ if(a[0]>=5&&a[1]<5&&a[2]<5&&a[3]>=5)issues.push('大小小大');
+ if(a.every(function(v){return v%2===1}))issues.push('单单单单');
+ if((a[1]===a[0]+1&&a[2]===a[1]+1)||(a[2]===a[1]+1&&a[3]===a[2]+1))issues.push('三顺子');
+ if((a[1]===a[0]-1&&a[2]===a[1]-1)||(a[2]===a[1]-1&&a[3]===a[2]-1))issues.push('三倒顺');
+ if(past.slice(-10).some(function(t){var n=0;for(var i=0;i<4;i++)if(t[i]===code[i])n++;return n>=3}))issues.push('最近10期三位同位');
+ [record.pairA,record.pairB].forEach(function(pair){if(code.indexOf(pair[0])>=0&&code.indexOf(pair[1])>=0)issues.push('排除对数'+pair)});
+ return issues.length?issues.join('；'):'未覆盖（请核对快照）';
+}
 function verifyRecord(record){
  if(record.asOfIndex>=historyRows.length||historyRows[record.asOfIndex-1]!==record.baseLast)return null;
  var act=historyRows[record.asOfIndex];
@@ -165,7 +183,7 @@ function backtestRecorded(n){
  showResults('已保存记录回测 · 最近'+n+'期',[
   ['有效记录',rows.length+' / '+n+'期'],['命中期数',hitPeriods+'期'],['中奖注数',tickets+'注'],['累计投入',strmoney(cost)],['模拟净收益',money(prize-cost)],['最长连错',maxMiss+'期']
  ],'记录范围内最长连续命中 '+maxHit+'期；0/1/2/3套命中分别 '+distribution.join(' / ')+' 期。未存档期不计入连中连错，连续期中间有空档会重置。'+(rows.length<n?' 未记录的'+(n-rows.length)+'期不能冒充真实回测。':''),
- data.slice(-40).reverse().map(function(x){return [escapeHTML(x.record.issue),escapeHTML(x.verify.actual),x.verify.tiers.join('/'),x.verify.hits+'注',money(x.verify.prize-x.verify.cost)]}),['期号','开奖','7/8/9','共中','净收益']);
+ data.slice(-40).reverse().map(function(x){return [escapeHTML(x.record.issue),escapeHTML(x.verify.actual),x.verify.tiers.join('/'),x.verify.hits+'注',money(x.verify.prize-x.verify.cost),x.verify.hits?'—':escapeHTML(missReasons(x.record,x.verify.actual))]}),['期号','开奖','7/8/9','共中','净收益','未中原因']);
 }
 function sumCountsForBase(base,selectedMask){
  var sizes=[0,0,0];
