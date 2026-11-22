@@ -8,7 +8,7 @@ var SETS=[
  {id:'9',name:'固定9码',digits:['123456789','012345789','012345689','012345789']}
 ];
 var P=['05','16','27','38','49'], ALL=10000, STAKE=.1,PRIZE=932;
-var get=function(id){return document.getElementById(id)},historyRows=[],metadata=null,info=[],recentRecords=[],nowPools=null,nowBase=null,nowBaseKey='',lastHistoryKey='',ready=false,busy=false;
+var get=function(id){return document.getElementById(id)},historyRows=[],metadata=null,info=[],recentRecords=[],nowPools=null,nowBase=null,nowBaseKey='',lastHistoryKey='',ready=false,busy=false,batchIndex=0;
 var nfmt=function(n){return Number(n).toLocaleString('zh-CN',{maximumFractionDigits:2})};
 var money=function(n){return (n>=0?'+':'-')+'¥'+Math.abs(n).toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2})};
 var strmoney=function(n){return '¥'+n.toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2})};
@@ -119,7 +119,7 @@ function resetMetrics(){
  nowPools=null;
  for(var j=0;j<3;j++)metric('s789Count'+j,'—');
  metric('s789Total','—');metric('s789Unique','—');metric('s789Cost','—');
- get('s789Download').disabled=true;get('s789Copy').disabled=true;updateBudget();
+ get('s789Download').disabled=true;get('s789Copy').disabled=true;updateBudget();refreshBatches();
 }
 function updateBudget(){
  var el=get('s789Budget'),v=el?Number(el.value):0,exposure=get('s789BudgetShare'),note=get('s789BudgetNote');if(!exposure||!note)return;
@@ -140,11 +140,39 @@ function preview(){
   var pair=validPairs();nowPools=applyPairs(baseCurrent(),pair[0],pair[1]);
   var total=0,union=new Set();
   nowPools.forEach(function(p,j){metric('s789Count'+j,nfmt(p.length));total+=p.length;p.forEach(function(x){union.add(x)})});
-  metric('s789Total',nfmt(total)+' 注');metric('s789Unique',nfmt(union.size)+' 组');metric('s789Cost',strmoney(total*STAKE));updateBudget();
+  metric('s789Total',nfmt(total)+' 注');metric('s789Unique',nfmt(union.size)+' 组');metric('s789Cost',strmoney(total*STAKE));updateBudget();batchIndex=0;refreshBatches();
   get('s789Download').disabled=false;get('s789Copy').disabled=false;
   var r=recordForIndex(historyRows.length);
   setStatus((r?'已保存并锁定本期方案。':'预览已完成，尚未保存。')+' 对数 '+pair.join('＋')+'；三套不去重 '+nfmt(total)+' 注。',r?'ok':'');
  }catch(e){resetMetrics();setStatus(e.message,'error')}
+}
+/* 七段复制：先完整列出7码，再8码、9码；只分段，不跨套去重。 */
+function batchTickets(){
+ if(!nowPools)return [];
+ return nowPools[0].concat(nowPools[1],nowPools[2]);
+}
+function batchSlice(index){
+ var all=batchTickets(),lo=Math.floor(all.length*index/7),hi=Math.floor(all.length*(index+1)/7);
+ return {items:all.slice(lo,hi),from:lo,to:hi,total:all.length};
+}
+function refreshBatches(){
+ var info=get('s789BatchInfo'),area=get('s789BatchText'),copy=get('s789BatchCopy');
+ if(!info||!area||!copy)return;
+ var all=nowPools?batchTickets():[];
+ for(var i=0;i<7;i++){
+  var btn=get('s789Batch'+i);if(!btn)continue;
+  var start=Math.floor(all.length*i/7),end=Math.floor(all.length*(i+1)/7),count=end-start;
+  btn.disabled=!nowPools;btn.classList.toggle('active',!!nowPools&&i===batchIndex);
+  btn.textContent='第'+(i+1)+'段 · '+nfmt(count)+'注';
+ }
+ if(!nowPools){
+  info.textContent='请先选择两组对数，点击“计算本期号码”。';
+  area.value='';copy.disabled=true;return;
+ }
+ var seg=batchSlice(batchIndex);
+ area.value=seg.items.map(pad).join('\n');
+ copy.disabled=seg.items.length===0;
+ info.textContent='第'+(batchIndex+1)+'/7段 · '+nfmt(seg.items.length)+'注 · 全部编号'+(seg.total?seg.from+1:0)+'—'+seg.to+' / '+nfmt(seg.total)+'注 · 保留三套重复号码';
 }
 function savePick(){
  try{
@@ -249,6 +277,7 @@ async function backtestSafeRandom(n){
  if(!Number.isSafeInteger(seed)||seed<1||seed>4294967295)throw Error('随机种子须在1—4294967295之间。');
  var random=safeRandom(seed),combos=comboMasks(),end=historyRows.length,start=Math.max(0,end-n);
  var totalCost=0,totalPrize=0,totalHits=0,totalHitPeriods=0,totalGroups=0,byTier=[0,0,0],byTierGroups=[0,0,0],distribution=[0,0,0,0],missStreak=0,hitStreak=0,maxMiss=0,maxHit=0,maxMissStart=-1,maxMissEnd=-1,maxHitStart=-1,maxHitEnd=-1;
+ var outcomeStats=Array.from({length:4},function(){return {periods:0,tickets:0,cost:0,prize:0}}),tierStats=Array.from({length:3},function(){return {periods:0,tickets:0,cost:0,prize:0}}),combinationStats=Array.from({length:8},function(){return {periods:0,cost:0,prize:0}});
  var records=[];
  for(var i=start;i<end;i++){
   var actual=historyRows[i],candidate=info[Number(actual)],actualPairMask=bits(actual);
@@ -262,7 +291,9 @@ async function backtestSafeRandom(n){
   if(eligible){for(var j=0;j<3;j++)tiers[j]=(candidate.tierMask&(1<<j))?1:0;}
   var hits=tiers[0]+tiers[1]+tiers[2],prize=hits*PRIZE,profit=prize-cost;
   distribution[hits]++;totalHits+=hits;totalGroups+=nGroups;totalCost+=cost;totalPrize+=prize;
-  for(var k=0;k<3;k++){byTier[k]+=tiers[k];byTierGroups[k]+=sizes[k]}
+  var group=outcomeStats[hits];group.periods++;group.tickets+=hits;group.cost+=cost;group.prize+=prize;
+  var comboIndex=(tiers[0]?1:0)|(tiers[1]?2:0)|(tiers[2]?4:0),combo=combinationStats[comboIndex];combo.periods++;combo.cost+=cost;combo.prize+=prize;
+  for(var k=0;k<3;k++){byTier[k]+=tiers[k];byTierGroups[k]+=sizes[k];tierStats[k].periods+=tiers[k];tierStats[k].tickets+=tiers[k];tierStats[k].cost+=sizes[k]*STAKE;tierStats[k].prize+=tiers[k]*PRIZE}
   if(hits){
    totalHitPeriods++;hitStreak++;missStreak=0;
    if(hitStreak>maxHit){maxHit=hitStreak;maxHitEnd=i;maxHitStart=i-hitStreak+1}
@@ -292,9 +323,46 @@ async function backtestSafeRandom(n){
  records.slice().reverse().map(function(r){
   return [escapeHTML(historyIssueAt(r.index)),escapeHTML(r.actual),escapeHTML(r.pairA+'＋'+r.pairB),r.tiers.join('/'),r.hits+'注',nfmt(r.groups),money(r.profit),r.miss?escapeHTML(r.miss):'—'];
  }),['期号','开奖号码','本期随机排除对数','7/8/9命中','总中奖','总注数','净收益','未中原因']);
+ renderSafeBreakdown(outcomeStats,tierStats,combinationStats,count);
 }
 
+function renderSafeBreakdown(byCount,bySet,byCombo,totalPeriods){
+ var root=get('s789Breakdown');if(!root)return;
+ var moneyCell=function(v){return '<td class="s789-tabular'+(v<0?' s789-neg':' s789-pos')+'">'+money(v)+'</td>'};
+ var table=function(head,rows){
+  return '<div class="s789-tablewrap"><table><thead><tr>'+head.map(function(t){return '<th>'+escapeHTML(t)+'</th>'}).join('')+'</tr></thead><tbody>'+rows.join('')+'</tbody></table></div>';
+ };
+ var rows=byCount.map(function(x,i){
+  return '<tr><td><strong>'+i+'套</strong></td><td>'+x.periods+'期</td><td>'+x.tickets+'注</td><td>'+strmoney(x.prize)+'</td><td>'+strmoney(x.cost)+'</td>'+moneyCell(x.prize-x.cost)+moneyCell(x.periods?(x.prize-x.cost)/x.periods:0)+'</tr>';
+ });
+ var setRows=bySet.map(function(x,i){
+  return '<tr><td><strong>'+SETS[i].id+'码</strong></td><td>'+x.periods+'期</td><td>'+x.tickets+'注</td><td>'+strmoney(x.prize)+'</td><td>'+strmoney(x.cost)+'</td>'+moneyCell(x.prize-x.cost)+'</tr>';
+ });
+ var combRows=byCombo.map(function(x,i){
+  var label=i===0?'三套均未中':SETS.filter(function(set,j){return (i&(1<<j))!==0}).map(function(set){return set.id+'码'}).join('＋');
+  return '<tr><td><strong>'+label+'</strong></td><td>'+x.periods+'期</td><td>'+strmoney(x.prize)+'</td><td>'+strmoney(x.cost)+'</td>'+moneyCell(x.prize-x.cost)+'</tr>';
+ });
+ var totalPeriodsByCount=byCount.reduce(function(a,x){return a+x.periods},0);
+ var costByCount=byCount.reduce(function(a,x){return a+x.cost},0),prizeByCount=byCount.reduce(function(a,x){return a+x.prize},0);
+ var costBySet=bySet.reduce(function(a,x){return a+x.cost},0),prizeBySet=bySet.reduce(function(a,x){return a+x.prize},0);
+ var periodsByCombo=byCombo.reduce(function(a,x){return a+x.periods},0);
+ if(totalPeriodsByCount!==totalPeriods||periodsByCombo!==totalPeriods||Math.abs(costByCount-costBySet)>.01||Math.abs(prizeByCount-prizeBySet)>.01){
+  root.innerHTML='<p class="s789-status error">分组投入、奖金校验未通过；请重新回测。</p>';
+  root.style.display='block';return;
+ }
+ root.innerHTML='<div class="s789-divider"></div><h3 class="s789-smallhead">① 中0套／1套／2套／3套：各自盈利多少？</h3>'+
+ '<p class="s789-helper">每一期归入对应的命中套数。每期投入按三套全部注数计算，不是只计算中奖那套；0套也是实付成本。</p>'+
+ table(['命中','期数','奖金注数','奖金','三套合计投入','净收益','每期平均净收益'],rows)+
+ '<h3 class="s789-smallhead s789-subhead">② 7码／8码／9码：各套独立盈亏</h3>'+
+ '<p class="s789-helper">按每套自身的累计成本及中奖注数统计；同一个四位号码同时被多个套覆盖时，各套分别计注。</p>'+
+ table(['套数','命中期数','中奖注数','奖金','本套投入','净收益'],setRows)+
+ '<h3 class="s789-smallhead s789-subhead">③ 具体同时命中了哪几套？</h3>'+
+ table(['实际命中组合','期数','奖金','三套合计投入','净收益'],combRows)+
+ '<p class="s789-helper">核对：'+totalPeriodsByCount+'期，奖金'+strmoney(prizeByCount)+'，投入'+strmoney(costByCount)+'，净收益'+money(prizeByCount-costByCount)+'。所有金额仅为事后条件历史模拟。</p>';
+ root.style.display='block';
+}
 function showResults(title,metrics,foot,rows,headers){
+ var extra=get('s789Breakdown');if(extra){extra.style.display='none';extra.innerHTML=''}
  get('s789BackTitle').textContent=title;
  get('s789BackMetrics').innerHTML=metrics.map(function(x){return '<div class="s789-metric"><small>'+escapeHTML(x[0])+'</small><strong>'+escapeHTML(x[1])+'</strong></div>'}).join('');
  get('s789BackNote').textContent=foot;
@@ -344,6 +412,14 @@ function init(){
  get('s789Save').onclick=savePick;
  get('s789Download').onclick=function(){try{makeDownload('观数知微_固定789_'+currentIssue()+'_不去重.txt',buildTicketText(),'text/plain;charset=utf-8');setStatus('号码TXT已经生成。','ok')}catch(e){setStatus(e.message,'error')}};
  get('s789Copy').onclick=function(){try{copyText(buildTicketText()).then(function(){setStatus('三套号码已复制到剪贴板。','ok')}).catch(function(){setStatus('复制受浏览器限制，请使用下载TXT。','error')})}catch(e){setStatus(e.message,'error')}};
+ for(var bi=0;bi<7;bi++){
+  (function(j){var btn=get('s789Batch'+j);if(btn)btn.onclick=function(){batchIndex=j;refreshBatches()}})(bi);
+ }
+ get('s789BatchCopy').onclick=function(){
+  if(!nowPools)return;
+  var seg=batchSlice(batchIndex);
+  copyText(seg.items.map(pad).join('\n')).then(function(){get('s789BatchInfo').textContent='第'+(batchIndex+1)+'段已复制 · '+nfmt(seg.items.length)+'注（总数'+nfmt(seg.total)+'注，三套不去重）'}).catch(function(){get('s789BatchInfo').textContent='自动复制被限制，可长按下方号码复制';get('s789BatchText').focus();get('s789BatchText').select()});
+ };
  get('s789PairA').onchange=function(){if(!recordForIndex(historyRows.length))resetMetrics()};
  get('s789PairB').onchange=function(){if(!recordForIndex(historyRows.length))resetMetrics()};
  get('s789RunBack').onclick=runBacktest;
