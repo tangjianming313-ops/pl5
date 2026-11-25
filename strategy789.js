@@ -1,4 +1,4 @@
-/* 观数知微 | 三套固定7+8+9排码与真实记录回测 | v1 */
+/* 观数知微 | 三套固定7+8+9排码与真实记录回测 | 和值8-28 */
 (function(){
 'use strict';
 var ROOT='strategy789',KEY='gszw-strategy789-picks-v1';
@@ -19,7 +19,7 @@ function initNumbers(){
  if(info.length)return;
  for(var i=0;i<ALL;i++){
   var s=pad(i),a=s.split('').map(Number),h=a.reduce(function(x,y){return x+y},0);
-  if(h<10||h>30)continue;
+  if(h<8||h>28)continue;
   var freq={};a.forEach(function(k){freq[k]=(freq[k]||0)+1});
   var f=Object.values(freq).sort(function(x,y){return y-x}).join(',');
   if(f==='3,1'||f==='4'||f==='2,2')continue;
@@ -85,7 +85,7 @@ function missReasons(record,code){
  if(uncovered.length===3)issues.push('三套位置均未覆盖');
  else if(uncovered.length)issues.push(uncovered.join('、'));
  if(new Set(past.slice(-750)).has(code))issues.push('最近750期历史重复');
- if(sum<10||sum>30)issues.push('和值'+sum+'超出10–30');
+ if(sum<8||sum>28)issues.push('和值'+sum+'超出8–28');
  var f={};a.forEach(function(v){f[v]=(f[v]||0)+1});
  var pat=Object.values(f).sort(function(x,y){return y-x}).join(',');
  if(pat==='3,1')issues.push('三重');if(pat==='4')issues.push('四重');if(pat==='2,2')issues.push('双对子');
@@ -188,7 +188,7 @@ function savePick(){
 }
 function buildTicketText(){
  if(!nowPools)throw Error('请先计算号码池。');
- var pair=validPairs(),lines=['观数知微 · 固定7＋8＋9 三套不去重号码','待开奖：'+currentIssue(),'开奖前历史尾号：'+historyRows[historyRows.length-1],'规则：排最近750期、和值10—30、大小小大、三重四重双对子、单单单单、三顺子三倒顺、最近10期三位同位','本期对数：排'+pair.join('、'),'不去重总注数：'+nowPools.reduce(function(n,a){return n+a.length},0),'每注0.1元、中奖每注按932元模拟',''];
+ var pair=validPairs(),lines=['观数知微 · 固定7＋8＋9 三套不去重号码','待开奖：'+currentIssue(),'开奖前历史尾号：'+historyRows[historyRows.length-1],'规则：排最近750期、和值8—28、大小小大、三重四重双对子、单单单单、三顺子三倒顺、最近10期三位同位','本期对数：排'+pair.join('、'),'不去重总注数：'+nowPools.reduce(function(n,a){return n+a.length},0),'每注0.1元、中奖每注按932元模拟',''];
  nowPools.forEach(function(pool,j){lines.push('====== '+SETS[j].name+' '+pool.length+'注 ======');pool.forEach(function(n){lines.push(pad(n))});lines.push('')});
  return lines.join('\n');
 }
