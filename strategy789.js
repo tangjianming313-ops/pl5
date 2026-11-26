@@ -119,7 +119,7 @@ function resetMetrics(){
  nowPools=null;
  for(var j=0;j<3;j++)metric('s789Count'+j,'—');
  metric('s789Total','—');metric('s789Unique','—');metric('s789Cost','—');
- get('s789Download').disabled=true;get('s789Copy').disabled=true;updateBudget();refreshBatches();
+ get('s789Download').disabled=true;get('s789Copy').disabled=true;for(var k=0;k<3;k++){var exportBtn=get('s789Download'+k);if(exportBtn)exportBtn.disabled=true;}updateBudget();refreshBatches();
 }
 function updateBudget(){
  var el=get('s789Budget'),v=el?Number(el.value):0,exposure=get('s789BudgetShare'),note=get('s789BudgetNote');if(!exposure||!note)return;
@@ -141,7 +141,7 @@ function preview(){
   var total=0,union=new Set();
   nowPools.forEach(function(p,j){metric('s789Count'+j,nfmt(p.length));total+=p.length;p.forEach(function(x){union.add(x)})});
   metric('s789Total',nfmt(total)+' 注');metric('s789Unique',nfmt(union.size)+' 组');metric('s789Cost',strmoney(total*STAKE));updateBudget();batchIndex=0;refreshBatches();
-  get('s789Download').disabled=false;get('s789Copy').disabled=false;
+  get('s789Download').disabled=false;get('s789Copy').disabled=false;for(var k=0;k<3;k++){var exportBtn=get('s789Download'+k);if(exportBtn)exportBtn.disabled=false;}
   var r=recordForIndex(historyRows.length);
   setStatus((r?'已保存并锁定本期方案。':'预览已完成，尚未保存。')+' 对数 '+pair.join('＋')+'；三套不去重 '+nfmt(total)+' 注。',r?'ok':'');
  }catch(e){resetMetrics();setStatus(e.message,'error')}
@@ -190,6 +190,13 @@ function buildTicketText(){
  if(!nowPools)throw Error('请先计算号码池。');
  var pair=validPairs(),lines=['观数知微 · 固定7＋8＋9 三套不去重号码','待开奖：'+currentIssue(),'开奖前历史尾号：'+historyRows[historyRows.length-1],'规则：排最近750期、和值8—28、大小小大、三重四重双对子、单单单单、三顺子三倒顺、最近10期三位同位','本期对数：排'+pair.join('、'),'不去重总注数：'+nowPools.reduce(function(n,a){return n+a.length},0),'每注0.1元、中奖每注按932元模拟',''];
  nowPools.forEach(function(pool,j){lines.push('====== '+SETS[j].name+' '+pool.length+'注 ======');pool.forEach(function(n){lines.push(pad(n))});lines.push('')});
+ return lines.join('\n');
+}
+function buildSingleSetText(index){
+ if(!nowPools)throw Error('请先计算号码池。');
+ if(index<0||index>2||!nowPools[index])throw Error('找不到对应的号码套。');
+ var pair=validPairs(),pool=nowPools[index],lines=['观数知微 · '+SETS[index].name+' 独立号码文件','待开奖：'+currentIssue(),'开奖前历史尾号：'+historyRows[historyRows.length-1],'本期对数：排'+pair.join('、'),'本套注数：'+pool.length,'规则：沿用网站当前7+8+9方案，不改变排码条件',''];
+ pool.forEach(function(n){lines.push(pad(n))});
  return lines.join('\n');
 }
 function makeDownload(name,contents,type){
@@ -411,6 +418,7 @@ function init(){
  get('s789Preview').onclick=preview;
  get('s789Save').onclick=savePick;
  get('s789Download').onclick=function(){try{makeDownload('观数知微_固定789_'+currentIssue()+'_不去重.txt',buildTicketText(),'text/plain;charset=utf-8');setStatus('号码TXT已经生成。','ok')}catch(e){setStatus(e.message,'error')}};
+ for(var di=0;di<3;di++)(function(index){var btn=get('s789Download'+index);if(btn)btn.onclick=function(){try{makeDownload('观数知微_'+SETS[index].name+'_'+currentIssue()+'.txt',buildSingleSetText(index),'text/plain;charset=utf-8');setStatus(SETS[index].name+' TXT文件已生成，共'+nowPools[index].length+'注。','ok')}catch(e){setStatus(e.message,'error')}}})(di);
  get('s789Copy').onclick=function(){try{copyText(buildTicketText()).then(function(){setStatus('三套号码已复制到剪贴板。','ok')}).catch(function(){setStatus('复制受浏览器限制，请使用下载TXT。','error')})}catch(e){setStatus(e.message,'error')}};
  for(var bi=0;bi<7;bi++){
   (function(j){var btn=get('s789Batch'+j);if(btn)btn.onclick=function(){batchIndex=j;refreshBatches()}})(bi);
