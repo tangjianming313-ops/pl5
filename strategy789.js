@@ -3,9 +3,9 @@
 'use strict';
 var ROOT='strategy789',KEY='gszw-strategy789-picks-v1';
 var SETS=[
- {id:'7',name:'固定7码',digits:['0123489','1246789','0123678','0245679']},
- {id:'8',name:'固定8码',digits:['01256789','01345678','03456789','01345678']},
- {id:'9',name:'固定9码',digits:['123456789','012345789','012345689','012345789']}
+ {id:'7',name:'新方案7码',digits:['0124589','0156789','0134569','0245678']},
+ {id:'8',name:'新方案8码',digits:['01245689','01356789','01234569','02345678']},
+ {id:'9',name:'新方案9码',digits:['012345689','012456789','012346789','012456789']}
 ];
 var P=['05','16','27','38','49'], ALL=10000, STAKE=.1,PRIZE=932;
 var get=function(id){return document.getElementById(id)},historyRows=[],metadata=null,info=[],recentRecords=[],nowPools=null,nowBase=null,nowBaseKey='',lastHistoryKey='',ready=false,busy=false,batchIndex=0;
