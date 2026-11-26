@@ -57,11 +57,13 @@ function updateRuleSummary(){
  if(get('s789RuleBig'))get('s789RuleBig').textContent='大小排除：'+format(cfg.big,'big');
 }
 function saveFilterSettings(){
- var cfg=readFilterSettings();localStorage.setItem(FILTER_KEY,JSON.stringify(cfg));nowBaseKey='';
- updateRuleSummary();
- if(historyRows.length&&get('s789PairA').value&&get('s789PairB').value&&get('s789PairA').value!==get('s789PairB').value)preview();
- else resetMetrics();
- setStatus('筛选参数已保存并应用于三套号码。','ok');
+ try{
+  var cfg=readFilterSettings();localStorage.setItem(FILTER_KEY,JSON.stringify(cfg));nowBaseKey='';
+  updateRuleSummary();
+  if(historyRows.length&&get('s789PairA').value&&get('s789PairB').value&&get('s789PairA').value!==get('s789PairB').value)preview();
+  else resetMetrics();
+  setStatus('筛选参数已保存并应用于三套号码。','ok');
+ }catch(e){setStatus(e.message,'error')}
 }
 function resetFilterSettings(){
  get('s789SumMin').value=DEFAULT_FILTERS.sumMin;get('s789SumMax').value=DEFAULT_FILTERS.sumMax;
@@ -452,7 +454,7 @@ function importRecords(file){
    var items=saved(),num=0;
    incoming.forEach(function(r){
     if(!r||!Number.isInteger(r.asOfIndex)||!Array.isArray(r.poolBits)||r.poolBits.length!==3||r.poolBits.some(function(t){return typeof t!=='string'||t.length>6000})||!Array.isArray(r.counts)||r.counts.length!==3||P.indexOf(r.pairA)<0||P.indexOf(r.pairB)<0||r.pairA===r.pairB||items.some(function(t){return t.asOfIndex===r.asOfIndex}))return;
-    items.push({version:1,asOfIndex:r.asOfIndex,issue:String(r.issue||'历史第'+(r.asOfIndex+1)+'条'),baseLast:String(r.baseLast||''),pairA:r.pairA,pairB:r.pairB,counts:r.counts,poolBits:r.poolBits,createdAt:r.createdAt,origin:'imported',rule:r.rule||'fixed789-750-v1',stake:STAKE,prize:PRIZE});num++;
+    items.push({version:1,asOfIndex:r.asOfIndex,issue:String(r.issue||'历史第'+(r.asOfIndex+1)+'条'),baseLast:String(r.baseLast||''),pairA:r.pairA,pairB:r.pairB,filters:r.filters&&Number.isInteger(r.filters.sumMin)&&Number.isInteger(r.filters.sumMax)?r.filters:null,counts:r.counts,poolBits:r.poolBits,createdAt:r.createdAt,origin:'imported',rule:r.rule||'fixed789-750-v1',stake:STAKE,prize:PRIZE});num++;
    });
    store(items);recentRecords=items;updateInputs();renderRecords();setStatus('成功导入'+num+'条记录。外部导入的历史期次仅用于核对，不列为本机原始记录。','ok');
   }catch(e){setStatus('导入失败：'+e.message,'error')}
