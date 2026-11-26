@@ -15,16 +15,66 @@ var strmoney=function(n){return '¥'+n.toLocaleString('zh-CN',{minimumFractionDi
 function escapeHTML(value){return String(value).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function pad(n){return String(n).padStart(4,'0')}
 function bits(s){var a=0;P.forEach(function(v,j){if(s.indexOf(v[0])!==-1&&s.indexOf(v[1])!==-1)a|=1<<j});return a}
+var FILTER_KEY='gszw-s789-variable-filters-v1',DEFAULT_FILTERS={sumMin:8,sumMax:28,odd:['1111'],big:['1001']};
+function readFilterSettings(){
+ var min=Number(get('s789SumMin')&&get('s789SumMin').value),max=Number(get('s789SumMax')&&get('s789SumMax').value);
+ if(!Number.isInteger(min)||!Number.isInteger(max)||min<0||max>36||min>max)throw Error('和值范围须为0–36，且最小值不能大于最大值。');
+ return {sumMin:min,sumMax:max,odd:Array.from(document.querySelectorAll('#s789OddPatterns input:checked')).map(function(x){return x.value}),big:Array.from(document.querySelectorAll('#s789BigPatterns input:checked')).map(function(x){return x.value})};
+}
+function currentFilterSettings(){
+ try{return readFilterSettings()}catch(_){return DEFAULT_FILTERS}
+}
+function filterEntry(e,cfg){
+ var a=e.d,sum=a.reduce(function(x,y){return x+y},0);
+ if(sum<cfg.sumMin||sum>cfg.sumMax)return false;
+ var odd=a.map(function(v){return v%2?'1':'0'}).join('');
+ var big=a.map(function(v){return v>=5?'1':'0'}).join('');
+ return cfg.odd.indexOf(odd)<0&&cfg.big.indexOf(big)<0;
+}
+function buildPatternControls(){
+ var oddRoot=get('s789OddPatterns'),bigRoot=get('s789BigPatterns');
+ if(!oddRoot||!bigRoot)return;
+ var names=function(pattern,kind){return pattern.split('').map(function(bit){return kind==='odd'?(bit==='1'?'单':'双'):(bit==='1'?'大':'小')}).join(' ')};
+ for(var i=0;i<16;i++){
+  var pattern=i.toString(2).padStart(4,'0');
+  oddRoot.insertAdjacentHTML('beforeend','<label class="s789-pattern-option"><input type="checkbox" value="'+pattern+'" id="s789Odd'+i+'"><span>'+names(pattern,'odd')+'</span></label>');
+  bigRoot.insertAdjacentHTML('beforeend','<label class="s789-pattern-option"><input type="checkbox" value="'+pattern+'" id="s789Big'+i+'"><span>'+names(pattern,'big')+'</span></label>');
+ }
+ var savedCfg=null;try{savedCfg=JSON.parse(localStorage.getItem(FILTER_KEY)||'null')}catch(_){}
+ var cfg=savedCfg&&Number.isInteger(savedCfg.sumMin)&&Number.isInteger(savedCfg.sumMax)?savedCfg:DEFAULT_FILTERS;
+ get('s789SumMin').value=cfg.sumMin;get('s789SumMax').value=cfg.sumMax;
+ for(var j=0;j<16;j++){
+  var p=j.toString(2).padStart(4,'0');
+  get('s789Odd'+j).checked=(cfg.odd||[]).indexOf(p)>=0;
+  get('s789Big'+j).checked=(cfg.big||[]).indexOf(p)>=0;
+ }
+ updateRuleSummary();
+}
+function updateRuleSummary(){
+ var cfg=currentFilterSettings(),format=function(list,kind){return list.length?list.map(function(p){return p.split('').map(function(b){return kind==='odd'?(b==='1'?'单':'双'):(b==='1'?'大':'小')}).join('')}).join('、'):'无'};
+ if(get('s789RuleSum'))get('s789RuleSum').textContent='和值'+cfg.sumMin+'–'+cfg.sumMax;
+ if(get('s789RuleOdd'))get('s789RuleOdd').textContent='单双排除：'+format(cfg.odd,'odd');
+ if(get('s789RuleBig'))get('s789RuleBig').textContent='大小排除：'+format(cfg.big,'big');
+}
+function saveFilterSettings(){
+ var cfg=readFilterSettings();localStorage.setItem(FILTER_KEY,JSON.stringify(cfg));nowBaseKey='';
+ updateRuleSummary();
+ if(historyRows.length&&get('s789PairA').value&&get('s789PairB').value&&get('s789PairA').value!==get('s789PairB').value)preview();
+ else resetMetrics();
+ setStatus('筛选参数已保存并应用于三套号码。','ok');
+}
+function resetFilterSettings(){
+ get('s789SumMin').value=DEFAULT_FILTERS.sumMin;get('s789SumMax').value=DEFAULT_FILTERS.sumMax;
+ document.querySelectorAll('#s789OddPatterns input,#s789BigPatterns input').forEach(function(x){x.checked=false});
+ get('s789Odd15').checked=true;get('s789Big9').checked=true;
+ saveFilterSettings();
+}
 function initNumbers(){
  if(info.length)return;
  for(var i=0;i<ALL;i++){
-  var s=pad(i),a=s.split('').map(Number),h=a.reduce(function(x,y){return x+y},0);
-  if(h<8||h>28)continue;
-  var freq={};a.forEach(function(k){freq[k]=(freq[k]||0)+1});
+  var s=pad(i),a=s.split('').map(Number),freq={};a.forEach(function(k){freq[k]=(freq[k]||0)+1});
   var f=Object.values(freq).sort(function(x,y){return y-x}).join(',');
   if(f==='3,1'||f==='4'||f==='2,2')continue;
-  if(a[0]>=5&&a[1]<5&&a[2]<5&&a[3]>=5)continue;
-  if(a.every(function(k){return k%2===1}))continue;
   if((a[1]===a[0]+1&&a[2]===a[1]+1)||(a[2]===a[1]+1&&a[3]===a[2]+1))continue;
   if((a[1]===a[0]-1&&a[2]===a[1]-1)||(a[2]===a[1]-1&&a[3]===a[2]-1))continue;
   var tier=0;
@@ -33,10 +83,10 @@ function initNumbers(){
  }
 }
 function baseFor(prior){
- var blocked=new Set(prior.slice(-750)),ten=prior.slice(-10).map(function(s){return s.split('')});
+ var blocked=new Set(prior.slice(-750)),ten=prior.slice(-10).map(function(s){return s.split('')}),cfg=currentFilterSettings();
  var base=[];
  for(var i=0;i<ALL;i++){
-  var e=info[i];if(!e||blocked.has(e.s))continue;
+  var e=info[i];if(!e||blocked.has(e.s)||!filterEntry(e,cfg))continue;
   var clash=ten.some(function(a){var matched=0;for(var j=0;j<4;j++){if(a[j]===e.s[j])matched++}return matched>=3});
   if(!clash)base.push(e);
  }
@@ -49,7 +99,7 @@ function applyPairs(base,pairA,pairB){
  return out;
 }
 function baseCurrent(){
- var key=historyRows.length+'|'+historyRows.slice(-10).join(',');
+ var key=historyRows.length+'|'+historyRows.slice(-10).join(',')+'|'+JSON.stringify(currentFilterSettings());
  if(key!==nowBaseKey){nowBase=baseFor(historyRows);nowBaseKey=key;}
  return nowBase;
 }
@@ -85,7 +135,10 @@ function missReasons(record,code){
  if(uncovered.length===3)issues.push('三套位置均未覆盖');
  else if(uncovered.length)issues.push(uncovered.join('、'));
  if(new Set(past.slice(-750)).has(code))issues.push('最近750期历史重复');
- if(sum<8||sum>28)issues.push('和值'+sum+'超出8–28');
+ var cfg=record.filters||currentFilterSettings();if(sum<cfg.sumMin||sum>cfg.sumMax)issues.push('和值'+sum+'超出'+cfg.sumMin+'–'+cfg.sumMax);
+ var odd=a.map(function(v){return v%2?'1':'0'}).join(''),big=a.map(function(v){return v>=5?'1':'0'}).join('');
+ if((cfg.odd||[]).indexOf(odd)>=0)issues.push('单双组合'+odd+'被排除');
+ if((cfg.big||[]).indexOf(big)>=0)issues.push('大小组合'+big+'被排除');
  var f={};a.forEach(function(v){f[v]=(f[v]||0)+1});
  var pat=Object.values(f).sort(function(x,y){return y-x}).join(',');
  if(pat==='3,1')issues.push('三重');if(pat==='4')issues.push('四重');if(pat==='2,2')issues.push('双对子');
@@ -180,7 +233,7 @@ function savePick(){
   if(recordForIndex(historyRows.length))throw Error('本期已保存，不能覆盖原始记录。');
   if(!nowPools)preview();
   if(!nowPools)throw Error('请先计算号码池。');
-  var r={version:1,asOfIndex:historyRows.length,issue:currentIssue(),baseLast:historyRows[historyRows.length-1],pairA:p[0],pairB:p[1],counts:nowPools.map(function(x){return x.length}),poolBits:nowPools.map(codeBits),createdAt:new Date().toISOString(),origin:'local',rule:'fixed789-750-v1',stake:STAKE,prize:PRIZE};
+  var r={version:1,asOfIndex:historyRows.length,issue:currentIssue(),baseLast:historyRows[historyRows.length-1],pairA:p[0],pairB:p[1],filters:currentFilterSettings(),counts:nowPools.map(function(x){return x.length}),poolBits:nowPools.map(codeBits),createdAt:new Date().toISOString(),origin:'local',rule:'fixed789-750-v1',stake:STAKE,prize:PRIZE};
   var all=saved();all.push(r);store(all);recentRecords=all;
   updateInputs();renderRecords();
   setStatus('已保存本期 '+r.issue+'，对数 '+p.join('＋')+'；每套号码快照已记录在本机。','ok');
@@ -188,7 +241,7 @@ function savePick(){
 }
 function buildTicketText(){
  if(!nowPools)throw Error('请先计算号码池。');
- var pair=validPairs(),lines=['观数知微 · 固定7＋8＋9 三套不去重号码','待开奖：'+currentIssue(),'开奖前历史尾号：'+historyRows[historyRows.length-1],'规则：排最近750期、和值8—28、大小小大、三重四重双对子、单单单单、三顺子三倒顺、最近10期三位同位','本期对数：排'+pair.join('、'),'不去重总注数：'+nowPools.reduce(function(n,a){return n+a.length},0),'每注0.1元、中奖每注按932元模拟',''];
+ var pair=validPairs(),lines=['观数知微 · 固定7＋8＋9 三套不去重号码','待开奖：'+currentIssue(),'开奖前历史尾号：'+historyRows[historyRows.length-1],'规则：排最近750期、和值'+currentFilterSettings().sumMin+'—'+currentFilterSettings().sumMax+'、单双排除'+(currentFilterSettings().odd.join('、')||'无')+'、大小排除'+(currentFilterSettings().big.join('、')||'无')+'、三重四重双对子、三顺子三倒顺、最近10期三位同位','本期对数：排'+pair.join('、'),'不去重总注数：'+nowPools.reduce(function(n,a){return n+a.length},0),'每注0.1元、中奖每注按932元模拟',''];
  nowPools.forEach(function(pool,j){lines.push('====== '+SETS[j].name+' '+pool.length+'注 ======');pool.forEach(function(n){lines.push(pad(n))});lines.push('')});
  return lines.join('\n');
 }
@@ -414,6 +467,10 @@ function onHistoryChange(hist,meta){
 }
 function init(){
  if(!get(ROOT))return;
+ buildPatternControls();
+ get('s789SumMin').onchange=saveFilterSettings;get('s789SumMax').onchange=saveFilterSettings;
+ document.querySelectorAll('#s789OddPatterns input,#s789BigPatterns input').forEach(function(x){x.onchange=saveFilterSettings});
+ get('s789ResetFilters').onclick=resetFilterSettings;
  initNumbers();
  get('s789Preview').onclick=preview;
  get('s789Save').onclick=savePick;
