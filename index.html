@@ -374,6 +374,18 @@ tr:hover td{background:#f6f9fc!important}
  <div class="s789-hero"><div class="s789-eyebrow"><span class="s789-dot"></span> INSIGHTDIGITS · STRATEGY LAB</div><h1>三套协同，逐期有据可查</h1><p>固定7码／8码／9码 · 历史750期动态排除 · 开奖前双对数存档 · 开奖后核对与回测。独立运行，不影响旧版主排码。</p><div class="s789-hero-meta"><span>三套各1倍</span><span>不去重计奖</span><span>每期对数手动提供</span><span>逐期可追溯</span></div></div>
  <div class="s789-grid"><div>
  <div class="s789-panel"><div class="s789-panelhead"><div><h2>三套固定选号</h2><p>万、千、百、十 · 过滤后注数随开奖历史和本期对数更新</p></div><span class="s789-pill">7 / 8 / 9</span></div>
+ <div class="s789-filter-config">
+  <div class="s789-filter-title"><strong>可变动筛选参数</strong><span>修改后重新计算三套号码</span></div>
+  <div class="s789-sum-controls">
+   <label>和值最小值<input id="s789SumMin" type="number" min="0" max="36" value="8"></label>
+   <span>至</span>
+   <label>和值最大值<input id="s789SumMax" type="number" min="0" max="36" value="28"></label>
+  </div>
+  <div class="s789-pattern-block"><div class="s789-pattern-head"><strong>单双组合（16种）</strong><span>勾选代表排除</span></div><div id="s789OddPatterns" class="s789-pattern-grid"></div></div>
+  <div class="s789-pattern-block"><div class="s789-pattern-head"><strong>大小组合（16种）</strong><span>勾选代表排除</span></div><div id="s789BigPatterns" class="s789-pattern-grid"></div></div>
+  <p class="s789-helper">单双：单／双；大小：大为5–9、小为0–4。设置仅保存在当前手机，不影响其他模块。</p>
+  <button type="button" class="s789-btn" id="s789ResetFilters">恢复默认参数</button>
+ </div>
  <div class="s789-sets">
  <div class="s789-set"><div class="s789-settop">第一套 <strong>7码</strong></div><div class="s789-set-count" id="s789Count0">—</div><small>剩余注数</small><div class="s789-set-numbers"><span>万 0123489</span><span>千 1246789</span><span>百 0123678</span><span>十 0245679</span></div></div>
  <div class="s789-set"><div class="s789-settop">第二套 <strong>8码</strong></div><div class="s789-set-count" id="s789Count1">—</div><small>剩余注数</small><div class="s789-set-numbers"><span>万 01256789</span><span>千 01345678</span><span>百 03456789</span><span>十 01345678</span></div></div>
@@ -393,7 +405,7 @@ tr:hover td{background:#f6f9fc!important}
  <div class="s789-actions"><button type="button" class="s789-btn primary" id="s789Preview">计算本期号码</button><button type="button" class="s789-btn success" id="s789Save">保存本期并锁定</button></div>
  <div class="s789-divider"></div><div class="s789-selector"><label for="s789Budget">娱乐资金预算（元）<input type="number" id="s789Budget" min="0" step="100" value="3000" inputmode="decimal"></label><div class="s789-metric"><small>本期投入占预算</small><strong id="s789BudgetShare">待计算</strong></div></div><p class="s789-helper" id="s789BudgetNote">本功能只分析投注规模，不构成购买建议。</p><p id="s789Status" class="s789-status" role="status">先选择两组不同对数。</p><p class="s789-helper">本机保存：本期对数、时间、历史索引及三套号码快照。开奖后自动核对，不允许在界面覆盖同一期存档。本地记录不能独立证明真实提交时间，建议定期导出备份。</p></div>
  </div><div>
- <div class="s789-panel"><div class="s789-panelhead"><div><h2>正在使用的规则</h2><p>与旧版手动排码独立</p></div><span class="s789-pill">策略 V1</span></div><div class="s789-rulechips"><span>排最近750期历史</span><span>和值8–28</span><span>排大小小大</span><span>排三重／四重／双对子</span><span>排单单单单</span><span>排三顺／三倒顺</span><span>排近10期三位同位</span><span>排本期两组对数</span></div><div class="s789-divider"></div><div class="s789-note">例：选05，四位中同时出现0、5即排除，不限制位置。38和49不固定排，除非本期手动选中。</div><p class="s789-helper">0.1元/注、932元/中奖注均为四位模型的模拟参数，并非体彩官方排列五五位直选派奖标准。</p></div>
+ <div class="s789-panel"><div class="s789-panelhead"><div><h2>正在使用的规则</h2><p>与旧版手动排码独立</p></div><span class="s789-pill">策略 V1</span></div><div class="s789-rulechips"><span>排最近750期历史</span><span id="s789RuleSum">和值8–28</span><span id="s789RuleOdd">单双排除：单单单单</span><span id="s789RuleBig">大小排除：大小小大</span><span>排三重／四重／双对子</span><span>排三顺／三倒顺</span><span>排近10期三位同位</span><span>排本期两组对数</span></div><div class="s789-divider"></div><div class="s789-note">例：选05，四位中同时出现0、5即排除，不限制位置。38和49不固定排，除非本期手动选中。</div><p class="s789-helper">0.1元/注、932元/中奖注均为四位模型的模拟参数，并非体彩官方排列五五位直选派奖标准。</p></div>
  <div class="s789-panel"><div class="s789-panelhead"><div><h2>历史对数存档</h2><p>每部手机独立保存，开奖后据原始号码快照结算</p></div></div><div class="s789-records" id="s789RecordRows"></div><div class="s789-footeractions"><button type="button" class="s789-btn" id="s789Export">导出JSON备份</button><button type="button" class="s789-btn" id="s789Import">导入历史备份</button><input id="s789ImportFile" type="file" accept="application/json,.json"></div></div>
  </div></div>
  <div class="s789-panel"><div class="s789-panelhead"><div><h2>历史回测 · 逐期核验</h2><p>每期两组都排不中的事后随机模拟，单列中0／1／2／3套的投入、奖金、净收益；另可查看真实记录</p></div><span class="s789-pill">严谨回测</span></div>
@@ -574,3 +586,17 @@ window.addEventListener('load',function(){
   }catch(err){console.error('数据恢复失败',err);var box=document.getElementById('startupError');if(!box){box=document.createElement('div');box.id='startupError';document.body.appendChild(box)}box.style.cssText='position:fixed;top:75px;left:12px;right:12px;z-index:9999;background:#fff1ed;border:1px solid #e9a399;border-radius:12px;padding:12px;color:#a32822;font:14px/1.5 sans-serif';box.textContent='号码恢复失败：'+err.message}
 });
 </script><script id="factor11-return-link">window.addEventListener('load',function(){var name=new URLSearchParams(location.search).get('tab');if(['filters','tasks','backtest','draw','overview'].includes(name)){var tab=document.querySelector('main nav button[data-tab="'+name+'"]');if(tab)tab.click()}})</script><script defer src="./ops-center.js?v=1"></script><script defer src="./ad-popup.js"></script><script id="pwa-install-v1">(function(){if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(e=>console.warn('PWA registration failed',e)))}let promptEvent=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();promptEvent=e;const b=document.getElementById('pwaInstallBtn');if(b)b.hidden=false});window.addEventListener('appinstalled',()=>{promptEvent=null;const b=document.getElementById('pwaInstallBtn');if(b)b.hidden=true});const b=document.createElement('button');b.id='pwaInstallBtn';b.type='button';b.textContent='安装到手机';b.hidden=true;b.style.cssText='position:fixed;right:16px;bottom:18px;z-index:30;border:0;border-radius:999px;background:#1678d4;color:white;font-weight:750;padding:12px 18px;box-shadow:0 5px 22px #123b5e35';b.onclick=async()=>{if(!promptEvent)return;promptEvent.prompt();await promptEvent.userChoice;promptEvent=null;b.hidden=true};document.body.appendChild(b)})();</script><script src="./strategy789.js?v=5"></script></body></html>
+<style>
+.s789-filter-config{margin:14px 0 18px;padding:15px;border:1px solid #d7e8f4;border-radius:14px;background:#f7fbff;color:#173b59}
+.s789-filter-title,.s789-pattern-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.s789-filter-title span,.s789-pattern-head span{font-size:12px;color:#66839a}
+.s789-sum-controls{display:flex;align-items:end;gap:12px;margin:14px 0;max-width:420px}
+.s789-sum-controls label{display:grid;gap:6px;flex:1;font-size:13px;font-weight:650}
+.s789-sum-controls input{width:100%;min-width:0;background:#fff;color:#173b59;border:1px solid #c7dce9;border-radius:8px;padding:10px}
+.s789-pattern-block{margin-top:14px}
+.s789-pattern-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:9px}
+.s789-pattern-option{display:flex;align-items:center;gap:6px;padding:8px 7px;border:1px solid #d5e5ef;border-radius:8px;background:#fff;font-size:12px;color:#355a75}
+.s789-pattern-option input{accent-color:#087fc1;width:16px;height:16px;min-height:0;margin:0}
+.s789-filter-config .s789-btn{margin-top:12px;background:#e8f5fc;color:#17618d;border:1px solid #cbe4f3}
+@media(max-width:520px){.s789-pattern-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.s789-sum-controls{max-width:none}}
+</style>
