@@ -200,23 +200,17 @@ main>.premium-hero .premium-caption{font-size:10px!important}
 }
 
 
-/* Premium pattern selection modal */
-.s789-pattern-launchers{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
-.s789-pattern-launch{display:flex;align-items:center;justify-content:space-between;gap:8px;text-align:left;padding:14px 13px;border:1px solid #dce7f2;border-radius:14px;background:linear-gradient(145deg,#fff,#f5f9ff);box-shadow:0 5px 16px rgba(26,65,110,.055);min-width:0}
-.s789-pattern-launch span{display:grid;gap:5px}.s789-pattern-launch b{font-size:14px;color:#183957}.s789-pattern-launch small{font-size:10px;color:#8093a8}.s789-pattern-launch strong{font-size:11px;color:#2368c8;white-space:nowrap}
-.s789-modal{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:18px}
-.s789-modal.open{display:flex}.s789-modal-backdrop{position:absolute;inset:0;background:rgba(10,22,40,.58);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px)}
-.s789-modal-card{position:relative;width:min(520px,100%);max-height:min(760px,88dvh);overflow:auto;border:1px solid rgba(255,255,255,.78);border-radius:25px;background:linear-gradient(160deg,#fff 0%,#f7faff 100%);box-shadow:0 28px 90px rgba(3,19,43,.28);padding:22px;animation:s789ModalIn .2s ease-out}
-@keyframes s789ModalIn{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
-.s789-modal-grabber{display:none;cursor:grab;touch-action:none;user-select:none}.s789-modal-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.s789-modal-eyebrow{font-size:9px;letter-spacing:1.8px;font-weight:850;color:#6a8db7}.s789-modal-head h3{font-size:21px;letter-spacing:-.5px;color:#152f4d;margin:5px 0}.s789-modal-head p{font-size:11px;color:#8394a8;margin:0}.s789-modal-close{width:34px;height:34px;border:1px solid #e4ebf3;border-radius:50%;background:#fff;color:#647991;font-size:22px;line-height:1}
-.s789-modal-meta{display:flex;justify-content:space-between;align-items:center;margin:19px 0 11px;padding:10px 12px;border-radius:11px;background:#eef4fb;color:#6b8098;font-size:10px}.s789-modal-meta strong{color:#2869c6;font-size:11px}
-.s789-modal-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.s789-modal-grid[hidden]{display:none}
-.s789-modal-grid .s789-pattern-option{position:relative;min-height:54px;display:flex;align-items:center;gap:9px;padding:10px 12px;border:1px solid #e0e8f1;border-radius:13px;background:#fff;color:#36516e;font-size:12px;font-weight:700;box-shadow:0 2px 7px rgba(24,54,88,.025);transition:.16s}
-.s789-modal-grid .s789-pattern-option:has(input:checked){border-color:#78a9ef;background:linear-gradient(130deg,#edf5ff,#f4f8ff);color:#155fc1;box-shadow:0 3px 12px rgba(39,111,207,.1)}
-.s789-modal-grid .s789-pattern-option input{width:17px;height:17px;accent-color:#2877dc;flex:0 0 auto}
-.s789-modal-actions{display:grid;grid-template-columns:1fr 1fr 1.25fr;gap:9px;margin-top:18px;padding-top:14px;border-top:1px solid #e8eef5}
-.s789-modal-actions button{min-height:44px;border:1px solid #dfe7f0;border-radius:12px;background:#fff;color:#58708a;font-size:12px;font-weight:800}.s789-modal-actions button.primary{background:linear-gradient(110deg,#2468d8,#3888e8);border-color:#2c75dc;color:#fff;box-shadow:0 5px 14px rgba(42,111,211,.2)}
-@media(max-width:520px){.s789-pattern-launchers{gap:7px}.s789-pattern-launch{padding:12px 10px;display:grid;gap:7px}.s789-pattern-launch strong{font-size:10px}.s789-modal{padding:0;align-items:flex-end}.s789-modal-card{display:flex;flex-direction:column;width:100%;height:64dvh;max-height:88dvh;min-height:360px;overflow:hidden;border-radius:22px 22px 0 0;padding:10px 16px calc(12px + env(safe-area-inset-bottom));border-bottom:0;transition:height .22s ease,transform .18s ease}.s789-modal-card.expanded{height:88dvh}.s789-modal-grabber{display:block;width:42px;height:5px;flex:0 0 5px;border-radius:9px;background:#cbd7e5;margin:0 auto 10px;padding:8px 24px;background-clip:content-box;box-sizing:content-box}.s789-modal-head{flex:0 0 auto}.s789-modal-head h3{font-size:18px}.s789-modal-meta{margin:12px 0 9px;flex:0 0 auto}.s789-modal-grid{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;align-content:start;gap:7px;padding:1px 2px 10px;-webkit-overflow-scrolling:touch}.s789-modal-grid .s789-pattern-option{min-height:45px;padding:8px 10px;font-size:11px}.s789-modal-actions{flex:0 0 auto;position:relative;bottom:auto;margin-top:8px;padding-top:10px;padding-bottom:2px;background:transparent}.s789-modal-actions button{min-height:42px}}
+/* Compact inline pattern selectors */
+.s789-pattern-block{margin-top:10px;padding:10px 11px;border:1px solid rgba(125,157,190,.24);border-radius:12px;background:rgba(255,255,255,.035)}
+.s789-pattern-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.s789-pattern-head strong{font-size:12px;font-weight:800;color:var(--text,#e8f0fa)}
+.s789-pattern-head span{font-size:10px;color:#8da4bd}
+.s789-pattern-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+.s789-pattern-grid .s789-pattern-option{display:flex;align-items:center;justify-content:flex-start;gap:5px;min-width:0;padding:6px 5px;border:1px solid rgba(132,160,190,.22);border-radius:8px;background:rgba(255,255,255,.035);font-size:10px;line-height:1.15;color:var(--text,#dce8f5)}
+.s789-pattern-grid .s789-pattern-option input{width:13px;height:13px;margin:0;flex:0 0 auto;accent-color:#3b82f6}
+.s789-pattern-grid .s789-pattern-option span{white-space:nowrap;overflow:hidden;text-overflow:clip}
+.s789-pattern-grid .s789-pattern-option:has(input:checked){border-color:#4389df;background:rgba(47,119,207,.18);color:#7fc1ff}
+@media(max-width:520px){.s789-pattern-block{padding:8px 9px;margin-top:8px}.s789-pattern-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}.s789-pattern-grid .s789-pattern-option{padding:6px 3px;gap:3px;font-size:9px;border-radius:7px}.s789-pattern-grid .s789-pattern-option input{width:12px;height:12px}.s789-pattern-head strong{font-size:11px}.s789-pattern-head span{font-size:9px}}
 
 </style><style>
 :root{--studio-border:rgba(112,178,240,.25)}
@@ -414,24 +408,12 @@ tr:hover td{background:#f6f9fc!important}
    <span>至</span>
    <label>和值最大值<input id="s789SumMax" type="number" min="0" max="36" value="28"></label>
   </div>
-  <div class="s789-pattern-launchers">
-   <button type="button" class="s789-pattern-launch" id="s789OpenOdd"><span><b>单双组合</b><small>16种组合 · 勾选代表排除</small></span><strong id="s789OddCount">已选 1 种 ›</strong></button>
-   <button type="button" class="s789-pattern-launch" id="s789OpenBig"><span><b>大小组合</b><small>16种组合 · 勾选代表排除</small></span><strong id="s789BigCount">已选 1 种 ›</strong></button>
-  </div>
-  <p class="s789-helper">单双：单／双；大小：大为5–9、小为0–4。选择设置沿用当前三套共用筛选规则，仅调整选择界面。</p>
+  <div class="s789-pattern-block"><div class="s789-pattern-head"><strong>单双组合（16种）</strong><span>勾选代表排除</span></div><div id="s789OddPatterns" class="s789-pattern-grid"></div></div>
+  <div class="s789-pattern-block"><div class="s789-pattern-head"><strong>大小组合（16种）</strong><span>勾选代表排除</span></div><div id="s789BigPatterns" class="s789-pattern-grid"></div></div>
+  <p class="s789-helper">单双：单／双；大小：大为5–9、小为0–4。选择设置沿用原有筛选规则。</p>
   <button type="button" class="s789-btn" id="s789ResetFilters">恢复默认参数</button>
  </div>
-<div class="s789-modal" id="s789PatternModal" aria-hidden="true">
- <div class="s789-modal-backdrop" data-pattern-close></div>
- <section class="s789-modal-card" role="dialog" aria-modal="true" aria-labelledby="s789ModalTitle">
-  <div class="s789-modal-grabber"></div>
-  <header class="s789-modal-head"><div><span class="s789-modal-eyebrow">STRATEGY SETTINGS</span><h3 id="s789ModalTitle">单双组合</h3><p id="s789ModalDesc">选择需要排除的完整四位组合</p></div><button type="button" class="s789-modal-close" data-pattern-close aria-label="关闭">×</button></header>
-  <div class="s789-modal-meta"><span>四个位置 · 万 / 千 / 百 / 十</span><strong id="s789ModalSelected">已选 1 / 16</strong></div>
-  <div class="s789-modal-grid" id="s789OddPatterns"></div>
-  <div class="s789-modal-grid" id="s789BigPatterns" hidden></div>
-  <footer class="s789-modal-actions"><button type="button" id="s789PatternClear">清空</button><button type="button" id="s789PatternAll">全选</button><button type="button" class="primary" data-pattern-close>完成</button></footer>
- </section>
-</div> <div class="s789-sets">
+<div class="s789-sets">
  <div class="s789-set"><div class="s789-settop">第一套 <strong>7码</strong></div><div class="s789-set-count" id="s789Count0">—</div><small>剩余注数</small><div class="s789-set-numbers"><span>万 0124589</span><span>千 0156789</span><span>百 0134569</span><span>十 0245678</span></div><label style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:12px;font-size:13px;color:var(--text,#334155)">对子类型<select id="s789PairMode0" style="max-width:130px;padding:8px 10px;border:1px solid #d5deea;border-radius:9px;background:#fff;color:#172033"><option value="full">完整码</option><option value="pair">有对子</option><option value="none">无对子</option></select></label></div>
  <div class="s789-set"><div class="s789-settop">第二套 <strong>8码</strong></div><div class="s789-set-count" id="s789Count1">—</div><small>剩余注数</small><div class="s789-set-numbers"><span>万 01245678</span><span>千 01356789</span><span>百 01234569</span><span>十 02345678</span></div><label style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:12px;font-size:13px;color:var(--text,#334155)">对子类型<select id="s789PairMode1" style="max-width:130px;padding:8px 10px;border:1px solid #d5deea;border-radius:9px;background:#fff;color:#172033"><option value="full">完整码</option><option value="pair">有对子</option><option value="none">无对子</option></select></label></div>
  <div class="s789-set"><div class="s789-settop">第三套 <strong>9码</strong></div><div class="s789-set-count" id="s789Count2">—</div><small>剩余注数</small><div class="s789-set-numbers"><span>万 012345689</span><span>千 012456789</span><span>百 012346789</span><span>十 012456789</span></div><label style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:12px;font-size:13px;color:var(--text,#334155)">对子类型<select id="s789PairMode2" style="max-width:130px;padding:8px 10px;border:1px solid #d5deea;border-radius:9px;background:#fff;color:#172033"><option value="full">完整码</option><option value="pair">有对子</option><option value="none">无对子</option></select></label></div></div>
