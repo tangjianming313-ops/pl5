@@ -511,6 +511,68 @@ td,th{padding:12px 10px!important;border-bottom:1px solid #e8eef4!important}
  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
 </style>
+
+<style id="award-quality-refinement-2">
+/* Readability, touch ergonomics and responsive polish */
+.panel .muted,.sync-board .muted,.s789-panel .muted,.s789-set .muted,
+.premium-overview .muted,.premium-recent .muted,.ops-panel .muted,
+#backtest .muted,#draw .muted,#tasks .muted{
+ color:#5b6d80!important;
+}
+.panel .small,.sync-board .small,.s789-panel .small,.s789-set .small,
+.ops-panel .small,#backtest .small,#draw .small,#tasks .small{
+ line-height:1.65;
+}
+.panel a,.s789-panel a,.ops-panel a{color:#145db2;text-underline-offset:3px}
+.panel button:disabled,.s789-panel button:disabled{opacity:.48;cursor:not-allowed;transform:none!important}
+main>nav{flex-wrap:wrap!important;align-items:center!important}
+main>nav button{min-height:42px!important;white-space:nowrap}
+.scroll{overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:#b7c9dc transparent}
+.scroll table{min-width:620px}
+.s789-pattern-option,.s789-pattern-grid label{min-height:40px}
+.s789-pattern-option input,.s789-pattern-grid input{accent-color:#1769e0}
+.brand-primary:focus-visible,.brand-secondary:focus-visible,
+.s789-btn:focus-visible,.premium-action:focus-visible{
+ outline:3px solid #58a7f6!important;outline-offset:3px!important
+}
+.mobile-bottom-nav{
+ padding-left:max(5px,env(safe-area-inset-left))!important;
+ padding-right:max(5px,env(safe-area-inset-right))!important;
+}
+.mobile-bottom-nav button{
+ min-height:54px!important;
+ padding:6px 1px!important;
+ gap:4px!important;
+ border-radius:12px!important;
+ font-size:10.5px!important;
+ line-height:1.25!important;
+ letter-spacing:0!important;
+ transition:background .18s ease,color .18s ease,transform .18s ease!important;
+}
+.mobile-bottom-nav button .nav-icon{font-size:20px!important;line-height:1.1!important}
+.mobile-bottom-nav button.active{
+ background:rgba(93,177,235,.15)!important;
+ color:#f4fbff!important;
+}
+.mobile-bottom-nav button.active .nav-icon{color:#91d9ff!important}
+.mobile-bottom-nav button:active{transform:scale(.96)}
+@media(max-width:380px){
+ .mobile-bottom-nav button{font-size:9.5px!important}
+ .mobile-bottom-nav button .nav-icon{font-size:18px!important}
+ .brand-hero-actions>*{flex:1 1 100%}
+}
+@media(min-width:751px) and (max-width:1050px){
+ main>nav{gap:5px!important}
+ main>nav button{padding:10px 11px!important;font-size:12px!important}
+ .s789-sets{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(min-width:751px){
+ .mobile-bottom-nav{display:none!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .brand-art-circle{animation:none!important}
+}
+</style>
 </head><body><header><div class="wrap"><div><div class="logo"><span class="brand-emblem" aria-hidden="true"><svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path d="M5 20Q20 3 35 20Q20 37 5 20Z" fill="none" stroke="#E4F4FF" stroke-width="2.7" stroke-linejoin="round"/><circle cx="20" cy="20" r="7.5" fill="#D2EBF9"/><circle cx="20" cy="20" r="3.1" fill="#4A9AC6"/></svg></span><span class="brand-wordmark">观数知微</span></div><div class="sub">INSIGHTDIGITS · 数据研究平台</div></div><div class="ref-status"><span class="ref-dot"></span><div><strong>数据状态</strong><small>请查看开奖页</small></div></div><button class="ref-refresh" type="button" aria-label="刷新开奖数据" onclick="loadAutomaticDraws()">⟳</button></div></header><main class="wrap"><nav><button class="active" data-tab="overview">数据总览</button><button data-tab="strategy789">三套策略 · 新版</button><button data-tab="filters">大模型算法排码</button><button data-tab="backtest">历史回测</button><button data-tab="tasks">任务与公告</button><button data-tab="draw">开奖动态</button></nav>
 <section id="overview"><div id="homePoemBanner" class="brand-hero" role="region" aria-label="观数知微品牌介绍">
   <div class="brand-hero-copy">
