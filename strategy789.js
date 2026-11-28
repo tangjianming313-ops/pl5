@@ -329,7 +329,7 @@ async function backtestSimulation(n){
    var sizes=sumCountsForBase(b,p.mask),cost=sizes.reduce(function(a,x){return a+x},0)*STAKE;
    c+=cost;
    for(var k=0;k<3;k++)counts[k]+=sizes[k];
-   var wins=eligible&&!(e.pairMask&p.mask)?((e.tierMask&1)?1:0)+((e.tierMask&2)?1:0)+((e.tierMask&4)?1:0):0;
+   var wins=eligible&&!(e.pairMask&p.mask)?((e.tierMask&1)&&pairAllowed(e,0,readPairModes())?1:0)+((e.tierMask&2)&&pairAllowed(e,1,readPairModes())?1:0)+((e.tierMask&4)&&pairAllowed(e,2,readPairModes())?1:0):0;
    hitN+=wins;if(wins)hitPeriod++;
   });
   totalCost+=c/10;expectedHits+=hitN/10;expectedHitPeriods+=hitPeriod/10;for(var t=0;t<3;t++)averageSizes[t]+=counts[t]/10;
@@ -378,7 +378,7 @@ async function backtestSafeRandom(n){
   var nGroups=sizes[0]+sizes[1]+sizes[2],cost=nGroups*STAKE;
   var eligible=!!candidate&&base.some(function(e){return e.n===Number(actual)});
   var tiers=[0,0,0];
-  if(eligible){for(var j=0;j<3;j++)tiers[j]=(candidate.tierMask&(1<<j))?1:0;}
+  if(eligible){for(var j=0;j<3;j++)tiers[j]=((candidate.tierMask&(1<<j))&&pairAllowed(candidate,j,readPairModes()))?1:0;}
   var hits=tiers[0]+tiers[1]+tiers[2],prize=hits*PRIZE,profit=prize-cost;
   distribution[hits]++;totalHits+=hits;totalGroups+=nGroups;totalCost+=cost;totalPrize+=prize;
   var group=outcomeStats[hits];group.periods++;group.tickets+=hits;group.cost+=cost;group.prize+=prize;
