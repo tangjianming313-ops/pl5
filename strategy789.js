@@ -78,6 +78,31 @@ function buildPatternControls(){
  }
  updateRuleSummary();
 }
+function updatePatternModalCount(){
+ var odd=!!(get('s789OddPatterns')&&get('s789OddPatterns').offsetParent!==null);
+ var root=odd?get('s789OddPatterns'):get('s789BigPatterns');
+ var count=root?root.querySelectorAll('input:checked').length:0;
+ var label='已选 '+count+' / 16';
+ if(get('s789ModalSelected'))get('s789ModalSelected').textContent=label;
+ if(get(odd?'s789OddCount':'s789BigCount'))get(odd?'s789OddCount':'s789BigCount').textContent='已选 '+count+' 种 ›';
+}
+function initPatternModal(){
+ var modal=get('s789PatternModal'),odd=get('s789OddPatterns'),big=get('s789BigPatterns');
+ function open(kind){
+  var isOdd=kind==='odd';odd.hidden=!isOdd;big.hidden=isOdd;
+  get('s789ModalTitle').textContent=isOdd?'单双组合':'大小组合';
+  get('s789ModalDesc').textContent=isOdd?'选择需要排除的单双完整四位组合':'选择需要排除的大小完整四位组合';
+  modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
+  updatePatternModalCount();
+ }
+ function close(){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.body.style.overflow=''}
+ get('s789OpenOdd').onclick=function(){open('odd')};get('s789OpenBig').onclick=function(){open('big')};
+ modal.querySelectorAll('[data-pattern-close]').forEach(function(x){x.onclick=close});
+ get('s789PatternAll').onclick=function(){var root=odd.hidden?big:odd;root.querySelectorAll('input').forEach(function(x){x.checked=true});saveFilterSettings();updatePatternModalCount()};
+ get('s789PatternClear').onclick=function(){var root=odd.hidden?big:odd;root.querySelectorAll('input').forEach(function(x){x.checked=false});saveFilterSettings();updatePatternModalCount()};
+ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&modal.classList.contains('open'))close()});
+ updatePatternModalCount();
+}
 function updateRuleSummary(){
  var cfg=currentFilterSettings(),format=function(list,kind){return list.length?list.map(function(p){return p.split('').map(function(b){return kind==='odd'?(b==='1'?'单':'双'):(b==='1'?'大':'小')}).join('')}).join('、'):'无'};
  if(get('s789RuleSum'))get('s789RuleSum').textContent='和值'+cfg.sumMin+'–'+cfg.sumMax;
@@ -499,7 +524,8 @@ function init(){
  if(!get(ROOT))return;
  buildPatternControls();
  get('s789SumMin').onchange=saveFilterSettings;get('s789SumMax').onchange=saveFilterSettings;
- document.querySelectorAll('#s789OddPatterns input,#s789BigPatterns input').forEach(function(x){x.onchange=saveFilterSettings});
+ document.querySelectorAll('#s789OddPatterns input,#s789BigPatterns input').forEach(function(x){x.onchange=function(){saveFilterSettings();updatePatternModalCount()}});
+ initPatternModal();
  get('s789ResetFilters').onclick=resetFilterSettings;
  initPairModes();
  for(var pm=0;pm<3;pm++){(function(j){var el=get('s789PairMode'+j);if(el)el.onchange=savePairModes})(pm)}
