@@ -78,8 +78,9 @@ function buildPatternControls(){
  }
  updateRuleSummary();
 }
+var activePatternKind='odd';
 function updatePatternModalCount(){
- var odd=!!(get('s789OddPatterns')&&get('s789OddPatterns').offsetParent!==null);
+ var odd=activePatternKind==='odd';
  var root=odd?get('s789OddPatterns'):get('s789BigPatterns');
  var count=root?root.querySelectorAll('input:checked').length:0;
  var label='已选 '+count+' / 16';
@@ -89,7 +90,7 @@ function updatePatternModalCount(){
 function initPatternModal(){
  var modal=get('s789PatternModal'),odd=get('s789OddPatterns'),big=get('s789BigPatterns');
  function open(kind){
-  var isOdd=kind==='odd';odd.hidden=!isOdd;big.hidden=isOdd;
+  var isOdd=kind==='odd';activePatternKind=kind;odd.hidden=!isOdd;big.hidden=isOdd;
   get('s789ModalTitle').textContent=isOdd?'单双组合':'大小组合';
   get('s789ModalDesc').textContent=isOdd?'选择需要排除的单双完整四位组合':'选择需要排除的大小完整四位组合';
   modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
