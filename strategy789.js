@@ -225,7 +225,7 @@ function refreshBatches(){
   area.value='';copy.disabled=true;return;
  }
  var seg=batchSlice(batchIndex);
- area.value=seg.items.map(pad).join('\n');
+ area.value=seg.items.map(pad).join(' ');
  copy.disabled=seg.items.length===0;
  info.textContent='第'+(batchIndex+1)+'/7段 · '+nfmt(seg.items.length)+'注 · 全部编号'+(seg.total?seg.from+1:0)+'—'+seg.to+' / '+nfmt(seg.total)+'注 · 保留三套重复号码';
 }
@@ -485,7 +485,7 @@ function init(){
  get('s789BatchCopy').onclick=function(){
   if(!nowPools)return;
   var seg=batchSlice(batchIndex);
-  copyText(seg.items.map(pad).join('\n')).then(function(){get('s789BatchInfo').textContent='第'+(batchIndex+1)+'段已复制 · '+nfmt(seg.items.length)+'注（总数'+nfmt(seg.total)+'注，三套不去重）'}).catch(function(){get('s789BatchInfo').textContent='自动复制被限制，可长按下方号码复制';get('s789BatchText').focus();get('s789BatchText').select()});
+  copyText(seg.items.map(pad).join(' ')).then(function(){get('s789BatchInfo').textContent='第'+(batchIndex+1)+'段已复制 · '+nfmt(seg.items.length)+'注（总数'+nfmt(seg.total)+'注，三套不去重）'}).catch(function(){get('s789BatchInfo').textContent='自动复制被限制，可长按下方号码复制';get('s789BatchText').focus();get('s789BatchText').select()});
  };
  get('s789PairA').onchange=function(){if(!recordForIndex(historyRows.length))resetMetrics()};
  get('s789PairB').onchange=function(){if(!recordForIndex(historyRows.length))resetMetrics()};
