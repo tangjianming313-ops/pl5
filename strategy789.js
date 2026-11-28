@@ -15,6 +15,7 @@ var strmoney=function(n){return '¥'+n.toLocaleString('zh-CN',{minimumFractionDi
 function escapeHTML(value){return String(value).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function pad(n){return String(n).padStart(4,'0')}
 function bits(s){var a=0;P.forEach(function(v,j){if(s.indexOf(v[0])!==-1&&s.indexOf(v[1])!==-1)a|=1<<j});return a}
+var PAIR_MODE_KEY='gszw-s789-pair-modes-v1',DEFAULT_PAIR_MODES=['full','full','full'];
 var FILTER_KEY='gszw-s789-variable-filters-v1',DEFAULT_FILTERS={sumMin:8,sumMax:28,odd:['1111'],big:['1001']};
 function readFilterSettings(){
  var min=Number(get('s789SumMin')&&get('s789SumMin').value),max=Number(get('s789SumMax')&&get('s789SumMax').value);
@@ -23,6 +24,33 @@ function readFilterSettings(){
 }
 function currentFilterSettings(){
  try{return readFilterSettings()}catch(_){return DEFAULT_FILTERS}
+}
+function readPairModes(){
+ var modes=[];
+ for(var i=0;i<3;i++){
+  var el=get('s789PairMode'+i),v=el?el.value:'full';
+  modes.push(['full','pair','none'].indexOf(v)>=0?v:'full');
+ }
+ return modes;
+}
+function savePairModes(){
+ var modes=readPairModes();
+ try{localStorage.setItem(PAIR_MODE_KEY,JSON.stringify(modes))}catch(_){}
+ nowBaseKey='';
+ if(historyRows.length&&get('s789PairA').value&&get('s789PairB').value&&get('s789PairA').value!==get('s789PairB').value)preview();
+ else resetMetrics();
+ setStatus('三套对子类型已分别保存并应用。','ok');
+}
+function pairAllowed(e,setIndex,modes){
+ var mode=(modes||readPairModes())[setIndex]||'full';
+ if(mode==='full')return true;
+ if(mode==='pair')return e.pairKind==='pair';
+ return e.pairKind==='none';
+}
+function initPairModes(){
+ var modes=DEFAULT_PAIR_MODES.slice();
+ try{var savedModes=JSON.parse(localStorage.getItem(PAIR_MODE_KEY)||'null');if(Array.isArray(savedModes)&&savedModes.length===3)modes=savedModes.map(function(v){return ['full','pair','none'].indexOf(v)>=0?v:'full'})}catch(_){}
+ for(var i=0;i<3;i++){var el=get('s789PairMode'+i);if(el)el.value=modes[i]}
 }
 function filterEntry(e,cfg){
  var a=e.d,sum=a.reduce(function(x,y){return x+y},0);
@@ -81,7 +109,7 @@ function initNumbers(){
   if((a[1]===a[0]-1&&a[2]===a[1]-1)||(a[2]===a[1]-1&&a[3]===a[2]-1))continue;
   var tier=0;
   SETS.forEach(function(set,j){if(a.every(function(k,p){return set.digits[p].indexOf(String(k))!==-1}))tier|=1<<j});
-  if(tier)info[i]={n:i,s:s,d:a,pairMask:bits(s),tierMask:tier};
+  if(tier)info[i]={n:i,s:s,d:a,pairMask:bits(s),tierMask:tier,pairKind:f==='2,1,1'?'pair':'none'};
  }
 }
 function baseFor(prior){
@@ -95,13 +123,13 @@ function baseFor(prior){
  return base;
 }
 function applyPairs(base,pairA,pairB){
- var mask=(1<<P.indexOf(pairA))|(1<<P.indexOf(pairB));
+ var mask=(1<<P.indexOf(pairA))|(1<<P.indexOf(pairB)),modes=readPairModes();
  var out=[[],[],[]];
- base.forEach(function(e){if(e.pairMask&mask)return;for(var j=0;j<3;j++)if(e.tierMask&(1<<j))out[j].push(e.n)});
+ base.forEach(function(e){if(e.pairMask&mask)return;for(var j=0;j<3;j++)if((e.tierMask&(1<<j))&&pairAllowed(e,j,modes))out[j].push(e.n)});
  return out;
 }
 function baseCurrent(){
- var key=historyRows.length+'|'+historyRows.slice(-10).join(',')+'|'+JSON.stringify(currentFilterSettings());
+ var key=historyRows.length+'|'+historyRows.slice(-10).join(',')+'|'+JSON.stringify(currentFilterSettings())+'|'+JSON.stringify(readPairModes());
  if(key!==nowBaseKey){nowBase=baseFor(historyRows);nowBaseKey=key;}
  return nowBase;
 }
@@ -235,7 +263,7 @@ function savePick(){
   if(recordForIndex(historyRows.length))throw Error('本期已保存，不能覆盖原始记录。');
   if(!nowPools)preview();
   if(!nowPools)throw Error('请先计算号码池。');
-  var r={version:1,asOfIndex:historyRows.length,issue:currentIssue(),baseLast:historyRows[historyRows.length-1],pairA:p[0],pairB:p[1],filters:currentFilterSettings(),counts:nowPools.map(function(x){return x.length}),poolBits:nowPools.map(codeBits),createdAt:new Date().toISOString(),origin:'local',rule:'fixed789-750-v1',stake:STAKE,prize:PRIZE};
+  var r={version:1,asOfIndex:historyRows.length,issue:currentIssue(),baseLast:historyRows[historyRows.length-1],pairA:p[0],pairB:p[1],pairModes:readPairModes(),filters:currentFilterSettings(),counts:nowPools.map(function(x){return x.length}),poolBits:nowPools.map(codeBits),createdAt:new Date().toISOString(),origin:'local',rule:'fixed789-750-v1',stake:STAKE,prize:PRIZE};
   var all=saved();all.push(r);store(all);recentRecords=all;
   updateInputs();renderRecords();
   setStatus('已保存本期 '+r.issue+'，对数 '+p.join('＋')+'；每套号码快照已记录在本机。','ok');
@@ -243,14 +271,14 @@ function savePick(){
 }
 function buildTicketText(){
  if(!nowPools)throw Error('请先计算号码池。');
- var pair=validPairs(),lines=['观数知微 · 固定7＋8＋9 三套不去重号码','待开奖：'+currentIssue(),'开奖前历史尾号：'+historyRows[historyRows.length-1],'规则：排最近750期、和值'+currentFilterSettings().sumMin+'—'+currentFilterSettings().sumMax+'、单双排除'+(currentFilterSettings().odd.join('、')||'无')+'、大小排除'+(currentFilterSettings().big.join('、')||'无')+'、三重四重双对子、三顺子三倒顺、最近10期三位同位','本期对数：排'+pair.join('、'),'不去重总注数：'+nowPools.reduce(function(n,a){return n+a.length},0),'每注0.1元、中奖每注按932元模拟',''];
+ var pair=validPairs(),lines=['观数知微 · 固定7＋8＋9 三套不去重号码','待开奖：'+currentIssue(),'开奖前历史尾号：'+historyRows[historyRows.length-1],'规则：排最近750期、和值'+currentFilterSettings().sumMin+'—'+currentFilterSettings().sumMax+'、单双排除'+(currentFilterSettings().odd.join('、')||'无')+'、大小排除'+(currentFilterSettings().big.join('、')||'无')+'、三重四重双对子、三顺子三倒顺、最近10期三位同位','本期对数：排'+pair.join('、'),'对子类型：'+readPairModes().map(function(v,j){return SETS[j].id+'码='+({full:'完整码',pair:'有对子',none:'无对子'}[v])}).join('；'),'不去重总注数：'+nowPools.reduce(function(n,a){return n+a.length},0),'每注0.1元、中奖每注按932元模拟',''];
  nowPools.forEach(function(pool,j){lines.push('====== '+SETS[j].name+' '+pool.length+'注 ======');pool.forEach(function(n){lines.push(pad(n))});lines.push('')});
  return lines.join('\n');
 }
 function buildSingleSetText(index){
  if(!nowPools)throw Error('请先计算号码池。');
  if(index<0||index>2||!nowPools[index])throw Error('找不到对应的号码套。');
- var pair=validPairs(),pool=nowPools[index],lines=['观数知微 · '+SETS[index].name+' 独立号码文件','待开奖：'+currentIssue(),'开奖前历史尾号：'+historyRows[historyRows.length-1],'本期对数：排'+pair.join('、'),'本套注数：'+pool.length,'规则：沿用网站当前7+8+9方案，不改变排码条件',''];
+ var pair=validPairs(),pool=nowPools[index],lines=['观数知微 · '+SETS[index].name+' 独立号码文件','待开奖：'+currentIssue(),'开奖前历史尾号：'+historyRows[historyRows.length-1],'本期对数：排'+pair.join('、'),'对子类型：'+({full:'完整码',pair:'有对子',none:'无对子'}[readPairModes()[index]]),'本套注数：'+pool.length,'规则：沿用网站当前7+8+9方案，不改变排码条件',''];
  pool.forEach(function(n){lines.push(pad(n))});
  return lines.join('\n');
 }
@@ -284,8 +312,8 @@ function backtestRecorded(n){
  data.slice(-40).reverse().map(function(x){return [escapeHTML(x.record.issue),escapeHTML(x.verify.actual),x.verify.tiers.join('/'),x.verify.hits+'注',money(x.verify.prize-x.verify.cost),x.verify.hits?'—':escapeHTML(missReasons(x.record,x.verify.actual))]}),['期号','开奖','7/8/9','共中','净收益','未中原因']);
 }
 function sumCountsForBase(base,selectedMask){
- var sizes=[0,0,0];
- base.forEach(function(e){if(e.pairMask&selectedMask)return;for(var j=0;j<3;j++){if(e.tierMask&(1<<j))sizes[j]++}});
+ var sizes=[0,0,0],modes=readPairModes();
+ base.forEach(function(e){if(e.pairMask&selectedMask)return;for(var j=0;j<3;j++){if((e.tierMask&(1<<j))&&pairAllowed(e,j,modes))sizes[j]++}});
  return sizes;
 }
 function comboMasks(){
@@ -454,7 +482,7 @@ function importRecords(file){
    var items=saved(),num=0;
    incoming.forEach(function(r){
     if(!r||!Number.isInteger(r.asOfIndex)||!Array.isArray(r.poolBits)||r.poolBits.length!==3||r.poolBits.some(function(t){return typeof t!=='string'||t.length>6000})||!Array.isArray(r.counts)||r.counts.length!==3||P.indexOf(r.pairA)<0||P.indexOf(r.pairB)<0||r.pairA===r.pairB||items.some(function(t){return t.asOfIndex===r.asOfIndex}))return;
-    items.push({version:1,asOfIndex:r.asOfIndex,issue:String(r.issue||'历史第'+(r.asOfIndex+1)+'条'),baseLast:String(r.baseLast||''),pairA:r.pairA,pairB:r.pairB,filters:r.filters&&Number.isInteger(r.filters.sumMin)&&Number.isInteger(r.filters.sumMax)?r.filters:null,counts:r.counts,poolBits:r.poolBits,createdAt:r.createdAt,origin:'imported',rule:r.rule||'fixed789-750-v1',stake:STAKE,prize:PRIZE});num++;
+    items.push({version:1,asOfIndex:r.asOfIndex,issue:String(r.issue||'历史第'+(r.asOfIndex+1)+'条'),baseLast:String(r.baseLast||''),pairA:r.pairA,pairB:r.pairB,pairModes:Array.isArray(r.pairModes)&&r.pairModes.length===3?r.pairModes:DEFAULT_PAIR_MODES.slice(),filters:r.filters&&Number.isInteger(r.filters.sumMin)&&Number.isInteger(r.filters.sumMax)?r.filters:null,counts:r.counts,poolBits:r.poolBits,createdAt:r.createdAt,origin:'imported',rule:r.rule||'fixed789-750-v1',stake:STAKE,prize:PRIZE});num++;
    });
    store(items);recentRecords=items;updateInputs();renderRecords();setStatus('成功导入'+num+'条记录。外部导入的历史期次仅用于核对，不列为本机原始记录。','ok');
   }catch(e){setStatus('导入失败：'+e.message,'error')}
@@ -473,6 +501,8 @@ function init(){
  get('s789SumMin').onchange=saveFilterSettings;get('s789SumMax').onchange=saveFilterSettings;
  document.querySelectorAll('#s789OddPatterns input,#s789BigPatterns input').forEach(function(x){x.onchange=saveFilterSettings});
  get('s789ResetFilters').onclick=resetFilterSettings;
+ initPairModes();
+ for(var pm=0;pm<3;pm++){(function(j){var el=get('s789PairMode'+j);if(el)el.onchange=savePairModes})(pm)}
  initNumbers();
  get('s789Preview').onclick=preview;
  get('s789Save').onclick=savePick;
