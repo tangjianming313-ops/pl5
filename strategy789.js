@@ -463,7 +463,10 @@ async function runBacktest(){
  busy=true;get('s789RunBack').disabled=true;
  var n=Number(get('s789BackN').value),mode=get('s789BackMode').value;
  try{
-  get('s789BackStatus').textContent='开始回测…';
+  if(!Number.isSafeInteger(n)||n<1){throw Error('请输入大于0的整数期数。')}
+  if(!historyRows.length){throw Error('历史开奖数据尚未加载完成。')}
+  if(n>historyRows.length){throw Error('当前只有'+historyRows.length+'期可用历史数据，请调低回测期数。')}
+  get('s789BackStatus').textContent='正在回测最近'+n+'期…';
   if(mode==='recorded'){backtestRecorded(n)}else if(mode==='safe-random'){await backtestSafeRandom(n)}else{await backtestSimulation(n)}
   get('s789BackStatus').textContent='回测完成。';
  }catch(e){get('s789BackStatus').textContent='回测失败：'+e.message}
@@ -493,6 +496,7 @@ function onHistoryChange(hist,meta){
  var key=hist.length+'|'+hist.slice(-10).join('/');
  if(ready&&key===lastHistoryKey){metadata=meta||metadata;get('s789Issue').textContent=currentIssue();return;}
  lastHistoryKey=key;historyRows=hist.slice();metadata=meta||null;nowBaseKey='';ready=true;recentRecords=saved();
+ var periodInput=get('s789BackN');if(periodInput){periodInput.max=String(historyRows.length);if(get('s789BackAvailable'))get('s789BackAvailable').textContent='当前可用历史：'+historyRows.length+'期';if(Number(periodInput.value)>historyRows.length)periodInput.value=String(historyRows.length)}
  updateInputs();renderRecords();
 }
 function init(){
@@ -519,6 +523,7 @@ function init(){
  };
  get('s789PairA').onchange=function(){if(!recordForIndex(historyRows.length))resetMetrics()};
  get('s789PairB').onchange=function(){if(!recordForIndex(historyRows.length))resetMetrics()};
+ var backPeriod=get('s789BackN');if(backPeriod){backPeriod.onchange=function(){var n=Number(this.value);if(!Number.isInteger(n)||n<1){get('s789BackStatus').textContent='请输入大于0的整数期数。';return}if(historyRows.length&&n>historyRows.length){this.value=String(historyRows.length);get('s789BackStatus').textContent='已调整为当前可用历史上限：'+historyRows.length+'期。'}}}
  get('s789RunBack').onclick=runBacktest;
  var seedInput=get('s789RandomSeed'),reroll=get('s789Reroll'),modeSelect=get('s789BackMode');
  if(seedInput&&reroll&&modeSelect){
