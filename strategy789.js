@@ -93,11 +93,18 @@ function initPatternModal(){
   var isOdd=kind==='odd';activePatternKind=kind;odd.hidden=!isOdd;big.hidden=isOdd;
   get('s789ModalTitle').textContent=isOdd?'单双组合':'大小组合';
   get('s789ModalDesc').textContent=isOdd?'选择需要排除的单双完整四位组合':'选择需要排除的大小完整四位组合';
-  modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
+  var card=modal.querySelector('.s789-modal-card');if(card){card.classList.remove('expanded');card.style.transform=''}modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
   updatePatternModalCount();
  }
- function close(){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.body.style.overflow=''}
+ function close(){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.body.style.overflow='';var card=modal.querySelector('.s789-modal-card');if(card){card.classList.remove('expanded');card.style.transform=''}}
  get('s789OpenOdd').onclick=function(){open('odd')};get('s789OpenBig').onclick=function(){open('big')};
+ var grab=modal.querySelector('.s789-modal-grabber'),card=modal.querySelector('.s789-modal-card'),dragStart=0,dragging=false;
+ if(grab&&card){
+  grab.addEventListener('pointerdown',function(e){dragStart=e.clientY;dragging=true;card.style.transition='none';try{grab.setPointerCapture(e.pointerId)}catch(_){}});
+  grab.addEventListener('pointermove',function(e){if(!dragging)return;var dy=e.clientY-dragStart;if(dy>0)card.style.transform='translateY('+Math.min(dy,180)+'px)';});
+  function finishDrag(e){if(!dragging)return;dragging=false;var dy=e.clientY-dragStart;card.style.transition='';card.style.transform='';if(dy < -45)card.classList.add('expanded');else if(dy>115)close();else if(dy>45)card.classList.remove('expanded');}
+  grab.addEventListener('pointerup',finishDrag);grab.addEventListener('pointercancel',finishDrag);
+ }
  modal.querySelectorAll('[data-pattern-close]').forEach(function(x){x.onclick=close});
  get('s789PatternAll').onclick=function(){var root=odd.hidden?big:odd;root.querySelectorAll('input').forEach(function(x){x.checked=true});saveFilterSettings();updatePatternModalCount()};
  get('s789PatternClear').onclick=function(){var root=odd.hidden?big:odd;root.querySelectorAll('input').forEach(function(x){x.checked=false});saveFilterSettings();updatePatternModalCount()};
