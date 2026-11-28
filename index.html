@@ -573,6 +573,93 @@ main>nav button{min-height:42px!important;white-space:nowrap}
  .brand-art-circle{animation:none!important}
 }
 </style>
+
+<style id="award-quality-refinement-3">
+/* Editorial spacing + grid rhythm */
+:root{--aq-space:clamp(18px,2.2vw,30px);--aq-line:#e5edf5;--aq-shadow:0 12px 34px rgba(22,48,78,.075);--aq-shadow-hover:0 20px 46px rgba(22,48,78,.14)}
+main.wrap{max-width:1180px!important}
+main>nav{display:flex;gap:9px!important;padding:8px!important;margin:0 0 26px!important;border:1px solid rgba(195,213,230,.68)!important;border-radius:18px!important;background:rgba(248,251,255,.78)!important;backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%);box-shadow:0 6px 24px rgba(21,48,78,.055)}
+#overview>.brand-hero{margin-bottom:30px!important}
+#overview>.premium-overview{margin-bottom:22px!important}
+#overview>.premium-action{margin-bottom:28px!important}
+#overview .layout{gap:22px!important}
+.s789-wrap{display:grid;gap:22px}
+.s789-hero{margin-bottom:2px!important}
+.s789-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(270px,.72fr);gap:22px!important;align-items:start}
+.s789-sets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px!important}
+.s789-panel,.panel,.sync-board,.s789-set,.metric,.premium-action,.ops-panel{
+ box-shadow:var(--aq-shadow);transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease
+}
+.panel,.sync-board,.s789-panel{border-radius:20px!important}
+.panel,.sync-board{padding:clamp(18px,2.3vw,26px)!important;margin-bottom:22px!important}
+.s789-panel{padding:clamp(18px,2.3vw,26px)!important;margin-bottom:20px!important}
+.metric{border-radius:16px!important}
+.s789-set{padding:18px!important;border-radius:18px!important}
+.premium-metrics{gap:14px!important}
+.s789-pattern-block{margin-top:16px!important;padding:16px!important}
+.s789-totalbar{margin-top:18px!important;padding:18px!important}
+.s789-actions{gap:12px!important;margin-top:16px!important}
+.ops-columns{gap:24px!important}
+.ops-list{display:grid;gap:12px!important}
+header{
+ background:rgba(8,24,42,.78)!important;
+ border-bottom:1px solid rgba(174,207,235,.17)!important;
+ backdrop-filter:blur(22px) saturate(165%)!important;
+ -webkit-backdrop-filter:blur(22px) saturate(165%)!important;
+ box-shadow:0 8px 28px rgba(4,18,34,.12)!important
+}
+.mobile-bottom-nav{
+ background:rgba(9,27,47,.78)!important;
+ border-top:1px solid rgba(180,213,240,.2)!important;
+ backdrop-filter:blur(24px) saturate(170%)!important;
+ -webkit-backdrop-filter:blur(24px) saturate(170%)!important
+}
+@media(hover:hover) and (pointer:fine){
+ .panel:hover,.sync-board:hover,.s789-panel:hover,.s789-set:hover,.metric:hover,.ops-panel:hover{
+  transform:translateY(-3px);box-shadow:var(--aq-shadow-hover);border-color:#c9d9e8!important
+ }
+ .premium-action:hover{transform:translateY(-2px);box-shadow:var(--aq-shadow-hover)}
+}
+.ops-empty{
+ display:flex;align-items:center;gap:12px;min-height:76px;
+ padding:18px 20px!important;border:1px dashed #c8d7e6;
+ border-radius:16px;background:linear-gradient(145deg,#f8fbff,#f1f6fb);
+ color:#60758a!important;line-height:1.65
+}
+.ops-empty:before{
+ content:"◇";display:grid;place-items:center;flex:0 0 38px;height:38px;
+ border-radius:12px;background:#e4effa;color:#3476b4;font-size:20px;font-weight:700
+}
+.skeleton-state{position:relative;overflow:hidden;border-style:solid}
+.skeleton-state:after{
+ content:"";position:absolute;inset:0;transform:translateX(-100%);
+ background:linear-gradient(100deg,transparent 18%,rgba(255,255,255,.7) 48%,transparent 78%);
+ animation:aq-shimmer 1.55s ease-in-out infinite
+}
+@keyframes aq-shimmer{to{transform:translateX(100%)}}
+@media(max-width:900px){.s789-grid{grid-template-columns:1fr!important}.s789-sets{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:750px){
+ main.wrap{padding:14px 14px calc(112px + env(safe-area-inset-bottom))!important}
+ main>nav{display:none!important}
+ #overview>.brand-hero{margin:2px 0 20px!important}
+ #overview>.premium-overview{margin-bottom:16px!important}
+ .s789-wrap{gap:16px}
+ .s789-grid{gap:16px!important}
+ .s789-sets{grid-template-columns:1fr!important;gap:12px!important}
+ .panel,.sync-board,.s789-panel{padding:18px!important;margin-bottom:16px!important;border-radius:18px!important}
+ .premium-metrics{gap:10px!important}
+ .ops-columns{gap:20px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .skeleton-state:after{animation:none!important;display:none}
+ .panel,.sync-board,.s789-panel,.s789-set,.metric,.premium-action{transition:none!important}
+}
+@supports not ((backdrop-filter:blur(2px)) or (-webkit-backdrop-filter:blur(2px))){
+ header{background:#0b1b2b!important}
+ main>nav{background:#f5f9fd!important}
+ .mobile-bottom-nav{background:#0d2033!important}
+}
+</style>
 </head><body><header><div class="wrap"><div><div class="logo"><span class="brand-emblem" aria-hidden="true"><svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path d="M5 20Q20 3 35 20Q20 37 5 20Z" fill="none" stroke="#E4F4FF" stroke-width="2.7" stroke-linejoin="round"/><circle cx="20" cy="20" r="7.5" fill="#D2EBF9"/><circle cx="20" cy="20" r="3.1" fill="#4A9AC6"/></svg></span><span class="brand-wordmark">观数知微</span></div><div class="sub">INSIGHTDIGITS · 数据研究平台</div></div><div class="ref-status"><span class="ref-dot"></span><div><strong>数据状态</strong><small>请查看开奖页</small></div></div><button class="ref-refresh" type="button" aria-label="刷新开奖数据" onclick="loadAutomaticDraws()">⟳</button></div></header><main class="wrap"><nav><button class="active" data-tab="overview">数据总览</button><button data-tab="strategy789">三套策略 · 新版</button><button data-tab="filters">大模型算法排码</button><button data-tab="backtest">历史回测</button><button data-tab="tasks">任务与公告</button><button data-tab="draw">开奖动态</button></nav>
 <section id="overview"><div id="homePoemBanner" class="brand-hero" role="region" aria-label="观数知微品牌介绍">
   <div class="brand-hero-copy">
@@ -654,8 +741,8 @@ main>nav button{min-height:42px!important;white-space:nowrap}
 </div></section>
 <section id="tasks" class="hidden">
 <div class="panel ops-panel"><div class="ops-toolbar"><div><h2>软件任务与公告</h2><p>观数知微任务中心 · 平台发布 · 各设备独立标记完成</p></div><button type="button" class="btn secondary" id="opsRefresh">刷新任务与公告</button></div><p role="status" id="opsStatus">正在读取运营信息…</p>
-<div class="ops-columns"><div><div class="ops-section-tabs"><h2>当前任务</h2><span class="ops-count" id="opsTaskTotal">0</span></div><div id="opsTasks" class="ops-list"><p class="ops-empty">正在加载…</p></div></div><div><h2>平台公告</h2><div id="opsAnnouncements" class="ops-list"><p class="ops-empty">正在加载…</p></div></div></div></div>
-<div class="panel ops-panel"><h2>版本与升级</h2><p class="note">网页功能更新将直接同步；安卓安装包升级需使用正式发布且签名一致的 APK。</p><div id="opsRelease" style="margin-top:15px"><p class="ops-empty">正在检查最新版本…</p></div></div>
+<div class="ops-columns"><div><div class="ops-section-tabs"><h2>当前任务</h2><span class="ops-count" id="opsTaskTotal">0</span></div><div id="opsTasks" class="ops-list"><p class="ops-empty skeleton-state">正在加载…</p></div></div><div><h2>平台公告</h2><div id="opsAnnouncements" class="ops-list"><p class="ops-empty">正在加载…</p></div></div></div></div>
+<div class="panel ops-panel"><h2>版本与升级</h2><p class="note">网页功能更新将直接同步；安卓安装包升级需使用正式发布且签名一致的 APK。</p><div id="opsRelease" style="margin-top:15px"><p class="ops-empty skeleton-state">正在检查最新版本…</p></div></div>
 </section>
 <section id="draw" class="hidden"><div class="panel"><h2>开奖动态</h2><p class="muted small">自动等待新开奖数据，取得可核实的新一期结果后，数字依次向上滚动并停在对应号码。现有数据源不提供官方摇奖开始信号，动画不代表实时摇奖。</p><div class="row"><span id="spinStatus" class="muted small">自动监测新一期开奖数据中</span></div></div><div class="sync-board" id="syncBoard"><div class="sync-top"><div><h2 style="margin:0 0 5px">最新开奖号码</h2><div class="muted small">排列5前四位 · 自动检查数据更新</div></div><span id="syncPill" class="sync-pill wait">正在检查数据</span></div><div class="draw-balls" id="syncBalls"><span class="muted">正在加载历史号码…</span></div><div class="draw-meta"><span id="syncIssue">期号：待核实</span><span id="syncDate">开奖日期：待核实</span><span id="syncCheck">上次检查：—</span></div><div class="sync-actions"><button type="button" id="syncRefresh">立即检查</button><button type="button" id="syncOfficial">查看体彩开奖公告</button></div><div class="draw-timeline" id="syncTimeline"></div><div class="sync-note" id="syncExplain">数据每5分钟自动重新检查一次。页面展示已获取的开奖数据，不是开奖直播；开奖号码须以中国体育彩票正式公告为准。</div></div><div class="wrap" style="padding-top:4px;padding-bottom:4px"><p id="autoDrawStatus" class="muted small">开奖自动同步：正在检查最新数据…</p></div><details class="panel"><summary>历史数据管理与手动补录</summary><div class="layout"><div class="panel"><h2>追加真实开奖</h2><p class="muted small">仅录入前四位，保留前导零。自动检查与当前最后一期是否相同；不能仅凭号码相同判断历史不同期是否重复。</p><div class="row"><input id="newDraw" maxlength="4" inputmode="numeric" placeholder="例如 0035"><button class="btn" id="appendDraw">确认追加</button></div><p id="appendStatus" class="small"></p><button class="btn secondary" id="resetHistory">恢复上传的7763期基准</button></div><div class="panel"><h2>历史数据库</h2><p id="historyInfo"></p><div class="row"><button class="btn secondary" id="exportHistory">导出完整历史</button></div><h3>最近10期</h3><div id="lastTen" class="digits" style="font-size:15px;line-height:2"></div></div></div></details></section>
 <div class="footer">观数知微 · 独立研究工具 · 非官方彩票机构 · 不保证中奖或收益</div></main><div class="mobile-bottom-nav" role="navigation" aria-label="手机底部导航"><button class="active" data-mobile-tab="overview" aria-label="数据总览"><span class="nav-icon">⌂</span><span>总览</span></button><button data-mobile-tab="strategy789" aria-label="三套策略"><span class="nav-icon">◇</span><span>三套</span></button><button data-mobile-tab="filters" aria-label="大模型算法排码"><span class="nav-icon">▦</span><span>排码</span></button><button data-mobile-tab="backtest" aria-label="历史回测"><span class="nav-icon">◷</span><span>回测</span></button><button data-mobile-tab="tasks" aria-label="任务公告"><span class="nav-icon">☑</span><span>任务</span></button><button data-mobile-tab="draw" aria-label="开奖动态"><span class="nav-icon">◉</span><span>开奖</span></button></div>
