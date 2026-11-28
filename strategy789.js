@@ -244,14 +244,14 @@ function savePick(){
 function buildTicketText(){
  if(!nowPools)throw Error('请先计算号码池。');
  var pair=validPairs(),lines=['观数知微 · 固定7＋8＋9 三套不去重号码','待开奖：'+currentIssue(),'开奖前历史尾号：'+historyRows[historyRows.length-1],'规则：排最近750期、和值'+currentFilterSettings().sumMin+'—'+currentFilterSettings().sumMax+'、单双排除'+(currentFilterSettings().odd.join('、')||'无')+'、大小排除'+(currentFilterSettings().big.join('、')||'无')+'、三重四重双对子、三顺子三倒顺、最近10期三位同位','本期对数：排'+pair.join('、'),'不去重总注数：'+nowPools.reduce(function(n,a){return n+a.length},0),'每注0.1元、中奖每注按932元模拟',''];
- nowPools.forEach(function(pool,j){lines.push('====== '+SETS[j].name+' '+pool.length+'注 ======');pool.forEach(function(n){lines.push(pad(n))});lines.push('')});
+ nowPools.forEach(function(pool,j){lines.push('====== '+SETS[j].name+' '+pool.length+'注 ======');lines.push(pool.map(pad).join(' '));lines.push('')});
  return lines.join('\n');
 }
 function buildSingleSetText(index){
  if(!nowPools)throw Error('请先计算号码池。');
  if(index<0||index>2||!nowPools[index])throw Error('找不到对应的号码套。');
  var pair=validPairs(),pool=nowPools[index],lines=['观数知微 · '+SETS[index].name+' 独立号码文件','待开奖：'+currentIssue(),'开奖前历史尾号：'+historyRows[historyRows.length-1],'本期对数：排'+pair.join('、'),'本套注数：'+pool.length,'规则：沿用网站当前7+8+9方案，不改变排码条件',''];
- pool.forEach(function(n){lines.push(pad(n))});
+ lines.push(pool.map(pad).join(' '));
  return lines.join('\n');
 }
 function makeDownload(name,contents,type){
